@@ -1,16 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+// Service for connect to API of the list of partners 
+const BASE_URL = 'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-json/wp/v2/partenaires?acf_format=standard';
 @Injectable({
   providedIn: 'root'
 })
 export class PartnerswpService {
-  private apiUrl = 'https://votre-site-wordpress.com/wp-json/wp/v2/posts';
+  private http = inject(HttpClient)
+  constructor() { }
 
-  constructor(private http: HttpClient) { }
-
-  getPosts(): Observable<any[]> {
-    return this.http.get<any[]>(this.apiUrl);
+  getPosts() {
+    return this.http.get(BASE_URL);
   }
 }

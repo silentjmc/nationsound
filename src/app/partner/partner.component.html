@@ -1,84 +1,31 @@
-<p class="font-title text-white text-6xl">INSTITUTIONS</p>
-<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
+<p class="font-title text-white text-center text-3xl md:text-5xl lg:text-6xl xl:text-6xl">INSTITUTIONS</p>
+<div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
+@for(partner of this.mappedPartners | partnerFilter:'Institution' ; track partner.id ) {
+    <div class="bg-white rounded-lg grid place-items-center h-32">
+        <a [href]=partner.urlPartenaire>
+            <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
         </a>
     </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg" alt="">
-        </a>
-    </div>
+}
 </div>
-<p class="font-title text-white text-6xl">ENTREPRISES</p>
-<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
+<p class="font-title text-white text-center text-3xl md:text-5xl lg:text-6xl xl:text-6xl">ENTREPRISES</p>
+<div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
+@for(partner of this.mappedPartners | partnerFilter:'Entreprise' ; track partner.id ) {
+    <div class="bg-white rounded-lg grid place-items-center h-32">
+        <a [href]=partner.urlPartenaire>
+            <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
         </a>
     </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg" alt="">
-        </a>
-    </div>
+}
 </div>
-<p class="font-title text-white text-6xl">MEDIAS</p>
-<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
+<p class="font-title text-white text-center text-3xl md:text-5xl lg:text-6xl xl:text-6xl">MÉDIAS</p>
+<div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
+@for(partner of this.mappedPartners | partnerFilter:'Média' ; track partner.id ) {
+    <div class="bg-white rounded-lg grid place-items-center h-32">
+        <a [href]=partner.urlPartenaire>
+            <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
         </a>
     </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-1.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-2.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-3.jpg" alt="">
-        </a>
-    </div>
-    <div>
-        <a href="#">
-            <img class="h-auto max-w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/docs/gallery/square/image-4.jpg" alt="">
-        </a>
-    </div>
+}
 </div>
+

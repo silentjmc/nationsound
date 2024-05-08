@@ -5,11 +5,12 @@ import { initFlowbite } from 'flowbite';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { InformationComponent } from './information/information.component';
+import { PartnerFilterPipe } from './pipe/partner-filter.pipe';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, InformationComponent],
+  imports: [RouterOutlet, CommonModule, HeaderComponent, InformationComponent, PartnerFilterPipe],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
