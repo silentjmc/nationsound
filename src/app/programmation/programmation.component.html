@@ -1,0 +1,17 @@
+<p class="font-title text-white text-center text-3xl md:text-5xl lg:text-6xl xl:text-6xl">ARTISTES</p>
+<app-programmation-filter></app-programmation-filter>
+<div class="relative grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10 ">
+    @for(artist of this.artists$ | async ; track artist.id ) {
+        <div class="relative max-h-80 max-w-60 flex flex-col bg-slate-200 rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
+            <a href="">
+            </a> 
+            <img class="rounded-t-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}" />              
+            <figcaption class="mb-3 ml-3 bottom-0 ">
+                <h5 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
+                <p class="font-normal text-gray-700 dark:text-gray-400">{{ artist.date }}</p>
+                <p class="font-normal text-gray-700 dark:text-gray-400">{{ artist.type_evenement }} : {{ artist.heure_debut }} - {{ artist.heure_fin }} </p>
+                <p class="font-normal text-gray-700 dark:text-gray-400">Scène {{ artist.scene }}</p>
+            </figcaption>                
+    </div>
+    }
+</div> 
