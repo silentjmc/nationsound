@@ -5,11 +5,12 @@ import { ScheduleService } from '../services/schedule.service';
 import { Artist } from '../services/class';
 import { Observable} from 'rxjs';
 import { ProgrammationFilterComponent } from '../programmation-filter/programmation-filter.component';
+import { SortPipe } from '../pipe/sort-by.pipe';
 
 @Component({
   selector: 'app-programmation',
   standalone: true,
-  imports: [CommonModule, ProgrammationFilterComponent],
+  imports: [CommonModule, ProgrammationFilterComponent, SortPipe],
   templateUrl: './programmation.component.html',
   styleUrl: './programmation.component.css'
 })
