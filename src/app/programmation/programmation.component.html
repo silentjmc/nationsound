@@ -1,26 +1,85 @@
-<p class="font-title text-white text-center text-3xl md:text-5xl lg:text-6xl xl:text-6xl">ARTISTES</p>
-<app-programmation-filter></app-programmation-filter>
-<div class="relative grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10 ">
-    @for(artist of this.artists$ | async | sortBy :'name'| sortBy :'date'; track artist.id) {
-        <div class="relative max-h-80 max-w-60 flex flex-col bg-slate-200 rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
-            <a href="">
-            </a> 
-            <img class="rounded-t-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}" />              
-            <figcaption class="mb-3 ml-3">
-                @if(artist.name.length>20){
-                <h5 class="text-lg leading-tight font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
-                } @else {
-                <h5 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
-                }
-                <p class="font-normal text-gray-700 dark:text-gray-400">{{ artist.date }}</p>
-                <p class="font-normal text-gray-700 dark:text-gray-400">{{ artist.type_evenement }} : {{ artist.heure_debut }} - {{ artist.heure_fin }} </p>
-                @if(artist.scene){
-                <p class="font-normal text-gray-700 dark:text-gray-400">Scène {{ artist.scene }}</p>
-                } @else 
-                {
-                <p class="font-normal text-gray-700 dark:text-gray-400"> {{ artist.lieu_rencontre }}</p>
-                }
-            </figcaption>                
+<div class="mx-20 my-10">
+  <h1 class="font-title text-black text-center text-3xl md:text-5xl uppercase">Programmation</h1>
+  <div class="border border-black">
+    <h2 class="font-title text-black text-center text-lg uppercase">filtres</h2> 
+    <div class="flex flex-col md:flex-row justify-around my-3 mx-5"> 
+      <div>
+        <h3>Lieux</h3>
+        @for(filter of locationFilters | sortBy:'name' ; track filter.id) {
+        <div>
+          <input type="checkbox" id="{{filter.name}}" class="form-check-input" (change)="locationChanged(filter.name)" />
+          <label class="form-check-label mx-2" for="{{filter.name}}">{{filter.name}}</label>
+        </div>
+        }
+      </div>
+      <div>
+        <h3>Événements</h3>
+        @for(filter of eventFilters | sortBy:'name' ; track filter.id) {
+        <div>
+          <input type="checkbox" id="{{filter.name}}" class="form-check-input" (change)="eventChanged(filter.name)" />
+          <label class="form-check-label mx-2" for="{{filter.name}}">{{filter.name}}</label>
+        </div>
+        }
+      </div>
+      <div>
+        <h3>Dates</h3>
+        @for(filter of dateFilters | sortBy:'name' ; track filter.id) {
+        <div>
+          <input type="checkbox" id="{{filter.name}}" class="form-check-input" (change)="dateChanged(filter.name)" />
+          <label class="form-check-label mx-2" for="{{filter.name}}">{{filter.name}}</label>
+        </div>
+        }
+      </div>
+      <div>
+        <h3>Horaires</h3>
+        <div class="flex gap-3">
+          <label for="timeStart" class="mt-1 w-7">De : </label>
+          <select id="timeStart" (change)="onTimeStartChange($event)" class="p-1 w-36">
+            <option value="">- indifférent -</option>
+            @for(filter of timeFilters | sortBy:'name'; track filter.id) {
+              <option [value]="filter.name">{{filter.name}}</option>
+          }
+          </select>
+        </div>
+        <div class="flex gap-3 mt-2">
+          <label for="timeEnd" class="mt-1 w-7">A : </label>
+          <select id="timeEnd" (change)="onTimeEndChange($event)" class="p-1 w-36">
+            <option value="">- indifférent -</option>
+            @for(filter of timeFinalFilters | sortBy:'name'; track filter.id) {
+              <option [value]="filter.name">{{filter.name}}</option>
+          }
+          </select>
+        </div>
+        @if (errorMessage){
+          <div>
+            {{ errorMessage }}
+          </div>
+        }
+      </div>
     </div>
-    }
-</div> 
+  </div>
+  <div class="relative grid grid-cols-2 gap-1 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10 ">
+      @for(artist of filteredArtists$ | async | sortBy :'name'| sortBy :'date'; track artist.id) {
+          <div class="relative max-h-80 max-w-60 flex flex-col bg-slate-200 rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
+              <a href="">
+              </a> 
+              <img class="rounded-t-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}" />              
+              <figcaption class="mb-3 ml-3">
+                  @if(artist.name.length>20){
+                  <h5 class="text-lg leading-tight font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
+                  } @else {
+                  <h5 class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
+                  }
+                  <p class="font-normal text-gray-700 dark:text-gray-400">{{ artist.date }}</p>
+                  <p class="font-normal text-gray-700 dark:text-gray-400">{{ artist.type_evenement }} : {{ artist.heure_debut }} - {{ artist.heure_fin }} </p>
+                  @if(artist.scene){
+                  <p class="font-normal text-gray-700 dark:text-gray-400">Scène {{ artist.scene }}</p>
+                  } @else 
+                  {
+                  <p class="font-normal text-gray-700 dark:text-gray-400"> {{ artist.lieu_rencontre }}</p>
+                  }
+              </figcaption>                
+      </div>
+      }
+  </div> 
+</div>

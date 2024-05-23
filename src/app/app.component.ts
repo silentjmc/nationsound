@@ -7,11 +7,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { InformationComponent } from './information/information.component';
 import { PartnerFilterPipe } from './pipe/partner-filter.pipe';
 import { SortPipe } from './pipe/sort-by.pipe';
+import { FooterComponent } from './footer/footer.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, HeaderComponent, InformationComponent, PartnerFilterPipe],
+  imports: [RouterOutlet, CommonModule, HeaderComponent, InformationComponent, PartnerFilterPipe, FooterComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
