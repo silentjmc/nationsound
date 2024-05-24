@@ -1,3 +1,5 @@
+import { Marker } from "leaflet";
+
 export interface Artist {
     id:number,
     name:string,
@@ -33,3 +35,11 @@ export interface Artist {
     hour: string ;
   }
 
+  export interface Poi {
+    type: 'music' | 'food' | 'toilet' | 'firstAid' | 'meet';
+    name: string;
+    lat: number;
+    lon: number;
+    iconUrl: string;
+    marker?: Marker;
+  }
