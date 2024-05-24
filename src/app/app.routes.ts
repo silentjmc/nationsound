@@ -5,6 +5,7 @@ import { ProgrammationComponent } from './programmation/programmation.component'
 import { NavBarInformationsComponent } from './nav-bar-informations/nav-bar-informations.component';
 import { InformationComponent } from './information/information.component';
 import { FaqComponent } from './faq/faq.component';
+// import { MapComponent } from './map/map.component';
 
 export const routes: Routes = [
     {path:'partenaires', component:PartnerComponent},
