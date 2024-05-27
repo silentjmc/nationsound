@@ -27,10 +27,16 @@ export class MapService {
 
   public L: any;
   public leafletLoaded: Promise<any> = Promise.resolve();
-
+/*
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {
     if (isPlatformBrowser(platformId)) {
       this.leafletLoaded = import('leaflet').then(L => this.L = L);
+    }
+  }*/
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {
+    if (isPlatformBrowser(platformId)) {
+      this.leafletLoaded = import('leaflet').then(module => this.L = module.default);
     }
   }
 }

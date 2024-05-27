@@ -3,6 +3,7 @@ import { PartnerswpService } from '../services/partnerswp.service';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { PartnerFilterPipe } from '../pipe/partner-filter.pipe';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-partner',
@@ -12,6 +13,14 @@ import { PartnerFilterPipe } from '../pipe/partner-filter.pipe';
   styleUrl: './partner.component.css'
 })
 export class PartnerComponent {
+  constructor(private meta: Meta, private title: Title) {
+    title.setTitle("Partenaires du Nation Sound Festival 2024");
+
+    meta.addTags([
+      { name: 'description', content: 'Découvrez nos partenaires qui rendent le Nation Sound Festival 2024 possible. Merci à eux pour leur soutien et leur engagement à faire de cet événement un succès !' }
+    ]);
+  }
+
   http = inject(HttpClient);
   partners: any = [];
   mappedPartners: any = [];

@@ -5,16 +5,20 @@ import { ProgrammationComponent } from './programmation/programmation.component'
 import { NavBarInformationsComponent } from './nav-bar-informations/nav-bar-informations.component';
 import { InformationComponent } from './information/information.component';
 import { FaqComponent } from './faq/faq.component';
-// import { MapComponent } from './map/map.component';
+import { HomeComponent } from './home/home.component';
+import { MapComponent } from './map/map.component';
 
 export const routes: Routes = [
+    {path:'accueil', component:HomeComponent},
     {path:'partenaires', component:PartnerComponent},
-    {path:'informations', component:NavBarInformationsComponent,
+    {path:'carte', component:MapComponent},
+    {path:'informations', component:NavBarInformationsComponent,    
     children: [
         { path: 'infos', component: InformationComponent },
         { path: 'faq', component: FaqComponent }, 
         { path: '', redirectTo: 'infos', pathMatch: 'full' }
     ],
     },
-    {path:'programmation', component:ProgrammationComponent}
+    {path:'programmation', component:ProgrammationComponent},
+    {path:'', redirectTo: 'accueil', pathMatch: 'full'}
 ];

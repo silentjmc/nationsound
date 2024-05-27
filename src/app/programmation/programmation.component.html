@@ -58,9 +58,9 @@
       </div>
     </div>
   </div>
-  <div class="relative grid grid-cols-2 gap-1 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10 ">
+  <div class="relative grid grid-cols-1 gap-5 m-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10 justify-items-center">
       @for(artist of filteredArtists$ | async | sortBy :'name'| sortBy :'date'; track artist.id) {
-          <div class="relative max-h-80 max-w-60 flex flex-col bg-slate-200 rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
+          <div class="relative max-h-96 max-w-60 flex flex-col bg-slate-200 rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
               <a href="">
               </a> 
               <img class="rounded-t-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}" />              

@@ -7,6 +7,7 @@ import { Observable, BehaviorSubject, combineLatest, of, forkJoin, EMPTY, Subscr
 import { catchError, filter, map, switchMap, take } from 'rxjs/operators';
 import { SortPipe } from '../pipe/sort-by.pipe';
 import { CheckboxFilter } from '../models/checkbox-filter';
+import { Meta, Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-programmation',
@@ -17,6 +18,16 @@ import { CheckboxFilter } from '../models/checkbox-filter';
 })
 
 export class ProgrammationComponent implements OnInit {
+
+  constructor(private meta: Meta, private title: Title) {
+    title.setTitle("Programmation du Nation Sound Festival 2024 - Horaires et Artistes");
+
+    meta.addTags([
+      { name: 'description', content: 'Consultez la programmation complète du Nation Sound Festival 2024. Retrouvez les horaires et les artistes pour chaque scène : métal, rock, rap/urban, world et électro. Préparez votre agenda pour ne rien manquer !' }
+    ]);
+  }
+
+
   http = inject(HttpClient);
   artists$!: Observable<Artist[]>;
   filteredArtists$!: Observable<Artist[]>;

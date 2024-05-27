@@ -1,49 +1,31 @@
 <div class="flex flex-col md:flex-row h-[32rem] md:h-[42rem] mx-2 md:mx-20 my-5">
-    <div class="col-md-4">
-        <div class="filters-container">
-          <h2 class="fs-1">Filtres</h2>
-          <div class="filters">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="scene1" id="scene1Checkbox" />
-            <label class="form-check-label" for="scene1Checkbox">Scène 1</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="scene2" id="scene2Checkbox" />
-            <label class="form-check-label" for="scene2Checkbox">Scène 2</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="scene3" id="scene3Checkbox" />
-            <label class="form-check-label" for="scene3Checkbox">Scène 3</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="scene4" id="scene4Checkbox" />
-            <label class="form-check-label" for="scene4Checkbox">Scène 4</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="scene5" id="scene5Checkbox" />
-            <label class="form-check-label" for="scene5Checkbox">Scène 5</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="food" id="restaurationsCheckbox" (change)="setFilter('food')" />
-            <label class="form-check-label" for="restaurationsCheckbox">Restaurations</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="toilet" id="toiletCheckbox" (change)="setFilter('toilet')"/>
-            <label class="form-check-label" for="toiletCheckbox">Toilettes</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="firstAid" id="firstAidCheckbox" (change)="setFilter('firstAid')"/>
-            <label class="form-check-label" for="firstAidCheckbox">Secours</label>
-          </div>
+  <div class="col-md-4 min-w-36 mb-2 md:mr-2">
+      <div class="border border-black p-1">
+        <h2>Filtres</h2>
+        <div>
+        <div>
+          <input type="checkbox" name="toilet" id="meetCheckbox" (change)="setFilter('meet', $event)"/>
+          <label for="meetCheckbox" class="pl-2">Pavillons</label>
+        </div>
+        <div>
+          <input type="checkbox" name="food" id="restaurationsCheckbox" (change)="setFilter('food', $event)" />
+          <label for="restaurationsCheckbox" class="pl-2">Restaurations</label>
+        </div>
+        <div>
+          <input type="checkbox" name="scene1" id="sceneCheckbox" (change)="setFilter('music', $event)"vvv />
+          <label for="sceneCheckbox" class="pl-2">Scènes</label>
+        </div>
+        <div>
+          <input type="checkbox" name="firstAid" id="firstAidCheckbox" (change)="setFilter('firstAid', $event)"/>
+          <label for="firstAidCheckbox" class="pl-2">Secours</label>
+        </div>
+        <div>
+          <input type="checkbox" name="toilet" id="toiletCheckbox" (change)="setFilter('toilet', $event)"/>
+          <label for="toiletCheckbox" class="pl-2">Toilettes</label>
         </div>
       </div>
-    </div> 
-
-
-
-
-        <div id="map">
-
-        </div>
-
+    </div>
+  </div> 
+  <div id="map">
+  </div>
 </div>

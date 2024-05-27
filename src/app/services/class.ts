@@ -38,8 +38,9 @@ export interface Artist {
   export interface Poi {
     type: 'music' | 'food' | 'toilet' | 'firstAid' | 'meet';
     name: string;
+    text: string;
     lat: number;
     lon: number;
     iconUrl: string;
-    marker?: Marker;
+    marker?: Marker
   }
