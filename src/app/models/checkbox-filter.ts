@@ -1,3 +1,4 @@
+// model pour checkboxFilter
 export class CheckboxFilter {
     id: number;
     name: string;

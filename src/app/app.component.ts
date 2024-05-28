@@ -27,7 +27,6 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       initFlowbite();
-      // window.scrollTo(0, 0);
     }
   }
 }

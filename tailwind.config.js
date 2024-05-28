@@ -4,9 +4,17 @@ module.exports = {
     "./src/**/*.{html,ts}",
     "./node_modules/flowbite/**/*.js"
   ],
+  safelist: [
+    'text-blue-logo',
+    'text-emerald',
+    'blue-logo',
+    'emerald',
+    'text-green-500'
+  ],
   theme: {
     fontFamily: {
-      'title': ['lato', 'Helvetica', 'Arial', 'sans-serif']
+      'title': ['montserrat', 'Helvetica', 'Arial', 'sans-serif'],
+      'text': ['roboto', 'Helvetica', 'Arial', 'sans-serif']
     },
     colors: {
       transparent: 'transparent',
@@ -14,6 +22,7 @@ module.exports = {
       'rose-logo': '#f05166',
       'purple-logo': '#ba74ea',     
       'blue-logo': '#27b7e8', 
+      'emerald' :'#a7f3d0',
       slate : {
         100: '#f1f5f9',
         200: '#e2e8f0',

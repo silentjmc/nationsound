@@ -1,5 +1,6 @@
 import { Marker } from "leaflet";
 
+// Classe pour les artistes
 export interface Artist {
     id:number,
     name:string,
@@ -20,21 +21,25 @@ export interface Artist {
     eventName: string;
   }
   
+  //  Classe pour les lieux
   export interface Location {
     id: number;
     locationName: string;
   }
   
+  // Classe pour les dates
   export interface DateEvent {
     id: number;
     date: string ;
   }
 
+  // Classe pour les heures
   export interface TimeEvent {
     id: number;
     hour: string ;
   }
 
+  // Classe pour les POI
   export interface Poi {
     type: 'music' | 'food' | 'toilet' | 'firstAid' | 'meet';
     name: string;

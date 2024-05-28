@@ -13,7 +13,8 @@ import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
   styleUrl: './header.component.css'
 })
 export class HeaderComponent implements OnInit {
-  constructor(
+  // Injecte PLATFORM_ID pour vérifier si on est dans un navigateur ou pas
+  constructor(  
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 

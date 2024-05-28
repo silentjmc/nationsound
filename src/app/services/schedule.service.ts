@@ -1,9 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { Observable, forkJoin, map, merge, pipe } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map,} from 'rxjs';
 import { Artist } from './class';
 
-// Service for connect to API of the list of artists
+// Service pour se connecter à l'API wordpress de la liste des artistes
 const BASE_URL = 'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-json/wp/v2/programmations?page=1&per_page=100&acf_format=standard';
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ const BASE_URL = 'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-json/wp/
 export class ScheduleService  {
   private http = inject(HttpClient)
   constructor() { }
-
+  // Récupération des artistes et mappage des données
   getPosts(): Observable<Artist[]> {
     return this.http.get<Artist[]>(BASE_URL)
       .pipe(
@@ -32,5 +32,4 @@ export class ScheduleService  {
         })
       );
   }
-
 }

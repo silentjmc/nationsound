@@ -10,10 +10,9 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrl: './home.component.css'
 })
 export class HomeComponent {
-
+    // Information pour SEO
   constructor(private meta: Meta, private title: Title) {
     title.setTitle("Nation Sound Festival 2024 - Le Rendez-vous Musical de l'Été");
-
     meta.addTags([
       { name: 'description', content: 'Découvrez le festival Nation Sound 2024 ! Cinq scènes dédiées à la musique métal, rock, rap/urban, world et électro vous attendent pour trois jours de concerts inoubliables. Rejoignez-nous pour une expérience musicale unique et festive !' }
     ]);

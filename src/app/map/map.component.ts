@@ -1,6 +1,6 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { MapService } from '../services/map.service';
-import { Map, Polygon, Circle, Marker } from 'leaflet';
+import { Map, Marker } from 'leaflet';
 import { Poi } from '../services/class';
 import { Meta, Title } from '@angular/platform-browser';
 
@@ -14,10 +14,11 @@ import { Meta, Title } from '@angular/platform-browser';
 })
 
   export class MapComponent implements AfterViewInit{
-
   public message: string ='';
   private map?: Map;
   private marker?: Marker;
+
+  // Tableau des marqueurs de la carte
   private poi: Poi[] = [
     {type:'music', name:'Electric Dreams',text:'Scene Electro', lat:48.60555648201025, lon:2.3495254734559055, iconUrl:'./assets/music.png'},
     {type:'music', name:'Harmonic Haven',text:'Scene World Music', lat:48.597874037605095, lon:2.32459941171925, iconUrl:'./assets/music.png'},
@@ -38,6 +39,7 @@ import { Meta, Title } from '@angular/platform-browser';
     {type:'meet', name:'Pavillon Noir',text:'Point rencontre', lat:48.60021656171927, lon:2.326424893422101, iconUrl:'./assets/house.png'}
   ]
 
+  // Tableau pour gérer les filtres
   filter: { [key: string]: boolean } = {
     'all': true,
     'music': false,
@@ -45,30 +47,31 @@ import { Meta, Title } from '@angular/platform-browser';
     'toilet': false,
     'firstAid': false,
     'meet': false
+
   };
 
-  // constructor(private mapService: MapService) {}
-
+  // Information pour SEO
   constructor(
     private meta: Meta,
     private title: Title,
     private mapService: MapService
   ) {
     title.setTitle('Plan du Nation Sound Festival 2024 - Localisez vos Scènes et Points de Restauration');
-
     meta.addTags([
       { name: 'description', content: 'Explorez le plan du Nation Sound Festival 2024. Découvrez les emplacements des scènes, des points de restauration et des zones de détente. Préparez votre visite pour une expérience optimale !' }
     ]);
   }
+
+  // Chargement de la carte après l'initialisation du composant
   async ngAfterViewInit() {
     try {
       await this.mapService.leafletLoaded;
       if (this.mapService?.L) {
-        // Leaflet is loaded - load the map!
+        // Leaflet est chargé - load the map!
         this.message = 'Map Loaded';
         this.setupMap();
       } else {
-        // When the server renders it, it'll show this.
+        // LeaftLet n'est pas chargé - Map not loaded
         this.message = 'Map not loaded';
       }
     } catch (error) {
@@ -77,28 +80,14 @@ import { Meta, Title } from '@angular/platform-browser';
     }
   }
 
-/*
-  async ngAfterViewInit() {
-    await this.mapService.leafletLoaded;
-    if (this.mapService?.L) {
-      // Leaflet is loaded - load the map!
-      this.message = 'Map Loaded';
-
-      this.setupMap();
-    } else {
-      // When the server renders it, it'll show this.
-      this.message = 'Map not loaded';
-    }
-  }*/
-
+  // Initialisation de la carte
   private setupMap() {
-    // Create the map in the #map container
+    // Vérifier si 'mapService' et 'L' sont définis
     if (this.mapService && this.mapService.L) {
-      // this.map = this.mapService.L.map('map');
-      // Create the map in the #map container
+      // Créer la carte dans le contaiuner #map
       this.map = this.mapService.L.map('map').setView([48.6045, 2.3400], 14);
       
-      // Add a tilelayer
+      // Ajouter une couche de tuiles OpenStreetMap
       this.mapService.L.tileLayer(
         'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
         {
@@ -108,11 +97,7 @@ import { Meta, Title } from '@angular/platform-browser';
         }
       ).addTo(this.map);
 
-      let defaultIcon = this.mapService?.L?.icon({
-        iconUrl: '../assets/marker-icon.png', // Remplacez par le chemin de l'icône de marqueur par défaut de Leaflet dans votre projet
-        shadowUrl: null
-      });
-
+      // Ajouter les marqueurs à la carte
       for (const point of this.poi) {
         let icon = this.mapService?.L?.icon({
           iconUrl: point.iconUrl,
@@ -126,38 +111,34 @@ import { Meta, Title } from '@angular/platform-browser';
     }
   }
 
-setFilter(filterName: string, event: Event) {
-  // Assurez-vous que 'filterName' est une clé valide pour 'filter'
-  // if (this.filter.hasOwnProperty(filterName)) {
+  // Filtrer les points sur la carte
+  setFilter(filterName: string, event: Event) {
+    // Mettre à jour le filtre
     this.filter[filterName] = (event.target as HTMLInputElement).checked;
-  // }
 
-  // Vérifier si toutes les cases sont décochées
-  const isNoneChecked = Object.keys(this.filter)
-    .filter(key => key !== 'all')
-    .every(key => !this.filter[key]);
+    // Vérifier si des checkbox de filtres sont cochés ou non
+    const isNoneChecked = Object.keys(this.filter)
+      .filter(key => key !== 'all')
+      .every(key => !this.filter[key]);
 
-  // Mettre à jour la valeur de 'all' en fonction de si toutes les autres cases sont décochées
-  this.filter['all'] = isNoneChecked;
+    this.filter['all'] = isNoneChecked;
 
-  // Parcourir tous les points
-  for (const point of this.poi) {
-    // Assurez-vous que 'point.type' est une chaîne de caractères
-    if (typeof point.type === 'string' && this.map && point.marker) {
-      // Si toutes les cases sont décochées, ajouter tous les marqueurs
-      if (isNoneChecked) {
-        this.map.addLayer(point.marker);
-      } else {
-        // Sinon, supprimer le marqueur de la carte
-        this.map.removeLayer(point.marker);
-
-        // Si le filtre pour ce type de point est activé, ajouter le marqueur à la carte
-        if (this.filter[point.type]) {
+    // Parcourir tous les points
+    for (const point of this.poi) {
+        if (typeof point.type === 'string' && this.map && point.marker) {
+        // Si toutes les checkbox de filtres sont décochés, ajouter tous les marqueurs
+        if (isNoneChecked) {
           this.map.addLayer(point.marker);
+        } else {
+          // Sinon, supprimer le type de marqueur de la carte
+          this.map.removeLayer(point.marker);
+
+          // Si le filtre pour ce type de point est activé, ajouter le marqueur à la carte
+          if (this.filter[point.type]) {
+            this.map.addLayer(point.marker);
+          }
         }
       }
     }
   }
-}
-
 }
