@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, Inject, PLATFORM_ID } from '@angular/core';
+import { AfterViewInit, Component, Inject, PLATFORM_ID, OnDestroy  } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { initFlowbite } from 'flowbite';
 
@@ -10,8 +10,9 @@ import { initFlowbite } from 'flowbite';
   templateUrl: './faq.component.html',
   styleUrl: './faq.component.css'
 })
-export class FaqComponent implements AfterViewInit {
+export class FaqComponent implements AfterViewInit, OnDestroy  {
   // Information pour SEO
+  // Information for SEO
   constructor(private meta: Meta, private title: Title, @Inject(PLATFORM_ID) private platformId: Object) {
     title.setTitle("Nation Sound Festival 2024 - FAQ");
     meta.addTags([
@@ -20,9 +21,17 @@ export class FaqComponent implements AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    // Si le navigateur est disponible, on initialise Flowbite
+    // If the browser is available, we initialize Flowbite
     if (isPlatformBrowser(this.platformId)) {
-    // Initialisation de Flowbite
     initFlowbite();
     }
   }
+
+  ngOnDestroy(): void {
+    // Supprimer la balise meta lorsque le composant est détruit
+    // Remove the meta tag when the component is destroyed
+    this.meta.removeTag("name='description'");
+  }
 }
+

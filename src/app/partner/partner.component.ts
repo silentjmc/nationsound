@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { PartnerswpService } from '../services/partnerswp.service';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
@@ -12,8 +12,9 @@ import { Meta, Title } from '@angular/platform-browser';
   templateUrl: './partner.component.html',
   styleUrl: './partner.component.css'
 })
-export class PartnerComponent {
+export class PartnerComponent implements OnDestroy{
   // Information pour SEO
+  // Information for SEO
   constructor(private meta: Meta, private title: Title) {
     title.setTitle("Partenaires du Nation Sound Festival 2024");
     meta.addTags([
@@ -26,12 +27,20 @@ export class PartnerComponent {
   mappedPartners: any = [];
   private partnersService = inject(PartnerswpService);
 
-  // fonction pour charger les partenaires au chargement de la page  
+  // fonction pour charger les partenaires au chargement de la page 
+  // function to load partners when the page is loaded
   ngOnInit(): void {
     this.loadPartners();
   }
 
+  ngOnDestroy(): void {
+    // Supprimer la balise meta lorsque le composant est détruit
+    // Remove the meta tag when the component is destroyed
+    this.meta.removeTag("name='description'");
+  }
+
   // fonction pour charger les partenaires et mapper les données
+  // function to load partners and map the data
   loadPartners() {
     this.partnersService.getPosts().subscribe({
       next: (partners : any) => {

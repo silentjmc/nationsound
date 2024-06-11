@@ -1,4 +1,4 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { AfterViewInit, Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MapService } from '../services/map.service';
 import { Map, Marker } from 'leaflet';
 import { Poi } from '../services/class';
@@ -13,12 +13,14 @@ import { Meta, Title } from '@angular/platform-browser';
   providers:[MapService]
 })
 
-  export class MapComponent implements AfterViewInit{
+  export class MapComponent implements AfterViewInit, OnDestroy, OnInit{
+  @Input() changeTitle: boolean;
   public message: string ='';
   private map?: Map;
   private marker?: Marker;
 
   // Tableau des marqueurs de la carte
+  // Array of map markers
   private poi: Poi[] = [
     {type:'music', name:'Electric Dreams',text:'Scene Electro', lat:48.60555648201025, lon:2.3495254734559055, iconUrl:'./assets/music.png'},
     {type:'music', name:'Harmonic Haven',text:'Scene World Music', lat:48.597874037605095, lon:2.32459941171925, iconUrl:'./assets/music.png'},
@@ -40,6 +42,7 @@ import { Meta, Title } from '@angular/platform-browser';
   ]
 
   // Tableau pour gérer les filtres
+  // Array to manage filters
   filter: { [key: string]: boolean } = {
     'all': true,
     'music': false,
@@ -51,45 +54,60 @@ import { Meta, Title } from '@angular/platform-browser';
   };
 
   // Information pour SEO
+  // Information for SEO
   constructor(
     private meta: Meta,
     private title: Title,
     private mapService: MapService
   ) {
-    title.setTitle('Plan du Nation Sound Festival 2024 - Localisez vos Scènes et Points de Restauration');
     meta.addTags([
       { name: 'description', content: 'Explorez le plan du Nation Sound Festival 2024. Découvrez les emplacements des scènes, des points de restauration et des zones de détente. Préparez votre visite pour une expérience optimale !' }
     ]);
+    this.changeTitle = true;
   }
-
+  ngOnInit(): void {
+    // Mettre à jour le titre de la page si nécessaire
+    // Update the page title if necessary
+    if (this.changeTitle) {
+      this.title.setTitle('Plan du Nation Sound Festival 2024 - Localisez vos Scènes et Points de Restauration');
+    }
+  }
   // Chargement de la carte après l'initialisation du composant
+  // Load the map after the component has been initialized
   async ngAfterViewInit() {
     try {
       await this.mapService.leafletLoaded;
       if (this.mapService?.L) {
-        // Leaflet est chargé - load the map!
+        // Leaflet est chargé
+        // Load the map!
         this.message = 'Map Loaded';
         this.setupMap();
       } else {
-        // LeaftLet n'est pas chargé - Map not loaded
+        // LeaftLet n'est pas chargé
+        // Map not loaded
         this.message = 'Map not loaded';
       }
     } catch (error) {
       console.error('Error loading Leaflet', error);
       this.message = 'Error loading map';
     }
+    console.log(this.message);
   }
 
   // Initialisation de la carte
+  // Map initialization
   private setupMap() {
     // Vérifier si 'mapService' et 'L' sont définis
+    // Check if 'mapService' and 'L' are defined
     if (this.mapService && this.mapService.L) {
-      // Créer la carte dans le contaiuner #map
+      // Créer la carte dans le container #map
+      // Create the map in the #map container
       this.map = this.mapService.L.map('map').setView([48.6045, 2.3400], 14);
       
       // Ajouter une couche de tuiles OpenStreetMap
+      // Add an OpenStreetMap tile layer
       this.mapService.L.tileLayer(
-        'http://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+        'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
         {
           attribution:
             'copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>,' +
@@ -98,6 +116,7 @@ import { Meta, Title } from '@angular/platform-browser';
       ).addTo(this.map);
 
       // Ajouter les marqueurs à la carte
+      // Add markers to the map
       for (const point of this.poi) {
         let icon = this.mapService?.L?.icon({
           iconUrl: point.iconUrl,
@@ -112,11 +131,14 @@ import { Meta, Title } from '@angular/platform-browser';
   }
 
   // Filtrer les points sur la carte
+  // Filter points on the map
   setFilter(filterName: string, event: Event) {
     // Mettre à jour le filtre
+    // Update the filter
     this.filter[filterName] = (event.target as HTMLInputElement).checked;
 
     // Vérifier si des checkbox de filtres sont cochés ou non
+    // Check if any filter checkboxes are checked
     const isNoneChecked = Object.keys(this.filter)
       .filter(key => key !== 'all')
       .every(key => !this.filter[key]);
@@ -124,16 +146,20 @@ import { Meta, Title } from '@angular/platform-browser';
     this.filter['all'] = isNoneChecked;
 
     // Parcourir tous les points
+    // Loop through all points
     for (const point of this.poi) {
         if (typeof point.type === 'string' && this.map && point.marker) {
         // Si toutes les checkbox de filtres sont décochés, ajouter tous les marqueurs
+        // If all filter checkboxes are unchecked, add all markers
         if (isNoneChecked) {
           this.map.addLayer(point.marker);
         } else {
           // Sinon, supprimer le type de marqueur de la carte
+          // Otherwise, remove marker type from the map
           this.map.removeLayer(point.marker);
 
           // Si le filtre pour ce type de point est activé, ajouter le marqueur à la carte
+          // If the filter for this point type is enabled, add the marker to the map
           if (this.filter[point.type]) {
             this.map.addLayer(point.marker);
           }
@@ -141,4 +167,11 @@ import { Meta, Title } from '@angular/platform-browser';
       }
     }
   }
+
+  ngOnDestroy(): void {
+    // Supprimer la balise meta lorsque le composant est détruit
+    // Remove the meta tag when the component is destroyed
+    this.meta.removeTag("name='description'");
+  }
+
 }

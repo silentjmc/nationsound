@@ -14,6 +14,7 @@ import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   // Injecte PLATFORM_ID pour vérifier si on est dans un navigateur ou pas
+  // Inject PLATFORM_ID to check if we are in a browser or not
   constructor(  
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}

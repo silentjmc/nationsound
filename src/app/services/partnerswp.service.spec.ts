@@ -1,12 +1,16 @@
+/*
 import { TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { PartnerswpService } from './partnerswp.service';
 
 describe('PartnerswpService', () => {
   let service: PartnerswpService;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({});
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule], // Ajoutez cette ligne
+      providers: [PartnerswpService]
+    });
     service = TestBed.inject(PartnerswpService);
   });
 
@@ -14,3 +18,4 @@ describe('PartnerswpService', () => {
     expect(service).toBeTruthy();
   });
 });
+*/

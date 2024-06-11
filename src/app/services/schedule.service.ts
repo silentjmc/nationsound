@@ -4,6 +4,7 @@ import { Observable, map,} from 'rxjs';
 import { Artist } from './class';
 
 // Service pour se connecter à l'API wordpress de la liste des artistes
+// Service to connect to the wordpress API of the list of artists
 const BASE_URL = 'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-json/wp/v2/programmations?page=1&per_page=100&acf_format=standard';
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class ScheduleService  {
   private http = inject(HttpClient)
   constructor() { }
   // Récupération des artistes et mappage des données
+  // Getting artists and mapping the data
   getPosts(): Observable<Artist[]> {
     return this.http.get<Artist[]>(BASE_URL)
       .pipe(

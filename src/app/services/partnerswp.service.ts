@@ -11,6 +11,7 @@ export class PartnerswpService {
   private http = inject(HttpClient)
   constructor() { }
   // Récupération des partenaires
+  // Getting partners
   getPosts() {
     return this.http.get(BASE_URL);
   }

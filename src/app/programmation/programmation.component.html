@@ -2,9 +2,11 @@
   <h1 class="font-title text-black text-2xl sm:text-3xl md:text-5xl uppercase font-extrabold text-center pb-2">Programmation</h1>
   <div class="border border-black w-full min-w-52">
     <!-- zone de filtres -->
+    <!-- filter zone -->
     <h2 class="font-title text-black text-center text-lg uppercase">filtres</h2> 
     <div class="flex flex-col md:flex-row justify-around my-3 mx-5"> 
       <!-- filtre des lieux -->
+      <!-- location filter -->
       <div>
         <h3 class="font-title">Lieux</h3>
         @for(filter of locationFilters | sortBy:'name' ; track filter.id) {
@@ -15,6 +17,7 @@
         }
       </div>
       <!-- filtre des événements -->
+      <!-- event filter -->
       <div>
         <h3 class="font-title">Événements</h3>
         @for(filter of eventFilters | sortBy:'name' ; track filter.id) {
@@ -25,6 +28,7 @@
         }
       </div>
       <!-- Filtre des dates -->
+      <!-- date filter -->
       <div>
         <h3 class="font-title">Dates</h3>
         @for(filter of dateFilters | sortBy:'name' ; track filter.id) {
@@ -35,6 +39,7 @@
         }
       </div>
       <!-- filtre des horaires -->
+      <!-- time filter -->
       <div>
         <h3 class="font-title">Horaires</h3>
         <div class="flex gap-3 font-text">
@@ -64,14 +69,18 @@
     </div>
   </div>
   <!-- grilles des artistes  -->
+  <!-- artists grids -->
   <div class="relative grid grid-cols-1 gap-5 m-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10 justify-items-center">
       @for(artist of filteredArtists$ | async | sortBy :'name'| sortBy :'date'; track artist.id) {
           <div class="relative max-h-96 max-w-60 flex flex-col bg-slate-200 rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
             <!-- image du groupe   -->
+            <!-- group image -->
             <img class="rounded-t-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}" />   
-              <!-- informations sur l'artiste -->           
+              <!-- informations sur l'artiste -->
+              <!-- artist information -->           
               <figcaption class="mb-3 ml-3">
                   <!-- si le nom de l'artiste est trop long, on affiche une taille de police plus petite -->
+                  <!-- if the artist's name is too long, we display a smaller font size -->
                   @if(artist.name.length>20){
                   <h5 class="font-text text-lg leading-tight font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
                   } @else {

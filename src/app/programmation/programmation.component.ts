@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ScheduleService } from '../services/schedule.service';
@@ -17,8 +17,9 @@ import { Meta, Title } from '@angular/platform-browser';
   styleUrls: ['./programmation.component.css']
 })
 
-export class ProgrammationComponent implements OnInit {
+export class ProgrammationComponent implements OnInit, OnDestroy  {
   // Information pour SEO
+  // Information for SEO
   constructor(private meta: Meta, private title: Title) {
     title.setTitle("Programmation du Nation Sound Festival 2024 - Horaires et Artistes");
     meta.addTags([
@@ -43,17 +44,25 @@ export class ProgrammationComponent implements OnInit {
   public timeFiltersEnd!: string | null;
   errorMessage: string | null = null;
 
-  // Initilisation des données artistes, filtres et application des filtres  
+  // Initilisation des données artistes, filtres et application des filtres
+  // Initialization of artists, filters and application of filters  
   ngOnInit(): void {
     this.loadArtists();
     this.loadFilters();
     this.applyFilters();
   }
   // Désabonnement de l'observable lors de la destruction du composant
+  // Unsubscribe from the observable when the component is destroyed
   ngOnDestroy() {
-    this.subscription.unsubscribe(); // Unsubscribe when the component is destroyed
+    // Se désinscrire lorsque le composant est détruit
+    // Unsubscribe when the component is destroyed
+    this.subscription.unsubscribe(); 
+    // Supprimer la balise meta lorsque le composant est détruit
+    // Remove the meta tag when the component is destroyed
+    this.meta.removeTag("name='description'");
   }
   // Récupération des artistes  
+  // Get artists
   loadArtists() {
     this.artists$ = this.scheduleService.getPosts().pipe(
       catchError(error => {
@@ -63,16 +72,21 @@ export class ProgrammationComponent implements OnInit {
     );
   }
   // Récupération des filtres
+  // Get filters
   loadFilters() {
     if (!this.artists$) {
+      // Sortir de la fonction si aucune donnée n'est disponible
+      // Exit the function if no data is available
       console.error("No data available in this.artists$");
-      return; // Exit the function if no data is available
+      return; 
     }
-    // subscirption à l'observvable pour récupérer et mapper les données
+    // subscription à l'observable pour récupérer et mapper les données
+    // subscribe to the observable to get and map the data
     this.subscription = this.artists$.pipe(
       filter(artists => !!artists),
       map(artists => {
         // Récupération des lieux de rencontre
+        // Get meeting places
         const locations = [...new Set(artists.map(artist => artist.scene || artist.lieu_rencontre))];
         this.locationFilters = locations.map((location, index) => ({
           id: index,
@@ -80,6 +94,7 @@ export class ProgrammationComponent implements OnInit {
           isChecked: false
         } as CheckboxFilter));
         // Récupération des types d'événements
+        // Get event types
         const events = [...new Set(artists.map(artist => artist.type_evenement))];
         this.eventFilters = events.map((event, index) => ({
           id: index,
@@ -87,6 +102,7 @@ export class ProgrammationComponent implements OnInit {
           isChecked: false
         } as CheckboxFilter));
         // Récupération des dates
+        // Get dates
         const dates = [...new Set(artists.map(artist => artist.date))];
         this.dateFilters = dates.map((date, index) => ({
           id: index,
@@ -94,6 +110,7 @@ export class ProgrammationComponent implements OnInit {
           isChecked: false
         }));
         //  Récupération des heures de début
+        // Get start times
         const times = [...new Set(artists.map(artist => artist.heure_debut))];
         this.timeFilters = times.map((time, index) => ({
           id: index,
@@ -101,6 +118,7 @@ export class ProgrammationComponent implements OnInit {
           isChecked: false
         }));
         //  Récupération des heures de fin
+        // Get end times
         const timesEnd = [...new Set(artists.map(artist => artist.heure_fin))];
         this.timeFinalFilters = timesEnd.map((time, index) => ({
           id: index,
@@ -110,12 +128,15 @@ export class ProgrammationComponent implements OnInit {
 
       }),
       catchError(error => {
+        // Retourne un observable vide en cas d'erreur
+        // Return an empty observable in case of error
         console.error('Une erreur est survenue lors de la récupération des artistes :', error);
-        return EMPTY; // Retourne un observable vide en cas d'erreur
+        return EMPTY; 
       })
     ).subscribe();
   }
   // Vérification si l'heure de début ou de fin
+  // Check if the time is start or end
   isTimeInRange(artistTimeStart: string, startTime: string, endTime: string): boolean {
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
@@ -141,10 +162,13 @@ export class ProgrammationComponent implements OnInit {
       this.dateFiltersApplied$,
     ]).pipe(
       map(([artists, locations, events, dates]) => {
+        // Retourner tous les artistes si aucune case à cocher n'est cochée
+        // Return all artists if no checkbox is checked
         if (!locations.length && !events.length && !dates.length && !this.timeFiltersStart && !this.timeFiltersEnd) {
-          return artists; // Retourner tous les artistes si aucune case à cocher n'est cochée
+          return artists; 
         }
         // Filtrer les artistes en fonction de la localisation
+        // Filter artists based on location
         if (locations.length) {
           artists = artists.filter(artist => {
             const sceneOrLocation = artist.scene || artist.lieu_rencontre;
@@ -152,14 +176,17 @@ export class ProgrammationComponent implements OnInit {
           });
         }
         // Filtrer les artistes en fonction du type d'événement
+        // Filter artists based on event type
         if (events.length) {
           artists = artists.filter(artist => artist.type_evenement && events.includes(artist.type_evenement));
         }
         // Filtrer les artistes en fonction de la date
+        // Filter artists based on date
         if (dates.length) {
           artists = artists.filter(artist => artist.date && dates.includes(artist.date));
         }
       //  Filtrer les artistes en fonction de l'heure de début et de fin
+      //  Filter artists based on start and end time
       if (this.timeFiltersStart || this.timeFiltersEnd) {
         artists = artists.filter(artist => {
             const artistTimeStart = artist.heure_debut;
@@ -174,6 +201,7 @@ export class ProgrammationComponent implements OnInit {
     );
   }
   // Gestion du filtre de localisation
+  // Location filter management
   locationChanged(filter: string | null): void {
     const currentFilters = this.locationFiltersApplied$.getValue();
     if (filter) {
@@ -187,6 +215,7 @@ export class ProgrammationComponent implements OnInit {
     }
   }
   // Gestion du filtre d'événement
+  // Event filter management
   eventChanged(filter: string | null): void {
     const currentFilters = this.eventFiltersApplied$.getValue();
     if (filter) {
@@ -200,6 +229,7 @@ export class ProgrammationComponent implements OnInit {
     }
   }
   //  Gestion du filtre de date
+  // Date filter management
   dateChanged(filter: string | null): void {
     const currentFilters = this.dateFiltersApplied$.getValue();
     if (filter) {
@@ -214,39 +244,48 @@ export class ProgrammationComponent implements OnInit {
   }
 
   // Gestion du filtre d'heure de début
+  // Start time filter management
   onTimeStartChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const lastValueTimeStart = this.timeFiltersStart;
     this.timeFiltersStart = selectElement.value;
     // Vérifier si l'heure de début est supérieure à l'heure de fin
+    // Check if the start time is greater than the end time
     if (!this.validateTime()) {
-      this.timeFiltersStart = ''; // Réinitialiser à "indifférent" si l'heure de début est supérieure à l'heure de fin
+      this.timeFiltersStart = ''; // Réinitialiser à "indifférent" si l'heure de début est supérieure à l'heure de fin - Reset to "indifferent" if the start time is greater than the end time
       selectElement.value = this.timeFiltersStart;
       this.errorMessage = "L'heure de début ne peut pas être supérieure à l'heure de fin.";
       console.error(this.errorMessage);
     } else {
-      this.errorMessage = null;  // Réinitialiser le message d'erreur
+      // Réinitialiser le message d'erreur
+      // Reset the error message
+      this.errorMessage = null;  
     }
     this.applyFilters();
   }
 
   //  Gestion du filtre d'heure de fin
+  // End time filter management
   onTimeEndChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
     const lastValueTimeEnd = this.timeFiltersEnd;
     this.timeFiltersEnd = selectElement.value;
     //  Vérifier si l'heure de fin est inférieure à l'heure de début
+    // Check if the end time is less than the start time
     if (!this.validateTime()) {
-      this.timeFiltersEnd = ''; // Réinitialiser à "indifférent" si l'heure de fin est inférieure à l'heure de début
+      this.timeFiltersEnd = ''; // Réinitialiser à "indifférent" si l'heure de fin est inférieure à l'heure de début - Reset to "indifferent" if the end time is less than the start time
       selectElement.value = this.timeFiltersEnd;
       this.errorMessage = "L'heure de fin ne peut pas être inférieure à l'heure de début.";
       console.error(this.errorMessage);
     } else {
-      this.errorMessage = null;  // Réinitialiser le message d'erreur
+      // Réinitialiser le message d'erreur
+      // Reset the error message
+      this.errorMessage = null;  
     }
     this.applyFilters();
   }
   //  Validation qur le choix l'heure de début ne dépasse pas l'heure de fin ert inversement
+  //  Validation that the choice of start time does not exceed the end time and vice versa
   validateTime(): boolean {
     if (this.timeFiltersStart && this.timeFiltersEnd) {
       return this.timeFiltersStart <= this.timeFiltersEnd;
