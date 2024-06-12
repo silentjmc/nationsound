@@ -1,33 +1,36 @@
-<div class="flex flex-col md:flex-row h-[32rem] md:h-[42rem] mx-6 my-5 md:mx-20 md:my-10">
-  <!-- container des filtres -->
-  <!-- fliter container -->
-  <div class="col-md-4 min-w-36 mb-2 md:mr-2">
-      <div class="border border-black p-1">
-        <h2 class="font-title">Filtres</h2>
-        <div class="font-text text-sm">
-          <input type="checkbox" name="toilet" id="meetCheckbox" (change)="setFilter('meet', $event)"/>
-          <label for="meetCheckbox" class="pl-2">Pavillons</label>
-        </div>
-        <div>
-          <input type="checkbox" name="food" id="restaurationsCheckbox" (change)="setFilter('food', $event)" />
-          <label for="restaurationsCheckbox" class="pl-2">Restaurations</label>
-        </div>
-        <div>
-          <input type="checkbox" name="scene1" id="sceneCheckbox" (change)="setFilter('music', $event)"vvv />
-          <label for="sceneCheckbox" class="pl-2">Scènes</label>
-        </div>
-        <div>
-          <input type="checkbox" name="firstAid" id="firstAidCheckbox" (change)="setFilter('firstAid', $event)"/>
-          <label for="firstAidCheckbox" class="pl-2">Secours</label>
-        </div>
-        <div>
-          <input type="checkbox" name="toilet" id="toiletCheckbox" (change)="setFilter('toilet', $event)"/>
-          <label for="toiletCheckbox" class="pl-2">Toilettes</label>
-        </div>
+<section>
+  <h1 class="font-title text-black text-3xl md:text-5xl uppercase font-extrabold text-center pb-2 mx-6 my-5 md:mx-20 md:my-10">Carte</h1>
+  <div class="flex flex-col md:flex-row h-[32rem] md:h-[42rem] mx-6 my-5 md:mx-20 md:my-10">
+    <!-- container des filtres -->
+    <!-- fliter container -->
+    <div class="col-md-4 min-w-36 mb-2 md:mr-2">
+        <div class="border border-black p-1">
+          <h2 class="font-title">Filtres</h2>
+          <div class="font-text text-sm">
+            <input type="checkbox" name="toilet" id="meetCheckbox" (change)="setFilter('meet', $event)"/>
+            <label for="meetCheckbox" class="pl-2">Pavillons</label>
+          </div>
+          <div>
+            <input type="checkbox" name="food" id="restaurationsCheckbox" (change)="setFilter('food', $event)" />
+            <label for="restaurationsCheckbox" class="pl-2">Restaurations</label>
+          </div>
+          <div>
+            <input type="checkbox" name="scene1" id="sceneCheckbox" (change)="setFilter('music', $event)"vvv />
+            <label for="sceneCheckbox" class="pl-2">Scènes</label>
+          </div>
+          <div>
+            <input type="checkbox" name="firstAid" id="firstAidCheckbox" (change)="setFilter('firstAid', $event)"/>
+            <label for="firstAidCheckbox" class="pl-2">Secours</label>
+          </div>
+          <div>
+            <input type="checkbox" name="toilet" id="toiletCheckbox" (change)="setFilter('toilet', $event)"/>
+            <label for="toiletCheckbox" class="pl-2">Toilettes</label>
+          </div>
+      </div>
+    </div> 
+    <!-- container de la carte -->
+    <!-- map container -->
+    <div id="map">
     </div>
-  </div> 
-  <!-- container de la carte -->
-  <!-- map container -->
-  <div id="map">
   </div>
-</div>
+</section>

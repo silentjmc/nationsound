@@ -1,38 +1,43 @@
-<div class="mx-6 my-5 md:mx-20 md:my-10">
-    <!-- Partenaires institutionnels -->
-    <!-- Institutional partners -->
-    <p class="font-title text-black text-3xl md:text-5xl uppercase font-extrabold text-center pb-2">INSTITUTIONS</p>
-    <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
-    @for(partner of this.mappedPartners | partnerFilter:'Institution' ; track partner.id ) {
-        <div class="bg-white rounded-lg grid place-items-center h-32">
-            <a [href]=partner.urlPartenaire>
-                <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
-            </a>
+<main>
+    <div class="mx-6 my-5 md:mx-20 md:my-10">
+        <h1 class="font-title text-black text-3xl md:text-5xl uppercase font-extrabold text-center pb-2">Partenaires</h1>
+        <p class="font-title text-black text-lg md:text-xl uppercase font-semibold text-center pb-5">MERCI à tous nos partenaires, leur soutien indéfectible nous permet d’envisager l’avenir.</p>
+
+        <!-- Partenaires institutionnels -->
+        <!-- Institutional partners -->
+        <h2 class="font-title text-black text-3xl md:text-5xl uppercase font-bold text-center pb-2">INSTITUTIONS</h2>
+        <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
+        @for(partner of this.mappedPartners | partnerFilter:'Institution' ; track partner.id ) {
+            <div class="bg-white rounded-lg grid place-items-center h-32">
+                <a [href]=partner.urlPartenaire>
+                    <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
+                </a>
+            </div>
+        }
         </div>
-    }
-    </div>
-    <!-- Partenaires privés -->
-    <!-- Private partners -->
-    <p class="font-title text-black text-3xl md:text-5xl uppercase font-extrabold text-center pb-2">ENTREPRISES</p>
-    <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
-    @for(partner of this.mappedPartners | partnerFilter:'Entreprise' ; track partner.id ) {
-        <div class="bg-white rounded-lg grid place-items-center h-32">
-            <a [href]=partner.urlPartenaire>
-                <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
-            </a>
+        <!-- Partenaires privés -->
+        <!-- Private partners -->
+        <h2 class="font-title text-black text-3xl md:text-5xl uppercase font-bold text-center pb-2">ENTREPRISES</h2>
+        <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
+        @for(partner of this.mappedPartners | partnerFilter:'Entreprise' ; track partner.id ) {
+            <div class="bg-white rounded-lg grid place-items-center h-32">
+                <a [href]=partner.urlPartenaire>
+                    <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
+                </a>
+            </div>
+        }
         </div>
-    }
-    </div>
-    <!-- Partenaires médias -->
-    <!-- Media partners -->
-    <p class="font-title text-black text-3xl md:text-5xl uppercase font-extrabold text-center pb-2">MÉDIAS</p>
-    <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
-    @for(partner of this.mappedPartners | partnerFilter:'Média' ; track partner.id ) {
-        <div class="bg-white rounded-lg grid place-items-center h-32">
-            <a [href]=partner.urlPartenaire>
-                <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
-            </a>
+        <!-- Partenaires médias -->
+        <!-- Media partners -->
+        <h2 class="font-title text-black text-3xl md:text-5xl uppercase font-bold text-center pb-2">MÉDIAS</h2>
+        <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
+        @for(partner of this.mappedPartners | partnerFilter:'Média' ; track partner.id ) {
+            <div class="bg-white rounded-lg grid place-items-center h-32">
+                <a [href]=partner.urlPartenaire>
+                    <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
+                </a>
+            </div>
+        }
         </div>
-    }
     </div>
-</div>
+</main>

@@ -126,6 +126,14 @@ import { Meta, Title } from '@angular/platform-browser';
         });
         point.marker = this.mapService?.L?.marker([point.lat, point.lon], {icon: icon}).addTo(this.map);
         point.marker?.bindPopup(`<b>${point.name}</b><br>${point.text}`);
+
+        // Ajouter l'attribut 'alt' au marqueur
+        // Add 'alt' attribute to the marker
+        let altText = `${point.name}`;  // Remplacez ceci par le texte alt approprié
+        let markerIcon = (point.marker as any)._icon;
+        if (markerIcon) {
+          markerIcon.alt = altText;
+        }
       }
     }
   }

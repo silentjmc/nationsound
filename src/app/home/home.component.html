@@ -1,21 +1,23 @@
-<!-- Image bannière  -->
-<!-- banner image -->
-<div class="relative w-full">
-    <img src="./assets/banniere2.webp" alt="" class="w-full min-h-36 min-w-80 relative">
-    <!-- texte au dessus de l'image -->
-    <!-- text over the image -->
-    <div  class="absolute top-0 w-full h-full flex flex-col justify-between">
-        <div class="text-white pt-5 pl-5 font-title font-semibold text-xl md:text-2xl lg:text-3xl xl:text-4xl">
-            <p>Nation Sound</p>
-            <p>5 > 8 juillet 2024</p>
-        </div>
-        <div class="text-white text-right justify-end pb-5 pr-5 font-semibold font-title text-xl md:text-2xl  lg:text-3xl xl:text-4xl">
-            <p>Base 217</p>
-            <p>Brétigny-sur-Orge</p>
+ <main>
+    <!-- Image bannière  -->
+    <!-- banner image -->
+    <div class="relative w-full">
+        <img src="./assets/banniere2.webp" alt="" class="w-full min-h-36 min-w-80 relative">
+        <!-- texte au dessus de l'image -->
+        <!-- text over the image -->
+        <div  class="absolute top-0 w-full h-full flex flex-col justify-between">
+            <div class="text-white pt-5 pl-5 font-title font-semibold text-xl md:text-2xl lg:text-3xl xl:text-4xl">
+                <h1>Nation Sound</h1>
+                <p>5 > 8 juillet 2024</p>
+            </div>
+            <div class="text-white text-right justify-end pb-5 pr-5 font-semibold font-title text-xl md:text-2xl  lg:text-3xl xl:text-4xl">
+                <p>Base 217</p>
+                <p>Brétigny-sur-Orge</p>
+            </div>
         </div>
     </div>
-</div>
-<!-- appel du component map sans changher le titre -->
-<!-- call to the map component without changing the title -->
-<app-map [changeTitle]="false"></app-map>
+    <!-- appel du component map sans changer le titre -->
+    <!-- call to the map component without changing the title -->
+    <app-map [changeTitle]="false"></app-map>
+</main>
 
