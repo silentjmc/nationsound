@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map,} from 'rxjs';
+import { Observable, map, shareReplay,} from 'rxjs';
 import { Artist } from './class';
 
 // Service pour se connecter à l'API wordpress de la liste des artistes
@@ -10,8 +10,12 @@ const BASE_URL = 'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-json/wp/
   providedIn: 'root'
 })
 export class ScheduleService  {
-  private http = inject(HttpClient)
-  constructor() { }
+  private http = inject(HttpClient);
+  artists$!: Observable<Artist[]>; // Ajoutez cette ligne
+
+  constructor() {
+    this.artists$ = this.getPosts();
+   }
   // Récupération des artistes et mappage des données
   // Getting artists and mapping the data
   getPosts(): Observable<Artist[]> {
@@ -31,7 +35,8 @@ export class ScheduleService  {
             scene: item.acf.scene,
             lieu_rencontre: item.acf.lieu_rencontre
           }));
-        })
+        }),
+        shareReplay(1)  // Ajoutez cette ligne pour éviter de recharger les données à chaque fois
       );
   }
 }

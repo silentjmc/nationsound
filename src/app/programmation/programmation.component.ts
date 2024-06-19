@@ -8,11 +8,12 @@ import { catchError, filter, map} from 'rxjs/operators';
 import { SortPipe } from '../pipe/sort-by.pipe';
 import { CheckboxFilter } from '../models/checkbox-filter';
 import { Meta, Title } from '@angular/platform-browser';
+import { RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-programmation',
   standalone: true,
-  imports: [CommonModule, SortPipe],
+  imports: [CommonModule, SortPipe, RouterModule,RouterLink],
   templateUrl: './programmation.component.html',
   styleUrls: ['./programmation.component.css']
 })
@@ -20,7 +21,7 @@ import { Meta, Title } from '@angular/platform-browser';
 export class ProgrammationComponent implements OnInit, OnDestroy  {
   // Information pour SEO
   // Information for SEO
-  constructor(private meta: Meta, private title: Title) {
+  constructor(private meta: Meta, private title: Title, private scheduleService: ScheduleService) {
     title.setTitle("Programmation du Nation Sound Festival 2024 - Horaires et Artistes");
     meta.addTags([
       { name: 'description', content: 'Consultez la programmation complète du Nation Sound Festival 2024. Retrouvez les horaires et les artistes pour chaque scène : métal, rock, rap/urban, world et électro. Préparez votre agenda pour ne rien manquer !' }
@@ -38,7 +39,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
   private locationFiltersApplied$ = new BehaviorSubject<string[]>([]);
   private eventFiltersApplied$ = new BehaviorSubject<string[]>([]);
   private dateFiltersApplied$ = new BehaviorSubject<string[]>([]);
-  private scheduleService = inject(ScheduleService);
   private subscription: Subscription = new Subscription();
   public timeFiltersStart!: string | null;
   public timeFiltersEnd!: string | null;
@@ -47,7 +47,11 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
   // Initilisation des données artistes, filtres et application des filtres
   // Initialization of artists, filters and application of filters  
   ngOnInit(): void {
-    this.loadArtists();
+    //  Récupération des données artistes depuis le service
+    //  Get artist data from the service
+    this.artists$ = this.scheduleService.artists$;
+    //  Chargement des filtres
+    //  Load filters
     this.loadFilters();
     this.applyFilters();
   }
@@ -61,16 +65,7 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     // Remove the meta tag when the component is destroyed
     this.meta.removeTag("name='description'");
   }
-  // Récupération des artistes  
-  // Get artists
-  loadArtists() {
-    this.artists$ = this.scheduleService.getPosts().pipe(
-      catchError(error => {
-        console.error('Une erreur est survenue lors de la récupération des artistes :', error);
-        return EMPTY; // Retourne un observable vide en cas d'erreur
-      })
-    );
-  }
+
   // Récupération des filtres
   // Get filters
   loadFilters() {
