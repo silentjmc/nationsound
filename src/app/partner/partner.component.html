@@ -9,7 +9,7 @@
         <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
         @for(partner of this.mappedPartners | partnerFilter:'Institution' ; track partner.id ) {
             <div class="bg-white rounded-lg grid place-items-center h-32">
-                <a [href]=partner.urlPartenaire>
+                <a [href]=partner.urlPartenaire target="_blank">
                     <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
                 </a>
             </div>
@@ -21,7 +21,7 @@
         <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
         @for(partner of this.mappedPartners | partnerFilter:'Entreprise' ; track partner.id ) {
             <div class="bg-white rounded-lg grid place-items-center h-32">
-                <a [href]=partner.urlPartenaire>
+                <a [href]=partner.urlPartenaire target="_blank">
                     <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
                 </a>
             </div>
@@ -33,7 +33,7 @@
         <div class="grid grid-cols-2 gap-4 m-5 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 lg:gap-8 lg:mx-10">
         @for(partner of this.mappedPartners | partnerFilter:'Média' ; track partner.id ) {
             <div class="bg-white rounded-lg grid place-items-center h-32">
-                <a [href]=partner.urlPartenaire>
+                <a [href]=partner.urlPartenaire target="_blank">
                     <img class="max-h-32 w-fit" src="{{ partner.logoPartenaire }}" alt="{{ partner.title }}">
                 </a>
             </div>
