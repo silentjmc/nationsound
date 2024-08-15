@@ -1,0 +1,12 @@
+{% extends '@EasyAdmin/crud/form_theme.html.twig' %}
+
+{% block form_start %}
+    {{ parent() }}
+{% endblock %}
+
+{% block form_end %}
+    {{ parent() }}
+        <div>
+            Les champs marqués d'un astérisque (*) sont obligatoires
+        </div>
+{% endblock %}
