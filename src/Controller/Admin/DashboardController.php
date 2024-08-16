@@ -2,9 +2,16 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Artist;
+use App\Entity\Event;
+use App\Entity\EventType;
+use App\Entity\Location;
+use App\Entity\LocationType;
+use App\Entity\Partners;
 use App\Entity\PartnerType;
 use App\Entity\Role;
 use App\Entity\User;
+
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -48,5 +55,10 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-list', User::class);
         yield MenuItem::linkToCrud('Rôles', 'fas fa-list', Role::class);
         yield MenuItem::linkToCrud('Type de partenaires', 'fas fa-list', PartnerType::class);
+        yield MenuItem::linkToCrud('Partenaires', 'fas fa-list', Partners::class);
+        yield MenuItem::linkToCrud('Artistes', 'fas fa-list', Artist::class);
+        yield MenuItem::linkToCrud('Types d\'événements', 'fas fa-list', EventType::class);
+        yield MenuItem::linkToCrud('Types de lieux', 'fas fa-list', LocationType::class);
+        yield MenuItem::linkToCrud('Lieux', 'fas fa-list', Location::class);
     }
 }
