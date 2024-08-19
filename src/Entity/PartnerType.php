@@ -28,6 +28,12 @@ class PartnerType
     {
         $this->partners = new ArrayCollection();
     }
+    
+    // Méthode pour convertir l'objet en chaîne
+    public function __toString(): string
+    {
+        return $this->type ?? '';
+    }
 
     public function getId(): ?int
     {
