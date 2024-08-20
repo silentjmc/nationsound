@@ -18,8 +18,11 @@ class Location
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: 'point')]
-    private array $position = [];
+    #[ORM\Column(type: "decimal", precision: 10, scale: 8)]
+    private ?float $latitude = null;
+
+    #[ORM\Column(type: "decimal", precision: 11, scale: 8)]
+    private ?float $longitude = null;
 
     #[ORM\ManyToOne(inversedBy: 'locations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -59,7 +62,7 @@ class Location
 
         return $this;
     }
-
+/*
     public function getPosition(): array
     {
         return $this->position;
@@ -69,6 +72,28 @@ class Location
     {
         $this->position = $position;
 
+        return $this;
+    }
+*/
+    public function getLatitude(): ?float
+    {
+        return $this->latitude;
+    }
+
+    public function setLatitude(?float $latitude): self
+    {
+        $this->latitude = $latitude;
+        return $this;
+    }
+
+    public function getLongitude(): ?float
+    {
+        return $this->longitude;
+    }
+
+    public function setLongitude(?float $longitude): self
+    {
+        $this->longitude = $longitude;
         return $this;
     }
 
