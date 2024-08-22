@@ -1,15 +1,34 @@
 import { Component, OnDestroy } from '@angular/core';
 import { MapComponent } from '../map/map.component';
 import { Meta, Title } from '@angular/platform-browser';
+import { CarouselComponent } from '../carousel/carousel.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MapComponent],
+  imports: [MapComponent, CarouselComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnDestroy{
+  carouselImages: string[] = [
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
+    
+    // ... ajoutez autant d'images que vous voulez
+  ];
+
     // Information pour SEO
     // Information for SEO
   constructor(private meta: Meta, private title: Title) {
