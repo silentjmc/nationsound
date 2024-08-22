@@ -4,9 +4,10 @@
         pagination='{
             "clickable": true,
             "dynamicBullets": true,
-            "dynamicMainBullets": 3
+            "dynamicMainBullets": 2
         }' 
         autoplay="true"
+        lazy="true"
         breakpoints='{
             "320": {
                 "slidesPerView": 2,
@@ -28,13 +29,16 @@
                 "slidesPerView": 6,
                 "spaceBetween": 5
             }
-        }'>
+        }'
+
+        >
         @for(artist of artists$ | async ; track artist.id) {
         <swiper-slide>
             <a [routerLink]="['/artist', artist.id]">
                 <div class="w-full bg-white hover:bg-amber-100 border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
                     <div class="flex flex-col items-center pt-3 pb-5">
-                        <img class="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-full shadow-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}"/>
+                        <div class="swiper-lazy-preloader"></div>
+                        <img class="swiper-lazy w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-full shadow-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}" loading="lazy"/>
                         <h5 class="mb-1 text-xl font-medium text-gray-900 dark:text-white">{{artist.name}}</h5>
                         <span class="text-sm text-gray-500 dark:text-gray-400">( {{ artist.type_musique }} )</span>
                         

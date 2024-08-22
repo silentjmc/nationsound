@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA,OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA,OnInit, ViewChild, AfterViewInit, ElementRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ScheduleService } from '../services/schedule.service';
 import { Observable } from 'rxjs';
@@ -26,3 +26,4 @@ export class CarouselComponent implements OnInit  {
     this.artists$ = this.scheduleService.artists$;
   }
 }
+

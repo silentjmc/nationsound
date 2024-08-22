@@ -8,7 +8,6 @@ import { FaqComponent } from './faq/faq.component';
 import { HomeComponent } from './home/home.component';
 import { MapComponent } from './map/map.component';
 import { ArtistComponent } from './artist/artist.component';
-import { CarouselComponent } from './carousel/carousel.component';
 
 export const routes: Routes = [
     {path:'accueil', component:HomeComponent},
