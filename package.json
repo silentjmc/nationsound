@@ -25,6 +25,7 @@
     "flowbite": "^2.3.0",
     "leaflet": "^1.9.4",
     "rxjs": "~7.8.0",
+    "swiper": "^11.1.10",
     "tslib": "^2.3.0",
     "typeface-lato": "^1.1.13",
     "zone.js": "~0.14.3"
