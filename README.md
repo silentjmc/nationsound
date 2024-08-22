@@ -1,27 +1,54 @@
-# Nationsound
+# NationSound
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.6.
+NationSound est une application web développée avec Angular 17.
+Il s'agit d'un projet Front-end pour la formation EPSI : Titre Développeur web ou web mobile [37674]
 
-## Development server
+## Prérequis
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+- Node.js (version recommandée : 18.x ou supérieure)
+- Angular CLI (version 17.3.6)
 
-## Code scaffolding
+## Installation
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Clonez le dépôt et installer les dépendances
+   ```
+   git clone [URL_DU_REPO]
+   cd nationsound
+   ```
 
-## Build
+2. Installez les dépendances :
+   ```
+   npm install
+   ```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Certaines pages sont reliés à une base de données Wordpress, accessibles depûis l'API wordpress
 
-## Running unit tests
+## Scripts disponibles
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- `npm start` : Démarre le serveur de développement
+- `npm run build` : Compile l'application pour la production
+- `npm test` : Exécute les tests unitaires
+- `npm run serve:ssr:nationsound` : Démarre le serveur SSR (Server-Side Rendering)
 
-## Running end-to-end tests
+## Fonctionnalités
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- Utilisation de Leaflet pour l'intégration de cartes
+- Styles avec Tailwind CSS et Flowbite
+- Support du Server-Side Rendering (SSR)
 
-## Further help
+## Dépendances principales
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+- Angular 17.3.0
+- Express 4.18.2
+- Leaflet 1.9.4
+- RxJS 7.8.0
+
+## Dépendances de développement notables
+
+- TypeScript 5.4.2
+- Jasmine et Karma pour les tests
+- Tailwind CSS 3.4.3
+
+## Licence
+
+Ce projet est privé et n'est pas sous licence open-source.
