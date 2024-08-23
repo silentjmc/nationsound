@@ -7,22 +7,22 @@
         <div class="border border-black p-1">
           <h2 class="font-title">Filtres</h2>
           <div class="font-text text-sm">
-            <input type="checkbox" name="toilet" id="meetCheckbox" (change)="setFilter('meet', $event)"/>
+            <input type="checkbox" name="lodge" id="meetCheckbox" (change)="setFilter('meet', $event)"/>
             <label for="meetCheckbox" class="pl-2">Pavillons</label>
           </div>
-          <div>
+          <div class="font-text text-sm">
             <input type="checkbox" name="food" id="restaurationsCheckbox" (change)="setFilter('food', $event)" />
             <label for="restaurationsCheckbox" class="pl-2">Restaurations</label>
           </div>
-          <div>
-            <input type="checkbox" name="scene1" id="sceneCheckbox" (change)="setFilter('music', $event)"vvv />
+          <div class="font-text text-sm">
+            <input type="checkbox" name="scene" id="sceneCheckbox" (change)="setFilter('music', $event)" />
             <label for="sceneCheckbox" class="pl-2">Scènes</label>
           </div>
-          <div>
+          <div class="font-text text-sm">
             <input type="checkbox" name="firstAid" id="firstAidCheckbox" (change)="setFilter('firstAid', $event)"/>
             <label for="firstAidCheckbox" class="pl-2">Secours</label>
           </div>
-          <div>
+          <div class="font-text text-sm">
             <input type="checkbox" name="toilet" id="toiletCheckbox" (change)="setFilter('toilet', $event)"/>
             <label for="toiletCheckbox" class="pl-2">Toilettes</label>
           </div>
@@ -30,7 +30,7 @@
     </div> 
     <!-- container de la carte -->
     <!-- map container -->
-    <div id="map">
+    <div id="map" class="z-10">
     </div>
   </div>
 </section>

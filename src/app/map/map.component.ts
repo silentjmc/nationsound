@@ -103,6 +103,8 @@ import { Meta, Title } from '@angular/platform-browser';
       // Créer la carte dans le container #map
       // Create the map in the #map container
       this.map = this.mapService.L.map('map').setView([48.6045, 2.3400], 14);
+
+
       
       // Ajouter une couche de tuiles OpenStreetMap
       // Add an OpenStreetMap tile layer
