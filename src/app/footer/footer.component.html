@@ -39,8 +39,8 @@
     <div class="basis-2/5">
         <p class="text-sm font-title font-medium uppercase">Politique</p>
             <ul class="text-sm font-text not-italic">
-                <li>Mentions légales</li>
-                <li>Politique de confidentialité</li>
+                <li><button type="button" data-drawer-target="drawer-mentions" data-drawer-show="drawer-mentions" aria-controls="drawer-mentions" data-drawer-placement="bottom">Mentions légales</button></li>
+                <li><button type="button" data-drawer-target="drawer-confidentialite" data-drawer-show="drawer-confidentialite" aria-controls="drawer-confidentialite" data-drawer-placement="bottom">Politique de confidentialité</button></li>
             </ul>
             <!-- sous-section réseaux sociaux -->
             <!-- social networks subsection -->
@@ -61,4 +61,7 @@
                 </ul>
             </div>
     </div>
-</footer>   
+</footer>
+<app-mentions></app-mentions>
+<app-confidentialite></app-confidentialite>
+
