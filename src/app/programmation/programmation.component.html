@@ -73,32 +73,38 @@
     <!-- artists grids -->
     <div class="relative grid grid-cols-1 gap-5 m-1 mt-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 justify-items-center">
         @for(artist of filteredArtists$ | async | sortBy :'name'| sortBy :'date'; track artist.id) {
-          <a [routerLink]="['/artist', artist.id]">
-            <div class="relative  flex flex-col bg-white rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
-              <!-- image du groupe   -->
-              <!-- group image -->
-              <img class="rounded-t-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}" />   
-                <!-- informations sur l'artiste -->
-                <!-- artist information -->           
-                <figcaption class="mb-3 mx-3 w-full">
-                  <p class="font-text font-semibold text-gray-700 dark:text-gray-400">{{ artist.type_evenement }}</p>
-                  <!-- si le nom de l'artiste est trop long, on affiche une taille de police plus petite -->
-                  <!-- if the artist's name is too long, we display a smaller font size -->
-                  @if(artist.name.length>20){
-                    <h5 class="font-text text-lg leading-tight font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
-                  } @else {
-                    <h5 class="font-text text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
-                  }
-                  <p class="font-text font-normal text-gray-700 dark:text-gray-400">{{ artist.date }}</p>
-                  <p class="font-text font-normal text-gray-700 dark:text-gray-400">{{ artist.heure_debut }} - {{ artist.heure_fin }} </p>
-                  @if(artist.scene){
-                    <p class="font-text font-normal text-gray-700 dark:text-gray-400">Scène {{ artist.scene }}</p>
-                  } @else {
-                    <p class="font-text font-normal text-gray-700 dark:text-gray-400"> {{ artist.lieu_rencontre }}</p>
-                  }
-                </figcaption>                
-              </div>
-          </a>
+          @defer (on viewport) {
+            <a [routerLink]="['/artist', artist.id]">
+              <div class="relative  flex flex-col bg-white rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
+                <!-- image du groupe   -->
+                <!-- group image -->
+                <img class="rounded-t-lg" src="{{ artist.photo_artiste }}" alt="{{ artist.name }}" />   
+                  <!-- informations sur l'artiste -->
+                  <!-- artist information -->           
+                  <figcaption class="mb-3 mx-3 w-full">
+                    <p class="font-text font-semibold text-gray-700 dark:text-gray-400">{{ artist.type_evenement }}</p>
+                    <!-- si le nom de l'artiste est trop long, on affiche une taille de police plus petite -->
+                    <!-- if the artist's name is too long, we display a smaller font size -->
+                    @if(artist.name.length>20){
+                      <h5 class="font-text text-lg leading-tight font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
+                    } @else {
+                      <h5 class="font-text text-xl font-bold tracking-tight text-gray-900 dark:text-white">{{ artist.name }}</h5>
+                    }
+                    <p class="font-text font-normal text-gray-700 dark:text-gray-400">{{ artist.date }}</p>
+                    <p class="font-text font-normal text-gray-700 dark:text-gray-400">{{ artist.heure_debut }} - {{ artist.heure_fin }} </p>
+                    @if(artist.scene){
+                      <p class="font-text font-normal text-gray-700 dark:text-gray-400">Scène {{ artist.scene }}</p>
+                    } @else {
+                      <p class="font-text font-normal text-gray-700 dark:text-gray-400"> {{ artist.lieu_rencontre }}</p>
+                    }
+                  </figcaption>                
+                </div>
+            </a>
+          } 
+          @placeholder {
+            <div class="w-full h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+          }
+
         }
     </div> 
   </div>
