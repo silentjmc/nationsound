@@ -17,6 +17,7 @@ class UserCrudController extends AbstractCrudController
     {
         return User::class;
     }
+    
 
     public function configureCrud(Crud $crud): Crud
     {
@@ -30,7 +31,8 @@ class UserCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-    return $actions
+
+        return $actions
         ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
             return $action->setLabel('Ajouter un utilisateur');
         })
@@ -39,8 +41,7 @@ class UserCrudController extends AbstractCrudController
         })
         ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
             return $action->setLabel('Créer et ajouter un autre utilisateur');
-        })
-    ;
+        });
     }
 
     public function configureFields(string $pageName): iterable
@@ -83,6 +84,7 @@ class UserCrudController extends AbstractCrudController
                 ->setLabel('Rôle')
                 ->setRequired(true)
                 ->setFormTypeOption('placeholder', 'Choisissez le rôle de l\'utilisateur')
+                ->setFormTypeOption('choice_label', 'role')
 
 
         ];
