@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\PartnerType;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -11,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PartnerTypeCrudController extends AbstractCrudController
 {
+
     public static function getEntityFqcn(): string
     {
         return PartnerType::class;
@@ -40,7 +42,6 @@ class PartnerTypeCrudController extends AbstractCrudController
         ->setPageTitle('new', 'Ajouter un nouveau type de partenaire')
             ;
     }
-
     
     public function configureFields(string $pageName): iterable
     {

@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Partners;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
@@ -10,9 +11,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+
 
 class PartnersCrudController extends AbstractCrudController
 {
+    private $entityManager;
+    private $adminUrlGenerator;
+    // injection du service EntityManagerInterface
+    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator)
+    {
+        $this->entityManager = $entityManager;
+        $this->adminUrlGenerator = $adminUrlGenerator;
+    }
+
     public static function getEntityFqcn(): string
     {
         return Partners::class;
@@ -29,8 +41,7 @@ class PartnersCrudController extends AbstractCrudController
         })
         ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
             return $action->setLabel('Créer et ajouter un autre partenaire');
-        })
-    ;
+        });
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -64,15 +75,19 @@ class PartnersCrudController extends AbstractCrudController
             ]),
         ];
         // Affiche le type de partenaire dans la liste des partenaires sans lien cliquable sinon dans la page de création garde le choix de liste
-        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
+        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {             
             $fields[] = TextField::new('type.type', 'Type de partenaire');
         } else {
+            $addTypeUrl = $this->adminUrlGenerator
+            ->setController(PartnerTypeCrudController::class)
+            ->setAction(Action::NEW)
+            ->generateUrl();
             $fields[] = AssociationField::new('type')
                 ->setLabel('Type de partenaire')
                 ->setFormTypeOption('placeholder', 'Choisissez le type de partenaire')
-                ->setFormTypeOption('choice_label', 'type');
+                ->setFormTypeOption('choice_label', 'type')
+                ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl));
         }
-
         return $fields;
     
     }
