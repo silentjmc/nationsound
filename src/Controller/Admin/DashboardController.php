@@ -62,8 +62,8 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Type de partenaires', 'fas fa-list', PartnerType::class);
         yield MenuItem::linkToCrud('Partenaires', 'fas fa-list', Partners::class);
         yield MenuItem::linkToCrud('Artistes', 'fas fa-list', Artist::class);
-        yield MenuItem::linkToCrud('Types d\'événements', 'fas fa-list', EventType::class);
-        yield MenuItem::linkToCrud('Évvénements', 'fas fa-list', Event::class);
+        yield MenuItem::linkToCrud('Types d\'évènements', 'fas fa-list', EventType::class);
+        yield MenuItem::linkToCrud('Évènements', 'fas fa-list', Event::class);
         yield MenuItem::linkToCrud('Types de lieux', 'fas fa-list', LocationType::class);
         yield MenuItem::linkToCrud('Lieux', 'fas fa-list', Location::class);
     }
