@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\RoleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: RoleRepository::class)]
 class Role
@@ -15,6 +17,13 @@ class Role
 
     #[ORM\Column(length: 255)]
     private ?string $role = null;
+
+
+    // Méthode pour convertir l'objet en chaîne
+    public function __toString(): string
+    {
+        return $this->role ?? '';
+    }
 
     public function getId(): ?int
     {
