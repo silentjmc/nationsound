@@ -57,17 +57,17 @@ class PartnersCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [
-            TextField::new('name')->setLabel('Nom')
+            TextField::new('name','Nom du partenaire')
             ->setFormTypeOptions([
                 'attr' => [
                     'placeholder' => 'Saisissez le nom du partenaire'
                 ],
             ]),
-            ImageField::new('image')->setLabel('Logo')
+            ImageField::new('image','Télécharger le logo du partenaire')
                 ->setUploadDir('public/uploads/partners')
                 ->setBasePath('uploads/partners')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]'),
-            TextField::new('url')->setLabel('URL')
+            TextField::new('url','URL du site du partenaire')
             ->setFormTypeOptions([
                 'attr' => [
                     'placeholder' => 'Saisissez l\'URL du partenaire'
@@ -82,8 +82,7 @@ class PartnersCrudController extends AbstractCrudController
             ->setController(PartnerTypeCrudController::class)
             ->setAction(Action::NEW)
             ->generateUrl();
-            $fields[] = AssociationField::new('type')
-                ->setLabel('Type de partenaire')
+            $fields[] = AssociationField::new('type', 'Type de partenaire')
                 ->setFormTypeOption('placeholder', 'Choisissez le type de partenaire')
                 ->setFormTypeOption('choice_label', 'type')
                 ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl));
