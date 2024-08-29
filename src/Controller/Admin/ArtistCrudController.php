@@ -46,18 +46,18 @@ class ArtistCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            TextField::new('name')->setLabel('Nom')
+            TextField::new('name','Nom de l\'artiste ou du groupe')
             ->setFormTypeOptions([
                 'attr' => [
                     'placeholder' => 'Saisissez le nom de l\'artiste'
                 ],
             ]),
-            TextEditorField::new('description'),
-            ImageField::new('image')->setLabel('Image')
+            TextEditorField::new('description','Description de l\'artiste ou du groupe'),
+            ImageField::new('image','Image de l\'artiste ou du groupe pour la programmation')
                 ->setUploadDir('public/uploads/artists')
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]'),
-            TextField::new('type_music')->setLabel('Type de musique')
+            TextField::new('type_music','Type de musique')
                 ->setFormTypeOptions([
                     'attr' => [
                         'placeholder' => 'Saisissez le type de musique de l\'artiste'
