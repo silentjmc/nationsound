@@ -58,17 +58,7 @@ class EventCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Évènements')
             ->setPageTitle('new', 'Ajouter un nouvel évènement');
         }
-        /*
-        public function configureFields(string $pageName): iterable
-        {
-            return [
-                TimeField::new('heure_debut','Heure de début'),
-                AssociationField::new('type'),
-                AssociationField::new('artist','Artiste'),
-                AssociationField::new('location', 'Lieu'),
-    
-            ];
-        }*/
+
         public function configureFields(string $pageName): iterable
     {
         $fields = [
