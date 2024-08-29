@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LocationRepository::class)]
@@ -23,6 +24,9 @@ class Location
 
     #[ORM\Column(type: "decimal", precision: 11, scale: 8)]
     private ?float $longitude = null;
+
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'locations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -62,19 +66,7 @@ class Location
 
         return $this;
     }
-/*
-    public function getPosition(): array
-    {
-        return $this->position;
-    }
 
-    public function setPosition(array $position): static
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-*/
     public function getLatitude(): ?float
     {
         return $this->latitude;
@@ -105,6 +97,18 @@ class Location
     public function setType(?LocationType $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
