@@ -19,10 +19,10 @@ class Location
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    #[ORM\Column(type: "decimal", precision: 10, scale: 8)]
+    #[ORM\Column(type: "decimal", precision: 19, scale: 14)]
     private ?float $latitude = null;
 
-    #[ORM\Column(type: "decimal", precision: 11, scale: 8)]
+    #[ORM\Column(type: "decimal", precision: 19, scale: 14)]
     private ?float $longitude = null;
 
     #[ORM\Column(type: Types::TEXT)]

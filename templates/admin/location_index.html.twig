@@ -1,0 +1,66 @@
+{% extends '@!EasyAdmin/crud/index.html.twig' %}
+
+{% block form_start %}
+    {{ parent() }}
+{% endblock %}
+
+{% block main %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+    <div id="map" style="width: 800px; height: 400px;"></div>
+
+    <script type="text/javascript">
+        var mymap = L.map('map').setView([48.6045, 2.3400], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(mymap);
+        {% for entity in entities %}
+            {% set location = entity.instance %}
+            {% set iconUrl = asset('uploads/locations/' ~ location.type.symbol) %}
+
+             var icon = L.icon({
+                iconUrl: '{{ iconUrl|escape('js') }}',
+                iconSize: [24,24],
+                iconAnchor: [12, 24],
+                popupAnchor: [0,-22]
+            });
+
+             var popupContent = `
+                <strong>{{ location.name|escape('js') }}</strong><br>
+                {{ location.type.type|escape('js') }}<br>
+                <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                    <a href="{{ ea_url()
+                    .setController('App\\Controller\\Admin\\LocationCrudController')
+                    .setAction('edit')
+                    .setEntityId(location.id)
+                    |escape('js') }}">Modifier</a>
+                    <span style="margin: 0 5px;">-<br></span>
+                    <form action="{{ ea_url()
+                    .setController('App\\Controller\\Admin\\LocationCrudController')
+                    .setAction('delete')
+                    .setEntityId(location.id)
+                    |escape('js') }}"
+                    method="post"">
+                        <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
+                        <button type="submit" style="padding:0;background:none;border:none;color:red;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?');">
+                        Supprimer
+                    </button>
+                    </form>
+                </div>
+                `;
+
+
+            L.marker([{{ location.latitude }}, {{ location.longitude }}], {icon: icon})
+             .addTo(mymap)
+            .bindPopup(popupContent);
+
+
+
+        {% endfor %}
+
+    </script>
+
+{% endblock %}

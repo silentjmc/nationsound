@@ -9,10 +9,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\Response;
 
 class LocationCrudController extends AbstractCrudController
 {
@@ -32,9 +34,8 @@ class LocationCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {        
-        //rennomage des actions possibles dans le formulaire
+        //renommage des actions possibles dans le formulaire
         return parent::configureActions($actions)
-        //return $actions
            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Ajouter un lieu');
             })
@@ -49,7 +50,8 @@ class LocationCrudController extends AbstractCrudController
         public function configureCrud(Crud $crud): Crud
         {
             return $crud
-            ->addFormTheme('admin/form.html.twig')
+            ->setFormThemes(['admin/location_form.html.twig'])
+            ->overrideTemplate('crud/index', 'admin/location_index.html.twig')
             ->setEntityLabelInSingular('Lieu')
             ->setEntityLabelInPlural('Lieux')
             ->setPageTitle('new', 'Ajouter un nouveau lieu');
@@ -57,27 +59,56 @@ class LocationCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        $fields = [
-            TextField::new('name','Nom du lieu'),
-            TextEditorField::new('description','Courte description du lieu pour afficher sur la carte interactive'),
-            NumberField::new('latitude','Latitude'),
-            NumberField::new('longitude','Longitude'),
-        ];
-        // Affiche le type de partenaire dans la liste des partenaires sans lien cliquable sinon dans la page de création garde le choix de liste
-        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {             
-            $fields[] = TextField::new('type.type', 'Type de lieu');
+
+
+        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
+            $fields = [
+                TextField::new('name','Nom du lieu'),
+                TextareaField::new('description','Description'),
+                TextField::new('type.type', 'Type de lieu'),
+                NumberField::new('latitude','Latitude')
+                    ->setNumDecimals(14),
+                NumberField::new('longitude','Longitude')
+                    ->setNumDecimals(14),
+            ];
         } else {
-            $addTypeUrl = $this->adminUrlGenerator
+         $addTypeUrl = $this->adminUrlGenerator
             ->setController(LocationTypeCrudController::class)
             ->setAction(Action::NEW)
             ->generateUrl();
-            $fields[] = AssociationField::new('type', 'Type de lieu')
+         $fields = [
+            TextField::new('name','Nom du lieu'),
+            TextareaField::new('description','Courte description du lieu pour afficher sur la carte interactive'),
+            AssociationField::new('type', 'Type de lieu')
                 ->setFormTypeOption('placeholder', 'Choisissez le type de lieu')
                 ->setFormTypeOption('choice_label', 'type')
-                ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl));
-        }
+                ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl)),
+            FormField::addPanel('Position géographique')
+                ->setHelp('Vous pouvez indiquer la position en cliquant directement sur la carte ci-dessous.'),
+            FormField::addRow(),
+            NumberField::new('latitude','Latitude')
+            ->setNumDecimals(14)
+            ->setFormTypeOption('attr', ['readonly' => true])
+            ->setColumns(3),
+            NumberField::new('longitude','Longitude')
+            ->setNumDecimals(14)
+            ->setFormTypeOption('attr', ['readonly' => true])
+            ->setColumns(3),
+        ];
+    }
         return $fields;
     
+    }
+
+    public function getLocations(): Response
+    {
+        $repository = $this->entityManager->getRepository(Location::class);
+        $locations = $repository->findAll();
+
+        return $this->render('admin/location_index.html.twig', [
+            'locations' => $locations,
+        ]);
+
     }
 
 }
