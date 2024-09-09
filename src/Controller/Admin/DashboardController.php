@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Artist;
 use App\Entity\Event;
+use App\Entity\EventDate;
 use App\Entity\EventType;
 use App\Entity\Location;
 use App\Entity\LocationType;
@@ -66,5 +67,6 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Évènements', 'fas fa-list', Event::class);
         yield MenuItem::linkToCrud('Types de lieux', 'fas fa-list', LocationType::class);
         yield MenuItem::linkToCrud('Lieux', 'fas fa-list', Location::class);
+        yield MenuItem::linkToCrud('Dates du festival','fas fa-list', EventDate::class);
     }
 }
