@@ -8,7 +8,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class ArtistCrudController extends AbstractCrudController
@@ -29,8 +29,7 @@ class ArtistCrudController extends AbstractCrudController
         })
         ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
             return $action->setLabel('Créer et ajouter un autre artiste');
-        })
-    ;
+        });
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -39,31 +38,40 @@ class ArtistCrudController extends AbstractCrudController
         ->addFormTheme('admin/form.html.twig')
         ->setEntityLabelInSingular('Artiste')
         ->setEntityLabelInPlural('Artistes')
-        ->setPageTitle('new', 'Ajouter un nouvel artiste')
-            ;
+        ->setPageTitle('new', 'Ajouter un nouvel artiste');
     }
-    
+
     public function configureFields(string $pageName): iterable
     {
-        return [
-            TextField::new('name','Nom de l\'artiste ou du groupe')
+        $fields = [
+            TextField::new('name', 'Nom de l\'artiste ou du groupe')
+                ->setFormTypeOptions([
+                    'attr' => [
+                        'placeholder' => 'Saisissez le nom de l\'artiste'
+                    ],
+                ]),
+            TextareaField::new('description', 'Description' . ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
             ->setFormTypeOptions([
                 'attr' => [
-                    'placeholder' => 'Saisissez le nom de l\'artiste'
+                    'placeholder' => 'Saisissez la description de l\'artiste'
                 ],
             ]),
-            TextEditorField::new('description','Description de l\'artiste ou du groupe'),
-            ImageField::new('image','Image de l\'artiste ou du groupe pour la programmation')
-                ->setUploadDir('public/uploads/artists')
-                ->setBasePath('uploads/artists')
-                ->setUploadedFileNamePattern('[name][randomhash].[extension]'),
-            TextField::new('type_music','Type de musique')
+            ImageField::new('image','Image'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
+                    ->setUploadDir('public/uploads/artists')
+                    ->setBasePath('uploads/artists')
+                    ->setUploadedFileNamePattern('[name][randomhash].[extension]')
+                    ->setFormTypeOptions([
+                        'required' => ($pageName === Crud::PAGE_NEW ? true : false),
+                    ]),
+            TextField::new('type_music', 'Type de musique')
                 ->setFormTypeOptions([
                     'attr' => [
                         'placeholder' => 'Saisissez le type de musique de l\'artiste'
                     ],
                 ]),
         ];
+
+        return $fields;
     }
     
 }
