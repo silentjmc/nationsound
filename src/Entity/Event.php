@@ -17,6 +17,9 @@ class Event
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     private ?\DateTimeInterface $heure_debut = null;
 
+    #[ORM\Column(type: Types::TIME_MUTABLE)]
+    private ?\DateTimeInterface $heure_fin = null;
+
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?EventType $type = null;
@@ -28,6 +31,10 @@ class Event
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
+
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?EventDate $date = null;
 
     public function getId(): ?int
     {
@@ -50,6 +57,18 @@ class Event
     public function setHeureDebut(\DateTimeInterface $heure_debut): static
     {
         $this->heure_debut = $heure_debut;
+
+        return $this;
+    }
+
+    public function getHeureFin(): ?\DateTimeInterface
+    {
+        return $this->heure_fin;
+    }
+
+    public function setHeureFin(\DateTimeInterface $heure_fin): static
+    {
+        $this->heure_fin = $heure_fin;
 
         return $this;
     }
@@ -86,6 +105,18 @@ class Event
     public function setLocation(?Location $location): static
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    public function getDate(): ?EventDate
+    {
+        return $this->date;
+    }
+
+    public function setDate(?EventDate $date): static
+    {
+        $this->date = $date;
 
         return $this;
     }

@@ -14,8 +14,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use App\Entity\Artist;
+use App\Entity\EventDate;
 use App\Entity\EventType;
 use App\Entity\Location;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
 
 class EventCrudController extends AbstractCrudController
 {
@@ -61,11 +64,11 @@ class EventCrudController extends AbstractCrudController
 
         public function configureFields(string $pageName): iterable
     {
-        $fields = [
-            TimeField::new('heure_debut','Heure de début'),
-        ];
+        $fields = [];
+        $eventDateActive = $this->entityManager->getRepository(EventDate::class);
+       
         // Affiche le type d'évènement dans la liste des partenaires sans lien cliquable sinon dans la page de création garde le choix de liste
-        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {             
+        if ($pageName === Crud::PAGE_INDEX) {             
             $fields[] = AssociationField::new('type', 'Type d\'évènement' );
         } else {
             $addTypeUrl = $this->adminUrlGenerator
@@ -78,7 +81,7 @@ class EventCrudController extends AbstractCrudController
                 ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl));
         }
 
-        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {             
+        if ($pageName === Crud::PAGE_INDEX) {             
             $fields[] = AssociationField::new('artist','Artiste');
         } else {
             $addTypeUrl = $this->adminUrlGenerator
@@ -87,23 +90,34 @@ class EventCrudController extends AbstractCrudController
             ->generateUrl();
             $fields[] = AssociationField::new('artist','Artiste')
                 ->setFormTypeOption('placeholder', 'Choisissez l\'artiste')
-                ->setFormTypeOption('choice_label', 'artist')
-                ->setHelp(sprintf('Pas d\'artsite adapté ? <a href="%s">Créer un nouvel artiste</a>', $addTypeUrl));
+                ->setFormTypeOption('choice_label', 'name')
+                ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addTypeUrl));
         }
 
-        
-        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {             
-            $fields[] = AssociationField::new('location', 'Lieu');
+        if ($pageName === Crud::PAGE_INDEX) {             
+            $fields[] = AssociationField::new('location','Lieu');
         } else {
             $addTypeUrl = $this->adminUrlGenerator
             ->setController(LocationCrudController::class)
             ->setAction(Action::NEW)
             ->generateUrl();
-            $fields[] = AssociationField::new('location', 'Lieu')
-                ->setFormTypeOption('placeholder', 'Choisissez le lien')
-                ->setFormTypeOption('choice_label', 'artist')
+            $fields[] = AssociationField::new('location','Lieu')
+                ->setFormTypeOption('placeholder', 'Choisissez le lieu')
+                ->setFormTypeOption('choice_label', 'name')
                 ->setHelp(sprintf('Pas de lieu adapté ? <a href="%s">Créer un nouveau lieu</a>', $addTypeUrl));
         }
+        
+        $fields[] = AssociationField::new('date','Date de l\'évènement')
+        ->setFormTypeOption('choice_label', 'datetostring')
+        ->setQueryBuilder(function ($queryBuilder) {
+            return $queryBuilder->andWhere('entity.actif = :active')
+                                ->setParameter('active', true);
+        });
+
+        $fields[] = TimeField::new('heure_debut','Heure de début')
+            ->setColumns(2);
+        $fields[] = TimeField::new('heure_fin','Heure de fin')
+            ->setColumns(2);
 
         return $fields;
     
