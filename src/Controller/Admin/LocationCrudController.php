@@ -60,16 +60,15 @@ class LocationCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
 
-
-        if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
-            $fields = [
-                TextField::new('name','Nom du lieu'),
-                TextareaField::new('description','Description'),
-                TextField::new('type.type', 'Type de lieu'),
-                NumberField::new('latitude','Latitude')
-                    ->setNumDecimals(14),
-                NumberField::new('longitude','Longitude')
-                    ->setNumDecimals(14),
+    if ($pageName === Crud::PAGE_INDEX) {
+        $fields = [
+            TextField::new('name','Nom du lieu'),
+            TextareaField::new('description','Description'),
+            TextField::new('type.type', 'Type de lieu'),
+            NumberField::new('latitude','Latitude')
+                ->setNumDecimals(14),
+            NumberField::new('longitude','Longitude')
+                ->setNumDecimals(14),
             ];
         } else {
          $addTypeUrl = $this->adminUrlGenerator
