@@ -69,7 +69,7 @@ class EventCrudController extends AbstractCrudController
         $fields = [];
 
         if ($pageName === Crud::PAGE_INDEX) { 
-            $fields=[AssociationField::new('type', 'Type d\'évènement' ),
+            $fields=[TextField::new('type', 'Type d\'évènement' ),
             TextField::new('artist.name','Artiste'),
             textField::new('location.name','Lieu'),
             textField::new('date','Date de l\'évènement'),
