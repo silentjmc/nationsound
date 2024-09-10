@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Controller\Admin\Trait\UrlGeneratorTrait;
 use App\Entity\Event;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -19,13 +20,14 @@ use App\Entity\EventType;
 use App\Entity\Location;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class EventCrudController extends AbstractCrudController
 {
-
-    private $entityManager;
-    private $adminUrlGenerator;
-    // injection du service EntityManagerInterface
+    use UrlGeneratorTrait;
+    private EntityManagerInterface $entityManager;
+    private AdminUrlGenerator $adminUrlGenerator;
+    // injection de service
     public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->entityManager = $entityManager;
@@ -41,7 +43,6 @@ class EventCrudController extends AbstractCrudController
     {        
         //rennomage des actions possibles dans le formulaire
         return parent::configureActions($actions)
-        //return $actions
            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Ajouter un évènement');
             })
@@ -56,68 +57,55 @@ class EventCrudController extends AbstractCrudController
         public function configureCrud(Crud $crud): Crud
         {
             return $crud
-            ->addFormTheme('admin/form.html.twig')
-            ->setEntityLabelInSingular('Évènement')
-            ->setEntityLabelInPlural('Évènements')
-            ->setPageTitle('new', 'Ajouter un nouvel évènement');
+                ->addFormTheme('admin/form.html.twig')
+                ->setEntityLabelInSingular('Évènement')
+                ->setEntityLabelInPlural('Évènements')
+                ->setPageTitle('new', 'Ajouter un nouvel évènement')
+                ->setTimeFormat('short');
         }
 
         public function configureFields(string $pageName): iterable
     {
         $fields = [];
-        $eventDateActive = $this->entityManager->getRepository(EventDate::class);
-       
-        // Affiche le type d'évènement dans la liste des partenaires sans lien cliquable sinon dans la page de création garde le choix de liste
-        if ($pageName === Crud::PAGE_INDEX) {             
-            $fields[] = AssociationField::new('type', 'Type d\'évènement' );
-        } else {
-            $addTypeUrl = $this->adminUrlGenerator
-            ->setController(EventTypeCrudController::class)
-            ->setAction(Action::NEW)
-            ->generateUrl();
-            $fields[] = AssociationField::new('type', 'Type d\'évènement' )
-                ->setFormTypeOption('placeholder', 'Choisissez le type d\'évènement')
-                ->setFormTypeOption('choice_label', 'type')
-                ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl));
-        }
 
-        if ($pageName === Crud::PAGE_INDEX) {             
-            $fields[] = AssociationField::new('artist','Artiste');
+        if ($pageName === Crud::PAGE_INDEX) { 
+            $fields=[AssociationField::new('type', 'Type d\'évènement' ),
+            TextField::new('artist.name','Artiste'),
+            textField::new('location.name','Lieu'),
+            textField::new('date','Date de l\'évènement'),
+            TimeField::new('heure_debut','Heure de début'),
+            TimeField::new('heure_fin','Heure de fin')];
         } else {
-            $addTypeUrl = $this->adminUrlGenerator
-            ->setController(ArtistCrudController::class)
-            ->setAction(Action::NEW)
-            ->generateUrl();
-            $fields[] = AssociationField::new('artist','Artiste')
-                ->setFormTypeOption('placeholder', 'Choisissez l\'artiste')
-                ->setFormTypeOption('choice_label', 'name')
-                ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addTypeUrl));
-        }
+            $addTypeEventUrl = $this->addUrl(EventTypeCrudController::class);
+            $addArtistUrl = $this->addUrl(ArtistCrudController::class);
+            $addLocationUrl = $this->addUrl(LocationCrudController::class);
 
-        if ($pageName === Crud::PAGE_INDEX) {             
-            $fields[] = AssociationField::new('location','Lieu');
-        } else {
-            $addTypeUrl = $this->adminUrlGenerator
-            ->setController(LocationCrudController::class)
-            ->setAction(Action::NEW)
-            ->generateUrl();
-            $fields[] = AssociationField::new('location','Lieu')
-                ->setFormTypeOption('placeholder', 'Choisissez le lieu')
-                ->setFormTypeOption('choice_label', 'name')
-                ->setHelp(sprintf('Pas de lieu adapté ? <a href="%s">Créer un nouveau lieu</a>', $addTypeUrl));
-        }
-        
-        $fields[] = AssociationField::new('date','Date de l\'évènement')
-        ->setFormTypeOption('choice_label', 'datetostring')
-        ->setQueryBuilder(function ($queryBuilder) {
-            return $queryBuilder->andWhere('entity.actif = :active')
-                                ->setParameter('active', true);
-        });
+            $fields=[
+                AssociationField::new('type', 'Type d\'évènement' )
+                    ->setFormTypeOption('placeholder', 'Choisissez le type d\'évènement')
+                    ->setFormTypeOption('choice_label', 'type')
+                    ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeEventUrl)),
+                AssociationField::new('artist','Artiste')
+                    ->setFormTypeOption('placeholder', 'Choisissez l\'artiste')
+                    ->setFormTypeOption('choice_label', 'name')
+                    ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addArtistUrl)),
+                AssociationField::new('location','Lieu')
+                    ->setFormTypeOption('placeholder', 'Choisissez le lieu')
+                    ->setFormTypeOption('choice_label', 'name')
+                    ->setHelp(sprintf('Pas de lieu adapté ? <a href="%s">Créer un nouveau lieu</a>', $addLocationUrl)),
+                AssociationField::new('date','Date de l\'évènement')
+                    ->setFormTypeOption('choice_label', 'datetostring')
+                    ->setQueryBuilder(function ($queryBuilder) {
+                        return $queryBuilder->andWhere('entity.actif = :active')
+                                            ->setParameter('active', true);
+                        }),
+                TimeField::new('heure_debut','Heure de début')
+                    ->setColumns(2),        
+                TimeField::new('heure_fin','Heure de fin')
+                    ->setColumns(2)
+            ];
 
-        $fields[] = TimeField::new('heure_debut','Heure de début')
-            ->setColumns(2);
-        $fields[] = TimeField::new('heure_fin','Heure de fin')
-            ->setColumns(2);
+        }
 
         return $fields;
     
