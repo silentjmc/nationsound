@@ -28,7 +28,27 @@ class LocationTypeCrudController extends AbstractCrudController
         })
         ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
             return $action->setLabel('Créer et ajouter un autre type de lieu');
-        });
+        })
+        ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+            return $action
+                ->setIcon('fa fa-edit')
+                ->setLabel(false)
+                ->setHtmlAttributes([
+                    'title' => 'Modifier cet élément',
+                ])
+                ->displayAsLink()
+                ->addCssClass('btn btn-sm btn-light');
+        })
+        ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+            return $action
+                ->setIcon('fa fa-trash')
+                ->setLabel(false)
+                ->setHtmlAttributes([
+                    'title' => 'Supprimer cet élément',
+                ])
+                ->displayAsLink()
+                ->addCssClass('btn btn-sm btn-light');
+        });    
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -38,7 +58,7 @@ class LocationTypeCrudController extends AbstractCrudController
         ->setEntityLabelInSingular('Type de lieu')
         ->setEntityLabelInPlural('Type de lieux')
         ->setPageTitle('new', 'Ajouter un nouveau type de lieu')
-            ;
+        ->showEntityActionsInlined();
     }
 
     public function configureFields(string $pageName): iterable

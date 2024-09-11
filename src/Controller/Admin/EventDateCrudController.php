@@ -30,7 +30,27 @@ class EventDateCrudController extends AbstractCrudController
             })
             ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
                 return $action->setLabel('Créer et ajouter une autre date');
-            });
+            })
+            ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+                return $action
+                    ->setIcon('fa fa-edit')
+                    ->setLabel(false)
+                    ->setHtmlAttributes([
+                        'title' => 'Modifier cet élément',
+                    ])
+                    ->displayAsLink()
+                    ->addCssClass('btn btn-sm btn-light');
+            })
+            ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+                return $action
+                    ->setIcon('fa fa-trash')
+                    ->setLabel(false)
+                    ->setHtmlAttributes([
+                        'title' => 'Supprimer cet élément',
+                    ])
+                    ->displayAsLink()
+                    ->addCssClass('btn btn-sm btn-light');
+            });  
         }
 
     public function configureCrud(Crud $crud): Crud
@@ -39,7 +59,8 @@ class EventDateCrudController extends AbstractCrudController
         ->addFormTheme('admin/form.html.twig')
         ->setEntityLabelInSingular('Date')
         ->setEntityLabelInPlural('Dates')
-        ->setPageTitle('new', 'Ajouter une nouvelle date');
+        ->setPageTitle('new', 'Ajouter une nouvelle date')
+        ->showEntityActionsInlined();
     }
 
     

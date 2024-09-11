@@ -44,7 +44,27 @@ class LocationCrudController extends AbstractCrudController
             })
             ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
                 return $action->setLabel('Créer et ajouter un autre lieu');
-            });
+            })
+            ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+                return $action
+                    ->setIcon('fa fa-edit')
+                    ->setLabel(false)
+                    ->setHtmlAttributes([
+                        'title' => 'Modifier cet élément',
+                    ])
+                    ->displayAsLink()
+                    ->addCssClass('btn btn-sm btn-light');
+            })
+            ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+                return $action
+                    ->setIcon('fa fa-trash')
+                    ->setLabel(false)
+                    ->setHtmlAttributes([
+                        'title' => 'Supprimer cet élément',
+                    ])
+                    ->displayAsLink()
+                    ->addCssClass('btn btn-sm btn-light');
+            });    
         }
 
         public function configureCrud(Crud $crud): Crud
@@ -54,7 +74,8 @@ class LocationCrudController extends AbstractCrudController
             ->overrideTemplate('crud/index', 'admin/location_index.html.twig')
             ->setEntityLabelInSingular('Lieu')
             ->setEntityLabelInPlural('Lieux')
-            ->setPageTitle('new', 'Ajouter un nouveau lieu');
+            ->setPageTitle('new', 'Ajouter un nouveau lieu')
+            ->showEntityActionsInlined();
         }
 
     public function configureFields(string $pageName): iterable

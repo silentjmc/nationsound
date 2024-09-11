@@ -29,6 +29,26 @@ class ArtistCrudController extends AbstractCrudController
         })
         ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
             return $action->setLabel('Créer et ajouter un autre artiste');
+        })
+        ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+            return $action
+                ->setIcon('fa fa-edit')
+                ->setLabel(false)
+                ->setHtmlAttributes([
+                    'title' => 'Modifier cet élément',
+                ])
+                ->displayAsLink()
+                ->addCssClass('btn btn-sm btn-light');
+        })
+        ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+            return $action
+                ->setIcon('fa fa-trash')
+                ->setLabel(false)
+                ->setHtmlAttributes([
+                    'title' => 'Supprimer cet élément',
+                ])
+                ->displayAsLink()
+                ->addCssClass('btn btn-sm btn-light');
         });
     }
 
@@ -38,7 +58,8 @@ class ArtistCrudController extends AbstractCrudController
         ->addFormTheme('admin/form.html.twig')
         ->setEntityLabelInSingular('Artiste')
         ->setEntityLabelInPlural('Artistes')
-        ->setPageTitle('new', 'Ajouter un nouvel artiste');
+        ->setPageTitle('new', 'Ajouter un nouvel artiste')
+        ->showEntityActionsInlined();
     }
 
     public function configureFields(string $pageName): iterable
