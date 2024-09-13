@@ -6,6 +6,8 @@ use App\Entity\Artist;
 use App\Entity\Event;
 use App\Entity\EventDate;
 use App\Entity\EventType;
+use App\Entity\Faq;
+use App\Entity\Information;
 use App\Entity\Location;
 use App\Entity\LocationType;
 use App\Entity\Partners;
@@ -53,7 +55,7 @@ class DashboardController extends AbstractDashboardController
     {
         return Dashboard::new()
             //->setTitle('Live Event Backend');
-            ->setTitle('<img src="assets/logo_ns_rect_txtw.png" class="img-fluid d-block mx-auto" style="max-width:100px; width:100%;"><h2 class="mt-3 fw-bold text-white text-center">MonBlog</h2>')
+            ->setTitle('<img src="assets/logo_ns_rect_txtw.png" class="img-fluid d-block mx-auto" style="max-width:100px; width:100%;">')
             ->renderContentMaximized()
             ;
     }
@@ -82,9 +84,13 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Types d\'évènements', 'fas fa-icons', EventType::class);
         yield MenuItem::linkToCrud('Évènements', 'fas fa-clock', Event::class);
 
-        yield MenuItem::section('LIeux','fa fa-map');
+        yield MenuItem::section('Lieux','fa fa-map');
         yield MenuItem::linkToCrud('Types de lieux', 'fas fa-mountain-city', LocationType::class);
         yield MenuItem::linkToCrud('Lieux', 'fas fa-location-dot', Location::class);
+
+        yield MenuItem::section('Informations générales','fa fa-lightbulb');
+        yield MenuItem::linkToCrud('Informations','fa fa-info-circle', Information::class);
+        yield MenuItem::linkToCrud('FAQ','fa fa-question-circle', Faq::class);
 
 
 
