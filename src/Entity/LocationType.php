@@ -20,6 +20,12 @@ class LocationType
 
     #[ORM\Column(length: 255)]
     private ?string $symbol = null;
+    // test
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $dateModification = null;
+    // test
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $userModification = null;
 
     /**
      * @var Collection<int, Location>
@@ -74,6 +80,28 @@ class LocationType
         return $this;
     }
 
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(?\DateTimeInterface $dateModification): self
+    {
+        $this->dateModification = $dateModification;
+        return $this;
+    }
+
+    public function getUserModification(): ?string
+    {
+        return $this->userModification;
+    }
+
+    public function setUserModification(?string $userModification): self
+    {
+        $this->userModification = $userModification;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Location>
      */
@@ -104,3 +132,4 @@ class LocationType
         return $this;
     }
 }
+

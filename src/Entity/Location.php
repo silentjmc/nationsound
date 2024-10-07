@@ -38,6 +38,12 @@ class Location
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'location')]
     private Collection $events;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateModification = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $userModification = null;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -139,6 +145,30 @@ class Location
                 $event->setLocation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(\DateTimeInterface $dateModification): static
+    {
+        $this->dateModification = $dateModification;
+
+        return $this;
+    }
+
+    public function getUserModification(): ?string
+    {
+        return $this->userModification;
+    }
+
+    public function setUserModification(string $userModification): static
+    {
+        $this->userModification = $userModification;
 
         return $this;
     }
