@@ -44,8 +44,11 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS }
 
     role_hierarchy:
-        ROLE_ADMIN: [Administrateur]
-        ROLE_MANAGER: [ROLE_USER]
+        ROLE_ADMIN:       # Rôle supérieur
+            - ROLE_MANAGER # Rôle subordonné
+            - ROLE_USER    # Rôle subordonné
+        ROLE_MANAGER:     # Rôle supérieur
+            - ROLE_USER    # Rôle subordonné
 
 when@test:
     security:
