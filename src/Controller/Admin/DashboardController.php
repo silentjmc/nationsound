@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Artist;
+use App\Entity\EntityHistory;
 use App\Entity\Event;
 use App\Entity\EventDate;
 use App\Entity\EventType;
@@ -59,12 +60,12 @@ class DashboardController extends AbstractDashboardController
             ->renderContentMaximized()
             ;
     }
-
+/*
     public function configureAssets(): Assets
     {
         return Assets::new()->addCssFile('assets/styles/admin.css');
     }
-
+*/
     public function configureMenuItems(): iterable
     {
         yield MenuItem::section('Administration', 'fa fa-home');
@@ -91,6 +92,9 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::section('Informations générales','fa fa-lightbulb');
         yield MenuItem::linkToCrud('Informations','fa fa-info-circle', Information::class);
         yield MenuItem::linkToCrud('FAQ','fa fa-question-circle', Faq::class);
+
+        yield MenuItem::section('HISTORIQUE','fa fa-lightbulb');
+        yield MenuItem::linkToCrud('historiques','fa fa-info-circle', EntityHistory::class);
 
 
 
