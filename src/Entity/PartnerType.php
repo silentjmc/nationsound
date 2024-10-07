@@ -5,7 +5,9 @@ namespace App\Entity;
 use App\Repository\PartnerTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PartnerTypeRepository::class)]
 class PartnerType
@@ -13,9 +15,11 @@ class PartnerType
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getPartners"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getPartners"])]
     private ?string $type = null;
 
     /**
@@ -23,6 +27,12 @@ class PartnerType
      */
     #[ORM\OneToMany(targetEntity: Partners::class, mappedBy: 'type')]
     private Collection $partners;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateModification = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $userModification = null;
 
     public function __construct()
     {
@@ -85,6 +95,30 @@ class PartnerType
                 $partner->setType(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(\DateTimeInterface $dateModification): static
+    {
+        $this->dateModification = $dateModification;
+
+        return $this;
+    }
+
+    public function getUserModification(): ?string
+    {
+        return $this->userModification;
+    }
+
+    public function setUserModification(string $userModification): static
+    {
+        $this->userModification = $userModification;
 
         return $this;
     }
