@@ -116,8 +116,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
-
         return $this;
+    }
+
+    public function getFullName()
+    {
+        return $this->getFirstName().' '.$this->getLastName();
     }
 
     public function getRole(): ?Role
@@ -131,7 +135,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
 }
 
 
