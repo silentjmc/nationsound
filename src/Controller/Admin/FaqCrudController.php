@@ -68,7 +68,7 @@ class FaqCrudController extends AbstractCrudController
         return [
             TextField::new('question'),
             TextEditorField::new('reponse'),
-            BooleanField::new('publier')
+            BooleanField::new('publish')
         ];
     }
     
