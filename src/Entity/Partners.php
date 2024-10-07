@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PartnersRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PartnersRepository::class)]
 class Partners
@@ -11,20 +13,35 @@ class Partners
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getPartners"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getPartners"])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getPartners"])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getPartners"])]
     private ?string $url = null;
 
     #[ORM\ManyToOne(inversedBy: 'partners')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["getPartners"])]
     private ?PartnerType $type = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateModification = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $userModification = null;
+
+    #[ORM\Column]
+    #[Groups(["getPartners"])]
+    private ?bool $publish = null;
 
     public function getId(): ?int
     {
@@ -82,6 +99,42 @@ class Partners
     public function setType(?PartnerType $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(\DateTimeInterface $dateModification): static
+    {
+        $this->dateModification = $dateModification;
+
+        return $this;
+    }
+
+    public function getUserModification(): ?string
+    {
+        return $this->userModification;
+    }
+
+    public function setUserModification(string $userModification): static
+    {
+        $this->userModification = $userModification;
+
+        return $this;
+    }
+
+    public function isPublish(): ?bool
+    {
+        return $this->publish;
+    }
+
+    public function setPublish(bool $publish): static
+    {
+        $this->publish = $publish;
 
         return $this;
     }
