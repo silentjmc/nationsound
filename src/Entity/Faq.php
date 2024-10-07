@@ -21,7 +21,7 @@ class Faq
     private ?string $reponse = null;
 
     #[ORM\Column]
-    private ?bool $publier = null;
+    private ?bool $publish = null;
 
     public function getId(): ?int
     {
@@ -59,14 +59,14 @@ class Faq
         return $this;
     }
 
-    public function isPublier(): ?bool
+    public function isPublish(): ?bool
     {
-        return $this->publier;
+        return $this->publish;
     }
 
-    public function setPublier(bool $publier): static
+    public function setPublish(bool $publish): static
     {
-        $this->publier = $publier;
+        $this->publish = $publish;
 
         return $this;
     }
