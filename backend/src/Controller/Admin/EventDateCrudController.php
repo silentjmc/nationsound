@@ -70,9 +70,9 @@ class EventDateCrudController extends AbstractCrudController
     {
         return [
             DateField::new('date'),
-            BooleanField::new('actif'),
+            BooleanField::new('publish','Publié'),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
+            TextField::new('userModification', 'Faite par')->onlyOnIndex(),
         ];
     }
     

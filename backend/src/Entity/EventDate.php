@@ -22,7 +22,7 @@ class EventDate
     private ?\DateTimeInterface $date = null;
 
     #[ORM\Column]
-    private ?bool $actif = null;
+    private ?bool $publish = null;
 
     /**
      * @var Collection<int, Event>
@@ -75,14 +75,14 @@ class EventDate
         return $this;
     }
 
-    public function isActif(): ?bool
+    public function isPublish(): ?bool
     {
-        return $this->actif;
+        return $this->publish;
     }
 
-    public function setActif(bool $actif): static
+    public function setPublish(bool $publish): static
     {
-        $this->actif = $actif;
+        $this->publish = $publish;
 
         return $this;
     }
