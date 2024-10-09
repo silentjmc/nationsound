@@ -47,12 +47,13 @@ export class PartnerComponent implements OnDestroy{
         this.mappedPartners = partners.map((partner: any) => {
           return {
             id: partner.id,
-            title: partner.title.rendered,
-            urlPartenaire: partner.acf.url_partenaire,
-            logoPartenaire: partner.acf.logo_partenaire,
-            typePartenaire:partner.acf.type_partenaire
+            title: partner.name,
+            urlPartenaire: partner.url,
+            logoPartenaire: `http://127.0.0.1:8000/uploads/partners/${partner.image}`,
+            typePartenaire:partner.type.type,
           }
-        });  
+        });
+        console.log('Partners', this.mappedPartners);  
       },
       error : (error) => console.log('Error fetching partners', error)
     });
