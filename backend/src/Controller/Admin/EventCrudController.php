@@ -20,6 +20,8 @@ use App\Entity\EventType;
 use App\Entity\Location;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class EventCrudController extends AbstractCrudController
@@ -96,6 +98,9 @@ class EventCrudController extends AbstractCrudController
             textField::new('date','Date de l\'évènement'),
             TimeField::new('heure_debut','Heure de début'),
             TimeField::new('heure_fin','Heure de fin')];
+            BooleanField::new('publish','Publié');
+            DateTimeField::new('dateModification', 'Dernière modification');
+            TextField::new('userModification', 'Utilisateur');
         } else {
             $addTypeEventUrl = $this->addUrl(EventTypeCrudController::class);
             $addArtistUrl = $this->addUrl(ArtistCrudController::class);
@@ -123,7 +128,8 @@ class EventCrudController extends AbstractCrudController
                 TimeField::new('heure_debut','Heure de début')
                     ->setColumns(2),        
                 TimeField::new('heure_fin','Heure de fin')
-                    ->setColumns(2)
+                    ->setColumns(2),
+                BooleanField::new('publish','Publié')
             ];
 
         }

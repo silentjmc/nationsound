@@ -26,6 +26,15 @@ class Information
     #[ORM\Column(length: 255)]
     private ?string $type = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateModification = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $userModifiation = null;
+
+    #[ORM\Column]
+    private ?bool $publish = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -82,6 +91,42 @@ class Information
     public function setType(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(\DateTimeInterface $dateModification): static
+    {
+        $this->dateModification = $dateModification;
+
+        return $this;
+    }
+
+    public function getUserModifiation(): ?string
+    {
+        return $this->userModifiation;
+    }
+
+    public function setUserModifiation(string $userModifiation): static
+    {
+        $this->userModifiation = $userModifiation;
+
+        return $this;
+    }
+
+    public function isPublish(): ?bool
+    {
+        return $this->publish;
+    }
+
+    public function setPublish(bool $publish): static
+    {
+        $this->publish = $publish;
 
         return $this;
     }

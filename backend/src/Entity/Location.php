@@ -44,6 +44,9 @@ class Location
     #[ORM\Column(length: 255)]
     private ?string $userModification = null;
 
+    #[ORM\Column]
+    private ?bool $publish = null;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
@@ -169,6 +172,18 @@ class Location
     public function setUserModification(string $userModification): static
     {
         $this->userModification = $userModification;
+
+        return $this;
+    }
+
+    public function isPublish(): ?bool
+    {
+        return $this->publish;
+    }
+
+    public function setPublish(bool $publish): static
+    {
+        $this->publish = $publish;
 
         return $this;
     }

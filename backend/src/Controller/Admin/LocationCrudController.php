@@ -9,6 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
@@ -114,6 +116,9 @@ class LocationCrudController extends AbstractCrudController
             ->setNumDecimals(14)
             ->setFormTypeOption('attr', ['readonly' => true])
             ->setColumns(3),
+            BooleanField::new('publish','Publié'),
+            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
     }
         return $fields;

@@ -9,6 +9,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class EventDateCrudController extends AbstractCrudController
 {
@@ -69,6 +71,8 @@ class EventDateCrudController extends AbstractCrudController
         return [
             DateField::new('date'),
             BooleanField::new('actif'),
+            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
     }
     

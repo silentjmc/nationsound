@@ -23,6 +23,12 @@ class Faq
     #[ORM\Column]
     private ?bool $publish = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateModification = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $userModification = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -67,6 +73,30 @@ class Faq
     public function setPublish(bool $publish): static
     {
         $this->publish = $publish;
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(\DateTimeInterface $dateModification): static
+    {
+        $this->dateModification = $dateModification;
+
+        return $this;
+    }
+
+    public function getUserModification(): ?string
+    {
+        return $this->userModification;
+    }
+
+    public function setUserModification(string $userModification): static
+    {
+        $this->userModification = $userModification;
 
         return $this;
     }

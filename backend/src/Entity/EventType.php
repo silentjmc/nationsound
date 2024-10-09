@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\EventTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: EventTypeRepository::class)]
@@ -23,6 +24,12 @@ class EventType
      */
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'type')]
     private Collection $events;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateModification = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $userModification = null;
 
     public function __construct()
     {
@@ -85,6 +92,30 @@ class EventType
                 $event->setType(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(\DateTimeInterface $dateModification): static
+    {
+        $this->dateModification = $dateModification;
+
+        return $this;
+    }
+
+    public function getUserModification(): ?string
+    {
+        return $this->userModification;
+    }
+
+    public function setUserModification(string $userModification): static
+    {
+        $this->userModification = $userModification;
 
         return $this;
     }

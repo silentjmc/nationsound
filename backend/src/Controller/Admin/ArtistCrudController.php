@@ -7,6 +7,8 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -90,6 +92,9 @@ class ArtistCrudController extends AbstractCrudController
                         'placeholder' => 'Saisissez le type de musique de l\'artiste'
                     ],
                 ]),
+            BooleanField::new('publish','Publié'),
+            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
 
         return $fields;

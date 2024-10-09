@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 
 class PartnerTypeCrudController extends AbstractCrudController
@@ -65,6 +66,8 @@ class PartnerTypeCrudController extends AbstractCrudController
     {
         return [
             TextField::new('type'),
+            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
     }
     

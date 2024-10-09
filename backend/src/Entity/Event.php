@@ -36,6 +36,15 @@ class Event
     #[ORM\JoinColumn(nullable: false)]
     private ?EventDate $date = null;
 
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $dateModification = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $userModification = null;
+
+    #[ORM\Column]
+    private ?bool $publish = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -117,6 +126,42 @@ class Event
     public function setDate(?EventDate $date): static
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getDateModification(): ?\DateTimeInterface
+    {
+        return $this->dateModification;
+    }
+
+    public function setDateModification(\DateTimeInterface $dateModification): static
+    {
+        $this->dateModification = $dateModification;
+
+        return $this;
+    }
+
+    public function getUserModification(): ?string
+    {
+        return $this->userModification;
+    }
+
+    public function setUserModification(string $userModification): static
+    {
+        $this->userModification = $userModification;
+
+        return $this;
+    }
+
+    public function isPublish(): ?bool
+    {
+        return $this->publish;
+    }
+
+    public function setPublish(bool $publish): static
+    {
+        $this->publish = $publish;
 
         return $this;
     }
