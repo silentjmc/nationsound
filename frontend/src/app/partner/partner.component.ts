@@ -24,6 +24,8 @@ export class PartnerComponent implements OnDestroy{
 
   http = inject(HttpClient);
   partners: any = [];
+  //uniquePartnerTypes: { id: number, nom: string }[] = [];
+  uniquePartnerTypes: string[] = [];
   mappedPartners: any = [];
   private partnersService = inject(PartnerswpService);
 
@@ -53,7 +55,11 @@ export class PartnerComponent implements OnDestroy{
             typePartenaire:partner.type.type,
           }
         });
-        console.log('Partners', this.mappedPartners);  
+        //const uniqueTypesSet = new Set<string>(this.mappedPartners.map((partner: any) => partner.typePartenaire));
+        //this.uniquePartnerTypes = Array.from(uniqueTypesSet).map((type, index) => ({ id: index + 1, nom: type }));
+        this.uniquePartnerTypes = [...new Set(this.mappedPartners.map((partner: any) => partner.typePartenaire))] as string[];
+        console.log('Partners', this.mappedPartners);
+        console.log('Partner Types', this.uniquePartnerTypes);  
       },
       error : (error) => console.log('Error fetching partners', error)
     });
