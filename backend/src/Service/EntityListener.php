@@ -12,7 +12,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 #[AsDoctrineListener(event: Events::prePersist)]
 #[AsDoctrineListener(event: Events::preUpdate)]
 #[AsDoctrineListener(event: Events::preRemove)]
-class EntityHistoryListener
+class EntityListener
 {
     private Security $security;
     private EntityManagerInterface $entityManager;
