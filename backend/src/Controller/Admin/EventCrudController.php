@@ -122,7 +122,7 @@ class EventCrudController extends AbstractCrudController
                 AssociationField::new('date','Date de l\'évènement')
                     ->setFormTypeOption('choice_label', 'datetostring')
                     ->setQueryBuilder(function ($queryBuilder) {
-                        return $queryBuilder->andWhere('entity.actif = :active')
+                        return $queryBuilder->andWhere('entity.publish = :active')
                                             ->setParameter('active', true);
                         }),
                 TimeField::new('heure_debut','Heure de début')
