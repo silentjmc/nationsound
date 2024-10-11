@@ -92,6 +92,9 @@ class LocationCrudController extends AbstractCrudController
                 ->setNumDecimals(14),
             NumberField::new('longitude','Longitude')
                 ->setNumDecimals(14),
+            BooleanField::new('publish','Publié'),
+            DateTimeField::new('dateModification', 'Dernière modification'),
+            TextField::new('userModification', 'Utilisateur'),
             ];
         } else {
          $addTypeUrl = $this->adminUrlGenerator
@@ -106,7 +109,7 @@ class LocationCrudController extends AbstractCrudController
                 ->setFormTypeOption('choice_label', 'type')
                 ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl)),
             FormField::addPanel('Position géographique')
-                ->setHelp('Vous pouvez indiquer la position en cliquant directement sur la carte ci-dessous.'),
+                ->setHelp('Vous devez indiquer la position en cliquant directement sur la carte ci-dessous. <br>Le marqueur du lieu actuel avec un marqueur bleu. Vous pouvez déplacer le marqueur bleu en cliquant sur la carte pour ajuster la position du lieu. <br>Les autres marqueurs de lieux déjà enregistrés sont fixes.'),
             FormField::addRow(),
             NumberField::new('latitude','Latitude')
             ->setNumDecimals(14)
@@ -117,23 +120,9 @@ class LocationCrudController extends AbstractCrudController
             ->setFormTypeOption('attr', ['readonly' => true])
             ->setColumns(3),
             BooleanField::new('publish','Publié'),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
     }
         return $fields;
     
     }
-
-    public function getLocations(): Response
-    {
-        $repository = $this->entityManager->getRepository(Location::class);
-        $locations = $repository->findAll();
-
-        return $this->render('admin/location_index.html.twig', [
-            'locations' => $locations,
-        ]);
-
-    }
-
 }
