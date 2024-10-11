@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { PartnerFilterPipe } from '../pipe/partner-filter.pipe';
 import { Meta, Title } from '@angular/platform-browser';
+import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-partner',
@@ -51,7 +52,7 @@ export class PartnerComponent implements OnDestroy{
             id: partner.id,
             title: partner.name,
             urlPartenaire: partner.url,
-            logoPartenaire: `http://127.0.0.1:8000/uploads/partners/${partner.image}`,
+            logoPartenaire: `${environment.apiUrl}/uploads/partners/${partner.image}`,
             typePartenaire:partner.type.type,
           }
         });
