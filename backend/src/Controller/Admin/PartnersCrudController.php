@@ -114,7 +114,7 @@ class PartnersCrudController extends AbstractCrudController
                 ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl));
         }
         $fields[] = BooleanField::new('publish','Publié');
-        $fields[]= DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex();
+        $fields[] = DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex();
         $fields[] = TextField::new('userModification', 'Utilisateur')->onlyOnIndex();
         
 
