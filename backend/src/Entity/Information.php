@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\InformationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: InformationRepository::class)]
 class Information
@@ -12,27 +13,33 @@ class Information
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getInformation"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getInformation"])]
     private ?string $titre = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["getInformation"])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getInformation"])]
     private ?string $picto = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getInformation"])]
     private ?string $type = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateModification = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModifiation = null;
+    private ?string $userModification = null;
 
     #[ORM\Column]
+    #[Groups(["getInformation"])]
     private ?bool $publish = null;
 
     public function getId(): ?int
@@ -107,14 +114,14 @@ class Information
         return $this;
     }
 
-    public function getUserModifiation(): ?string
+    public function getUserModification(): ?string
     {
-        return $this->userModifiation;
+        return $this->userModification;
     }
 
-    public function setUserModifiation(string $userModifiation): static
+    public function setUserModification(string $userModification): static
     {
-        $this->userModifiation = $userModifiation;
+        $this->userModification = $userModification;
 
         return $this;
     }
