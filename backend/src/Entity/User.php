@@ -62,7 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
 
