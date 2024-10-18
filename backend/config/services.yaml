@@ -23,13 +23,8 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Service\EntityHistoryListener:
+    App\Service\EntityListener:
         tags:
             - { name: 'doctrine.event_listener', event: 'prePersist' }
             - { name: 'doctrine.event_listener', event: 'preUpdate' }
             - { name: 'doctrine.event_listener', event: 'preRemove' }
-
-    App\Service\LocationEventSubscriber:
-        tags:
-            - { name: 'kernel.event_subscriber' }
-
