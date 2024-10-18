@@ -19,7 +19,7 @@
         }).addTo(mymap);
         {% for entity in entities %}
             {% set location = entity.instance %}
-            {% set iconUrl = asset('uploads/locations/' ~ location.type.symbol) %}
+            {% set iconUrl = asset('uploads/locations/' ~ location.typeLocation.symbol) %}
 
              var icon = L.icon({
                 iconUrl: '{{ iconUrl|escape('js') }}',
@@ -29,17 +29,17 @@
             });
 
              var popupContent = `
-                <strong>{{ location.name|escape('js') }}</strong><br>
-                {{ location.type.type|escape('js') }}<br>
+                <strong>{{ location.locationName|escape('js') }}</strong><br>
+                {{ location.typeLocation.type|escape('js') }}<br>
                 <div style="display: flex; justify-content: space-between; margin-top: 10px;">
                     <a href="{{ ea_url()
-                    .setController('App\\Controller\\Admin\\LocationCrudController')
+                    .setController('App\\Controller\\Admin\\EventLocationCrudController')
                     .setAction('edit')
                     .setEntityId(location.id)
                     |escape('js') }}">Modifier</a>
                     <span style="margin: 0 5px;">-<br></span>
                     <form action="{{ ea_url()
-                    .setController('App\\Controller\\Admin\\LocationCrudController')
+                    .setController('App\\Controller\\Admin\\EventLocationCrudController')
                     .setAction('delete')
                     .setEntityId(location.id)
                     |escape('js') }}"

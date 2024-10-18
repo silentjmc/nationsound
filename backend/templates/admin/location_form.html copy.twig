@@ -20,8 +20,8 @@
         }).addTo(mymap);
         // ajout des marqueurs
         var currentMarker = null;
-        var latitudeField = document.getElementById('EventLocation_latitude');
-        var longitudeField = document.getElementById('EventLocation_longitude');
+        var latitudeField = document.getElementById('Location_latitude');
+        var longitudeField = document.getElementById('Location_longitude');
         var initialLatLng = null;
         if (latitudeField && longitudeField && latitudeField.value && longitudeField.value) {
         initialLatLng = [(latitudeField.value.replace(',', '.')), (longitudeField.value.replace(',', '.'))];
@@ -29,23 +29,20 @@
         currentMarker = L.marker(initialLatLng).addTo(mymap);
         } 
         // ajout des marqueurs existants sauf celui en cours d'édition
-        fetch('/api/eventLocation')
-            .then(response => response.json())
-            .then(data => {
-                data.forEach(location => {
-                    if (!initialLatLng || (location.latitude != initialLatLng[0] && location.longitude != initialLatLng[1])) {
-                        var icon = L.icon({
-                            iconUrl: '{{ asset('uploads/locations/') }}' + location.typeLocation.symbol,
-                            iconSize: [24, 24],
-                            iconAnchor: [12, 24],
-                            popupAnchor: [0, -22]
-                        });
-
-                        L.marker([location.latitude, location.longitude], { icon: icon }).addTo(mymap)
-                            .bindPopup('<strong>' + location.name + '</strong><br>' + location.description);
-                    }
-                });
-            });
+        {% set currentEntity = app.request.attributes.get('currentEntity')%}
+        {% for location in app.request.attributes.get('locations') %}
+        {% if not currentEntity or location.id != currentEntity.id %}
+          var icon = L.icon({
+                iconUrl: '{{ asset('uploads/locations/' ~ location.type.symbol) }}',
+                iconSize: [24,24],
+                iconAnchor: [12, 24],
+                popupAnchor: [0,-22]
+             });
+            
+                L.marker([{{ location.latitude }}, {{ location.longitude }}], {icon: icon}).addTo(mymap)
+                .bindPopup('<strong>{{ location.name }}</strong><br>{{ location.description }}');
+            {% endif %}
+        {% endfor %}
 
         // Fonction pour ajouter un marqueur à l'endroit cliqué
         function onMapClick(e) {
