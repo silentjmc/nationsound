@@ -6,10 +6,10 @@ use App\Entity\Artist;
 use App\Entity\EntityHistory;
 use App\Entity\Event;
 use App\Entity\EventDate;
+use App\Entity\EventLocation;
 use App\Entity\EventType;
 use App\Entity\Faq;
 use App\Entity\Information;
-use App\Entity\Location;
 use App\Entity\LocationType;
 use App\Entity\Partners;
 use App\Entity\PartnerType;
@@ -87,7 +87,7 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('Lieux','fa fa-map');
         yield MenuItem::linkToCrud('Types de lieux', 'fas fa-mountain-city', LocationType::class);
-        yield MenuItem::linkToCrud('Lieux', 'fas fa-location-dot', Location::class);
+        yield MenuItem::linkToCrud('Lieux', 'fas fa-location-dot', EventLocation::class);
 
         yield MenuItem::section('Informations générales','fa fa-lightbulb');
         yield MenuItem::linkToCrud('Informations','fa fa-info-circle', Information::class);
