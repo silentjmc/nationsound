@@ -92,6 +92,7 @@ class ArtistCrudController extends AbstractCrudController
                         'placeholder' => 'Saisissez le type de musique de l\'artiste'
                     ],
                 ]),
+            BooleanField::new('publish','Publié'),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
