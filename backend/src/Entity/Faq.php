@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\FaqRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: FaqRepository::class)]
 class Faq
@@ -12,15 +13,19 @@ class Faq
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getFaq"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getFaq"])]
     private ?string $question = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["getFaq"])]
     private ?string $reponse = null;
 
     #[ORM\Column]
+    #[Groups(["getFaq"])]
     private ?bool $publish = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
