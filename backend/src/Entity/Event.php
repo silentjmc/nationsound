@@ -30,10 +30,6 @@ class Event
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Location $location = null;
-
-    #[ORM\ManyToOne(inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?EventDate $date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -44,6 +40,10 @@ class Event
 
     #[ORM\Column]
     private ?bool $publish = null;
+
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?EventLocation $eventLocation = null;
 
     public function getId(): ?int
     {
@@ -106,18 +106,6 @@ class Event
         return $this;
     }
 
-    public function getLocation(): ?Location
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?Location $location): static
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
     public function getDate(): ?EventDate
     {
         return $this->date;
@@ -162,6 +150,18 @@ class Event
     public function setPublish(bool $publish): static
     {
         $this->publish = $publish;
+
+        return $this;
+    }
+
+    public function getEventLocation(): ?EventLocation
+    {
+        return $this->eventLocation;
+    }
+
+    public function setEventLocation(?EventLocation $eventLocation): static
+    {
+        $this->eventLocation = $eventLocation;
 
         return $this;
     }

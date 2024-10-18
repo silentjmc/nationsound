@@ -17,7 +17,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use App\Entity\Artist;
 use App\Entity\EventDate;
 use App\Entity\EventType;
-use App\Entity\Location;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -92,33 +91,41 @@ class EventCrudController extends AbstractCrudController
         $fields = [];
 
         if ($pageName === Crud::PAGE_INDEX) { 
-            $fields=[TextField::new('type', 'Type d\'évènement' ),
+            $fields=[TextField::new('type.type', 'Type d\'évènement' ),
             TextField::new('artist.name','Artiste'),
-            textField::new('location.name','Lieu'),
+            textField::new('eventLocation.location_name','Lieu'),
             textField::new('date','Date de l\'évènement'),
             TimeField::new('heure_debut','Heure de début'),
-            TimeField::new('heure_fin','Heure de fin')];
-            BooleanField::new('publish','Publié');
-            DateTimeField::new('dateModification', 'Dernière modification');
-            TextField::new('userModification', 'Utilisateur');
+            TimeField::new('heure_fin','Heure de fin'),
+            BooleanField::new('publish','Publié'),
+            DateTimeField::new('dateModification', 'Dernière modification'),
+            TextField::new('userModification', 'Utilisateur')];
         } else {
             $addTypeEventUrl = $this->addUrl(EventTypeCrudController::class);
             $addArtistUrl = $this->addUrl(ArtistCrudController::class);
-            $addLocationUrl = $this->addUrl(LocationCrudController::class);
+            $addLocationUrl = $this->addUrl(EventLocationCrudController::class);
 
             $fields=[
                 AssociationField::new('type', 'Type d\'évènement' )
-                    ->setFormTypeOption('placeholder', 'Choisissez le type d\'évènement')
+                    //->setFormTypeOption('placeholder', 'Choisissez le type d\'évènement')
                     ->setFormTypeOption('choice_label', 'type')
                     ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeEventUrl)),
                 AssociationField::new('artist','Artiste')
-                    ->setFormTypeOption('placeholder', 'Choisissez l\'artiste')
+                    //->setFormTypeOption('placeholder', 'Choisissez l\'artiste')
                     ->setFormTypeOption('choice_label', 'name')
-                    ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addArtistUrl)),
-                AssociationField::new('location','Lieu')
-                    ->setFormTypeOption('placeholder', 'Choisissez le lieu')
-                    ->setFormTypeOption('choice_label', 'name')
-                    ->setHelp(sprintf('Pas de lieu adapté ? <a href="%s">Créer un nouveau lieu</a>', $addLocationUrl)),
+                    ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addArtistUrl))
+                    ->setQueryBuilder(function ($queryBuilder) {
+                        return $queryBuilder->andWhere('entity.publish = :active')
+                                            ->setParameter('active', true);
+                        }),
+                AssociationField::new('eventLocation','Lieu')
+                //    ->setFormTypeOption('placeholder', 'Choisissez le lieu')
+                    ->setFormTypeOption('choice_label', 'locationName')
+                    ->setHelp(sprintf('Pas de lieu adapté ? <a href="%s">Créer un nouveau lieu</a>', $addLocationUrl))
+                    ->setQueryBuilder(function ($queryBuilder) {
+                        return $queryBuilder->andWhere('entity.publish = :active')
+                                            ->setParameter('active', true);
+                        }),
                 AssociationField::new('date','Date de l\'évènement')
                     ->setFormTypeOption('choice_label', 'datetostring')
                     ->setQueryBuilder(function ($queryBuilder) {
