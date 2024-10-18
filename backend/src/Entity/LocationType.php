@@ -6,6 +6,7 @@ use App\Repository\LocationTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: LocationTypeRepository::class)]
 class LocationType
@@ -13,12 +14,15 @@ class LocationType
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getEventLocation"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getEventLocation"])]
     private ?string $type = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getEventLocation"])]
     private ?string $symbol = null;
     // test
     #[ORM\Column(type: 'datetime', nullable: true)]
@@ -28,14 +32,14 @@ class LocationType
     private ?string $userModification = null;
 
     /**
-     * @var Collection<int, Location>
+     * @var Collection<int, EventLocation>
      */
-    #[ORM\OneToMany(targetEntity: Location::class, mappedBy: 'type')]
-    private Collection $locations;
+    #[ORM\OneToMany(targetEntity: EventLocation::class, mappedBy: 'typeLocation')]
+    private Collection $eventLocations;
 
     public function __construct()
     {
-        $this->locations = new ArrayCollection();
+        $this->eventLocations = new ArrayCollection();
     }
 
     // Méthode pour convertir l'objet en chaîne
@@ -103,29 +107,29 @@ class LocationType
     }
 
     /**
-     * @return Collection<int, Location>
+     * @return Collection<int, EventLocation>
      */
-    public function getLocations(): Collection
+    public function getEventLocations(): Collection
     {
-        return $this->locations;
+        return $this->eventLocations;
     }
 
-    public function addLocation(Location $location): static
+    public function addEventLocation(EventLocation $eventLocation): static
     {
-        if (!$this->locations->contains($location)) {
-            $this->locations->add($location);
-            $location->setType($this);
+        if (!$this->eventLocations->contains($eventLocation)) {
+            $this->eventLocations->add($eventLocation);
+            $eventLocation->setTypeLocation($this);
         }
 
         return $this;
     }
 
-    public function removeLocation(Location $location): static
+    public function removeEventLocation(EventLocation $eventLocation): static
     {
-        if ($this->locations->removeElement($location)) {
+        if ($this->eventLocations->removeElement($eventLocation)) {
             // set the owning side to null (unless already changed)
-            if ($location->getType() === $this) {
-                $location->setType(null);
+            if ($eventLocation->getTypeLocation() === $this) {
+                $eventLocation->setTypeLocation(null);
             }
         }
 
