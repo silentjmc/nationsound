@@ -6,8 +6,13 @@ use App\Repository\FaqRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Gedmo\Mapping\Annotation as Gedmo;
+//use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 #[ORM\Entity(repositoryClass: FaqRepository::class)]
+//#[ORM\Entity(repositoryClass: SortableRepository::class)]
+#[ORM\Index(name: 'position_idx', columns: ['position'])]
+//#[ORM\Table(name: 'faq')]
 class Faq
 {
     #[ORM\Id]
@@ -16,6 +21,7 @@ class Faq
     #[Groups(["getFaq"])]
     private ?int $id = null;
 
+    //#[Gedmo\SortableGroup]
     #[ORM\Column(length: 255)]
     #[Groups(["getFaq"])]
     private ?string $question = null;
@@ -33,6 +39,11 @@ class Faq
 
     #[ORM\Column(length: 255)]
     private ?string $userModification = null;
+
+    #[Gedmo\SortablePosition]
+    #[ORM\Column]
+    #[Groups(["getFaq"])]
+    private ?int $position = null;
 
     public function getId(): ?int
     {
@@ -102,6 +113,18 @@ class Faq
     public function setUserModification(string $userModification): static
     {
         $this->userModification = $userModification;
+
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
 
         return $this;
     }

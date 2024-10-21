@@ -31,13 +31,13 @@ class FaqController extends AbstractController
     }
      */   
         
-    #[Route('/api/faq', name: 'app_faq', methods: ['GET'])]
+    #[Route('/api/faq', name: 'app_api_faq', methods: ['GET'])]
     public function getFaqList(FaqRepository $faqRepository, SerializerInterface $serializer): JsonResponse
     {
         //$faqList = $faqRepository->findAll();
-        $faqList = $faqRepository->findBy(
-            ['publish' => true]);
-        
+        //$faqList = $faqRepository->findBy(
+            //['publish' => true]);
+        $faqList = $faqRepository->findAllSortedByPosition();
         $jsonFaqList = $serializer->serialize($faqList, 'json',['groups' => 'getFaq']);
         return new JsonResponse(
             $jsonFaqList, Response::HTTP_OK, [], true);
