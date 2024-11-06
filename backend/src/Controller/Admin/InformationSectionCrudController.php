@@ -3,38 +3,37 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Information;
-use App\Repository\InformationRepository;
+use App\Entity\InformationSection;
+use App\Repository\InformationSectionRepository;
+use App\Service\Direction;
+use App\Service\PositionService;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use App\Service\PositionService;
-use App\Service\Direction;
-use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
-class InformationCrudController extends AbstractCrudController
+class InformationSectionCrudController extends AbstractCrudController
 {
-    private EntityManagerInterface $em;
+    private EntityManagerInterface $entityManager;
     private PositionService $positionService;
 
-    public function __construct(EntityManagerInterface $em, PositionService $positionService,private readonly InformationRepository $informationSectionRepository)
+    public function __construct(EntityManagerInterface $entityManager, PositionService $positionService,private readonly InformationSectionRepository $informationSectionRepository)
     {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
         $this->positionService = $positionService;
         
     }
 
     public static function getEntityFqcn(): string
     {
-        return Information::class;
+        return InformationSection::class;
     }
 
     public function configureActions(Actions $actions): Actions
@@ -66,13 +65,13 @@ class InformationCrudController extends AbstractCrudController
         ->add(Crud::PAGE_INDEX, $moveUp)
         ->add(Crud::PAGE_INDEX, $moveTop)
         ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-            return $action->setLabel('Ajouter une information');
+            return $action->setLabel('Ajouter une nouvelle section');
         })
         ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
-            return $action->setLabel('Créer l\'information');
+            return $action->setLabel('Créer la section');
         })
         ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
-            return $action->setLabel('Créer et ajouter une autre information');
+            return $action->setLabel('Créer et ajouter une autre section');
         })
         ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
             return $action
@@ -100,38 +99,27 @@ class InformationCrudController extends AbstractCrudController
     {
         return $crud
         ->addFormTheme('admin/form.html.twig')
-        ->setEntityLabelInSingular('Information')
-        ->setEntityLabelInPlural('Informations')
-        ->setPageTitle('new', 'Ajouter une nouvelle information')
+        //->overrideTemplate('crud/index', 'admin/faq_index.html.twig')
+        ->setEntityLabelInSingular('Section d\'information')
+        ->setEntityLabelInPlural('Section d\'information')
+        ->setPageTitle('new', 'Ajouter une nouvelle section')
         ->setDefaultSort(['position' => 'ASC'])
         ->showEntityActionsInlined();
     }
+
     
     public function configureFields(string $pageName): iterable
     {
-        $fields = [
+        return [
             IntegerField::new('position', 'Position')->onlyOnIndex(),
-            TextField::new('typeSection', 'Section')->hideOnForm(),
-            AssociationField::new('typeSection', 'Section')->onlyOnForms()
-            ->setFormTypeOption('choice_label', 'section')
-            ->setQueryBuilder(function ($queryBuilder) {
-                return $queryBuilder->orderBy('entity.section', 'ASC');
-            }),
-            TextField::new('titre',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre de la carte (faire un titre court)')),
-            TextField::new('description', 'Texte')
-                ->hideOnForm()
-                ->stripTags(),
-            TextEditorField::new('description','Texte de la carte')
-                ->onlyOnForms()
-                ->setTrixEditorConfig(['blockAttributes' => [
-                    'default' => ['tagName' => 'p'],],]),
-            BooleanField::new('publish','Publié'),
+            TextField::new('section',($pageName === Crud::PAGE_INDEX ? 'Section' : 'Section (partie dans la page informations)')),
+            TextField::new('title',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre dans la page informations')),
+            TextareaField::new('description',($pageName === Crud::PAGE_INDEX ? 'Sous-texte' : 'Sous-texte de la section dans la page Informations')),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
-        ];    
-        return $fields;
+        ];
     }
-
+    
     public function moveTop(AdminContext $context)
     {
         $this->positionService->move($context, Direction::Top);
@@ -159,4 +147,28 @@ class InformationCrudController extends AbstractCrudController
         $this->addFlash('success', 'l\'élément a bien été déplacé en bas de page.');
         return $this->redirect($context->getRequest()->headers->get('referer'));
     }
+
+    public function delete(AdminContext $context)
+    {
+        /** @var PartnerType $principal */
+        $section = $context->getEntity()->getInstance();
+
+        // Vérifier s'il existe des éléments Suivant liés
+        $hasRelatedItems = $this->entityManager->getRepository(Information::class)
+            ->count(['typeSection' => $section]) > 0;
+
+        if ($hasRelatedItems) {
+            $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Informations. il faut d\'abord supprimer ou reaffecter les éléménts Informations concernés');
+            
+            $url = $this->container->get(AdminUrlGenerator::class)
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::delete($context);
+    }
+
 }
