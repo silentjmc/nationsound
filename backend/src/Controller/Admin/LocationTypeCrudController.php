@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 //use App\Entity\EntityHistory;
 
+use App\Entity\EventLocation;
 use App\Entity\LocationType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -11,8 +12,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class LocationTypeCrudController extends AbstractCrudController
 {
@@ -83,6 +86,7 @@ class LocationTypeCrudController extends AbstractCrudController
                 ->setUploadDir('public/uploads/locations')
                 ->setBasePath('uploads/locations')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
+                ->setHelp(sprintf('L\'image sera automatiquement converti en format png avec une hauteur de 24 pixels. Privilégiez une image plutôt carré avec un fond transparent si posible.'))
                 ->setFormTypeOptions([
                     'required' => ($pageName === Crud::PAGE_NEW ? true : false),
                 ]),
@@ -90,6 +94,29 @@ class LocationTypeCrudController extends AbstractCrudController
                 TextField::new('userModification', 'Utilisateur')->onlyOnIndex()
         ];       
         return $fields;
+    }
+
+    public function delete(AdminContext $context)
+    {
+        /** @var LocationType $locationType */
+        $locationType = $context->getEntity()->getInstance();
+
+        // Vérifier s'il existe des éléments Suivant liés
+        $hasRelatedItems = $this->entityManager->getRepository(EventLocation::class)
+            ->count(['typeLocation' => $locationType]) > 0;
+
+        if ($hasRelatedItems) {
+            $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Lieux. il faut d\'abord supprimer ou reaffecter les éléméents Lieux concernés');
+            
+            $url = $this->container->get(AdminUrlGenerator::class)
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::delete($context);
     }
 
 
