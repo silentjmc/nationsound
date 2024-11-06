@@ -2,11 +2,13 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Event;
 use App\Entity\EventLocation;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
@@ -125,6 +127,29 @@ class EventLocationCrudController extends AbstractCrudController
                 ];
             }
                 return $fields;
-        }        
+        }
+        
+        public function delete(AdminContext $context)
+        {
+        /** @var EventLocation $eventLocation */
+        $eventLocation = $context->getEntity()->getInstance();
+
+        // Vérifier s'il existe des éléments Suivant liés
+        $hasRelatedItems = $this->entityManager->getRepository(Event::class)
+            ->count(['eventLocation' => $eventLocation]) > 0;
+
+        if ($hasRelatedItems) {
+            $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléments Évènements concernés');
+            
+            $url = $this->container->get(AdminUrlGenerator::class)
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::delete($context);
+    }
         
 }
