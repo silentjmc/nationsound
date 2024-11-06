@@ -19,7 +19,7 @@ class EventLocation
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getEventLocation"])]
+    #[Groups(["getEventLocation", "getEvent"])]
     private ?string $locationName = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 19, scale: 14)]
