@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, OnDestroy  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-import { ScheduleService } from '../services/schedule.service';
+//import { ScheduleService } from '../services/schedule.service';
+import { EventService } from '../services/event.service';
 import { Artist } from '../services/class';
 import { Observable, BehaviorSubject, combineLatest, EMPTY, Subscription } from 'rxjs';
 import { catchError, filter, map} from 'rxjs/operators';
@@ -21,7 +22,8 @@ import { RouterLink, RouterModule } from '@angular/router';
 export class ProgrammationComponent implements OnInit, OnDestroy  {
   // Information pour SEO
   // Information for SEO
-  constructor(private meta: Meta, private title: Title, private scheduleService: ScheduleService) {
+  //constructor(private meta: Meta, private title: Title, private scheduleService: ScheduleService) {
+  constructor(private meta: Meta, private title: Title, private scheduleService: EventService) {
     title.setTitle("Programmation du Nation Sound Festival 2024 - Horaires et Artistes");
     meta.addTags([
       { name: 'description', content: 'Consultez la programmation complète du Nation Sound Festival 2024. Retrouvez les horaires et les artistes pour chaque scène : métal, rock, rap/urban, world et électro. Préparez votre agenda pour ne rien manquer !' }
@@ -82,6 +84,7 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
       map(artists => {
         // Récupération des lieux de rencontre
         // Get meeting places
+        //const locations = [...new Set(artists.map(artist => artist.scene || artist.lieu_rencontre))];
         const locations = [...new Set(artists.map(artist => artist.scene || artist.lieu_rencontre))];
         this.locationFilters = locations.map((location, index) => ({
           id: index,

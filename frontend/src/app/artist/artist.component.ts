@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ScheduleService } from '../services/schedule.service';
+//import { ScheduleService } from '../services/schedule.service';
+import { EventService } from '../services/event.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Artist } from '../services/class';
@@ -17,7 +18,7 @@ import { CommonModule } from '@angular/common';
 export class ArtistComponent implements OnInit{
   artist$!: Observable<Artist | null>;
 
-  constructor(private route: ActivatedRoute,private scheduleService: ScheduleService)
+  constructor(private route: ActivatedRoute,private scheduleService: EventService)
    {}
 
   ngOnInit(): void {
