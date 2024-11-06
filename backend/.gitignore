@@ -27,3 +27,7 @@
 ###> migrations ###
 /migrations/
 ###< migrations ###
+
+###> liip/imagine-bundle ###
+/public/media/cache/
+###< liip/imagine-bundle ###
