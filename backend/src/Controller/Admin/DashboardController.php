@@ -10,6 +10,7 @@ use App\Entity\EventLocation;
 use App\Entity\EventType;
 use App\Entity\Faq;
 use App\Entity\Information;
+use App\Entity\InformationSection;
 use App\Entity\LocationType;
 use App\Entity\Partners;
 use App\Entity\PartnerType;
@@ -90,6 +91,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToCrud('Lieux', 'fas fa-location-dot', EventLocation::class);
 
         yield MenuItem::section('Informations générales','fa fa-lightbulb');
+        yield MenuItem::linkToCrud('Section d\'informations','fa fa-info-circle', InformationSection::class);
         yield MenuItem::linkToCrud('Informations','fa fa-info-circle', Information::class);
         yield MenuItem::linkToCrud('FAQ','fa fa-question-circle', Faq::class);
 
