@@ -80,25 +80,16 @@ class PartnersCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [
-            TextField::new('name','Nom du partenaire')
-            ->setFormTypeOptions([
-                'attr' => [
-                    'placeholder' => 'Saisissez le nom du partenaire'
-                ],
-            ]),
+            TextField::new('name','Nom du partenaire'),
             ImageField::new('image',($pageName === Crud::PAGE_INDEX ? 'logo' :'Télécharger le logo du partenaire'))
                 ->setUploadDir('public/uploads/partners')
                 ->setBasePath('uploads/partners')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
+                ->setHelp(sprintf('L\'image sera automatiquement converti à une hauteur de 128px et en format webp.'))
                 ->setFormTypeOptions([
                     'required' => ($pageName === Crud::PAGE_NEW ? true : false),
                 ]),
-            TextField::new('url','URL du site du partenaire')
-            ->setFormTypeOptions([
-                'attr' => [
-                    'placeholder' => 'Saisissez l\'URL du partenaire'
-                ],
-            ]),
+            TextField::new('url','URL du site du partenaire'),
         ];
         // Affiche le type de partenaire dans la liste des partenaires sans lien cliquable sinon dans la page de création garde le choix de liste
         if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {             
