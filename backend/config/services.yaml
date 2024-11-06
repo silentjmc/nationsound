@@ -28,3 +28,12 @@ services:
             - { name: 'doctrine.event_listener', event: 'prePersist' }
             - { name: 'doctrine.event_listener', event: 'preUpdate' }
             - { name: 'doctrine.event_listener', event: 'preRemove' }
+            - { name: doctrine.event_listener, event: postUpdate }
+
+    App\Service\PositionService:
+        arguments:
+            $em: '@doctrine.orm.entity_manager'
+    
+    App\Service\ImageUploadSubscriber:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
