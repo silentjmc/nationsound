@@ -4,6 +4,8 @@ namespace App\DataFixtures;
 
 use App\Entity\Partners;
 use App\Entity\PartnerType;
+use App\Entity\Role;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
@@ -21,11 +23,11 @@ class AppFixtures extends Fixture
         $roleTypes = [];
 
         foreach ($roleTypeData as $roleData) {
-            $role = new PartnerType();
+            $role = new Role();
             $role->setId($roleData['id']); // Assigner l'ID ici
-            $role->setType($roleData['role']);
+            $role->setRole($roleData['role']);
             $manager->persist($role);
-            $partnerTypes[$roleData['id']] = $roleTypes; // Stocker l'objet par ID
+            $roleTypes[$roleData['id']] = $role; // Stocker l'objet par ID
         }
 
         $usersData = [
@@ -38,20 +40,20 @@ class AppFixtures extends Fixture
         ];
 
         foreach ($usersData as $userData) {
-            $user = new Partners();
+            $user = new User();
             $user->setId($userData['id']);
-            $user->setName($userData['email']);
-            $user->setImage($userData['password']);
-            $user->setUrl($userData['lastname']);
-            $user->setUrl($userData['firstname']);
+            $user->setEmail($userData['email']);
+            $user->setPassword($userData['password']);
+            $user->setLastName($userData['lastname']);
+            $user->setFirstName($userData['firstname']);
 
-            if (isset($roleTypes[$userData['type']])) {
-                $user->setType($roleTypes[$userData['role']]); // Ici, on assigne l'objet PartnerType
+            if (isset($roleTypes[$userData['role']])) {
+                $user->setRole($roleTypes[$userData['role']]); 
             }
 
             $manager->persist($user);
         }
-
+        /*
         $eventDatesData=[
             ["id" => 1, "date" => '2025-07-04', "actif" => 1],
             ["id" => 2, "date" => '2025-07-05', "actif" => 1],
@@ -217,7 +219,7 @@ class AppFixtures extends Fixture
             }
 
             $manager->persist($partners);
-        }
+        }*/
 
         // Flusher pour sauvegarder tous les partenaires
         $manager->flush();       
