@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\EventRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventRepository::class)]
 class Event
@@ -12,24 +13,30 @@ class Event
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getEvent"])]
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(["getEvent"])]
     private ?\DateTimeInterface $heure_debut = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
+    #[Groups(["getEvent"])]
     private ?\DateTimeInterface $heure_fin = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["getEvent"])]
     private ?EventType $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["getEvent"])]
     private ?Artist $artist = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["getEvent"])]
     private ?EventDate $date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -39,10 +46,12 @@ class Event
     private ?string $userModification = null;
 
     #[ORM\Column]
+    #[Groups(["getEvent"])]
     private ?bool $publish = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["getEvent"])]
     private ?EventLocation $eventLocation = null;
 
     public function getId(): ?int
