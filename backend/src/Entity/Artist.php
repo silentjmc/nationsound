@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: ArtistRepository::class)]
 class Artist
@@ -17,15 +18,23 @@ class Artist
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getEvent"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Groups(["getEvent"])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getEvent"])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(["getEvent"])]
+    private ?string $thumbnail = null;
+
+    #[ORM\Column(length: 255)]
+    #[Groups(["getEvent"])]
     private ?string $type_music = null;
 
     /**
@@ -39,9 +48,6 @@ class Artist
 
     #[ORM\Column(length: 255)]
     private ?string $userModification = null;
-
-    #[ORM\Column]
-    private ?bool $publish = null;
 
     public function __construct()
     {
@@ -94,7 +100,7 @@ class Artist
         return $this->image;
     }
 
-    public function setImage(string $image): static
+    public function setImage(?string $image): static
     {
         $this->image = $image;
 
@@ -167,14 +173,14 @@ class Artist
         return $this;
     }
 
-    public function isPublish(): ?bool
+    public function getThumbnail(): ?string
     {
-        return $this->publish;
+        return $this->thumbnail;
     }
 
-    public function setPublish(bool $publish): static
+    public function setThumbnail(string $thumbnail): static
     {
-        $this->publish = $publish;
+        $this->thumbnail = $thumbnail;
 
         return $this;
     }

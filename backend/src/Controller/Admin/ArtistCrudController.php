@@ -7,14 +7,24 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Psr\Log\LoggerInterface;
+use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 
 class ArtistCrudController extends AbstractCrudController
 {
+    private LoggerInterface $logger;
+    private CacheManager $cacheManager;
+
+    public function __construct(LoggerInterface $logger, CacheManager $cacheManager)
+    {
+        $this->logger = $logger;
+        $this->cacheManager = $cacheManager;
+    }
+
     public static function getEntityFqcn(): string
     {
         return Artist::class;
@@ -80,24 +90,29 @@ class ArtistCrudController extends AbstractCrudController
                 ],
             ]),
             ImageField::new('image','Image'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
-                    ->setUploadDir('public/uploads/artists')
-                    ->setBasePath('uploads/artists')
-                    ->setUploadedFileNamePattern('[name][randomhash].[extension]')
-                    ->setFormTypeOptions([
-                        'required' => ($pageName === Crud::PAGE_NEW ? true : false),
-                    ]),
+                ->setUploadDir('public/uploads/artists')
+                ->setBasePath('uploads/artists')
+                ->setUploadedFileNamePattern('[name][randomhash].[extension]')
+                ->setFormTypeOptions([
+                    'required' => ($pageName === Crud::PAGE_NEW ? true : false),
+                ]),
+            ImageField::new('thumbnail',' Miniature'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
+                ->setUploadDir('public/uploads/artists')
+                ->setBasePath('uploads/artists')
+                ->setUploadedFileNamePattern('thumb_[name][randomhash].[extension]')
+                ->setFormTypeOptions([
+                    'required' => false,
+                ]),
             TextField::new('type_music', 'Type de musique')
                 ->setFormTypeOptions([
                     'attr' => [
                         'placeholder' => 'Saisissez le type de musique de l\'artiste'
                     ],
                 ]),
-            BooleanField::new('publish','Publié'),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
 
         return $fields;
-    }
-    
+    } 
 }
