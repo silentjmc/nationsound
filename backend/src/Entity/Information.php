@@ -6,8 +6,10 @@ use App\Repository\InformationRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: InformationRepository::class)]
+#[ORM\Index(name: 'position_idx', columns: ['position'])]
 class Information
 {
     #[ORM\Id]
@@ -24,14 +26,6 @@ class Information
     #[Groups(["getInformation"])]
     private ?string $description = null;
 
-    #[ORM\Column(length: 255)]
-    #[Groups(["getInformation"])]
-    private ?string $picto = null;
-
-    #[ORM\Column(length: 255)]
-    #[Groups(["getInformation"])]
-    private ?string $type = null;
-
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $dateModification = null;
 
@@ -41,6 +35,15 @@ class Information
     #[ORM\Column]
     #[Groups(["getInformation"])]
     private ?bool $publish = null;
+
+    #[ORM\ManyToOne(inversedBy: 'information')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?InformationSection $typeSection = null;
+
+    #[Gedmo\SortablePosition]
+    #[ORM\Column]
+    #[Groups(["getInformation"])]
+    private ?int $position = null;
 
     public function getId(): ?int
     {
@@ -78,30 +81,6 @@ class Information
         return $this;
     }
 
-    public function getPicto(): ?string
-    {
-        return $this->picto;
-    }
-
-    public function setPicto(string $picto): static
-    {
-        $this->picto = $picto;
-
-        return $this;
-    }
-
-    public function getType(): ?string
-    {
-        return $this->type;
-    }
-
-    public function setType(string $type): static
-    {
-        $this->type = $type;
-
-        return $this;
-    }
-
     public function getDateModification(): ?\DateTimeInterface
     {
         return $this->dateModification;
@@ -134,6 +113,30 @@ class Information
     public function setPublish(bool $publish): static
     {
         $this->publish = $publish;
+
+        return $this;
+    }
+
+    public function getTypeSection(): ?InformationSection
+    {
+        return $this->typeSection;
+    }
+
+    public function setTypeSection(?InformationSection $typeSection): static
+    {
+        $this->typeSection = $typeSection;
+
+        return $this;
+    }
+
+    public function getPosition(): ?int
+    {
+        return $this->position;
+    }
+
+    public function setPosition(int $position): static
+    {
+        $this->position = $position;
 
         return $this;
     }
