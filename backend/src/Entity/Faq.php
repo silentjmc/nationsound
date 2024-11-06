@@ -7,12 +7,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
-//use Gedmo\Sortable\Entity\Repository\SortableRepository;
 
 #[ORM\Entity(repositoryClass: FaqRepository::class)]
-//#[ORM\Entity(repositoryClass: SortableRepository::class)]
 #[ORM\Index(name: 'position_idx', columns: ['position'])]
-//#[ORM\Table(name: 'faq')]
 class Faq
 {
     #[ORM\Id]

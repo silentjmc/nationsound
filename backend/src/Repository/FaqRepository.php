@@ -15,7 +15,7 @@ class FaqRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Faq::class);
     }
-
+/*
     public function findFaq(): array
     {
         $qb = $this->createQueryBuilder('sponsor')
@@ -24,7 +24,7 @@ class FaqRepository extends ServiceEntityRepository
 
         return $qb->getQuery()->execute();
     }
-
+*/
     /**
      * @return Faq[] Returns an array of Faq objects sorted by position
      */
