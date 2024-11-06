@@ -41,11 +41,16 @@ export interface Artist {
 
   // Classe pour les POI
   export interface Poi {
-    type: 'music' | 'food' | 'toilet' | 'firstAid' | 'meet';
+    type: string;
     name: string;
     text: string;
     lat: number;
     lon: number;
     iconUrl: string;
     marker?: Marker
+  }
+
+  export interface PoiType {
+    type: string;
+    exactType: string;
   }
