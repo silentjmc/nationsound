@@ -108,7 +108,6 @@ class FaqCrudController extends AbstractCrudController
         ->setEntityLabelInPlural('Questions/Réponses')
         ->setPageTitle('new', 'Ajouter une nouvelle question/réponse')
         ->setDefaultSort(['position' => 'ASC'])
-        //->setHelp('index', 'Les éléments seront affichés dans l\'ordre de leur position.')
         ->showEntityActionsInlined();
     }
 

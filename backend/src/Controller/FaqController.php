@@ -16,13 +16,13 @@ class FaqController extends AbstractController
             'controller_name' => 'FaqController',
         ]);
     }
-
+/*
     public function list(FaqRepository $faqRepository): Response
-{
-    $faq = $faqRepository->findFaq();
+    {
+        $faq = $faqRepository->findFaq();
 
-    return $this->render('faq/list.html.twig', [
-        'faq' => $faq
-    ]);
-}
+        return $this->render('faq/list.html.twig', [
+            'faq' => $faq
+        ]);
+    }*/
 }
