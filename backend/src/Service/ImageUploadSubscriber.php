@@ -49,13 +49,13 @@ class ImageUploadSubscriber
             if (empty($entity->getThumbnail())) {
                 if (!empty($entity->getImage())) {
                     // Récupérer le chemin de l'image originale
-                    $originalImagePath = $this->projectDir . '/public/uploads/artists/image/' . $entity->getImage();
-                    $thumbnailPath = $this->projectDir . '/public/uploads/artists/thumbnail/th_' . $entity->getImage();
+                    $originalImagePath = $this->projectDir . '/public/uploads/artists/' . $entity->getImage();
+                    $thumbnailPath = $this->projectDir . '/public/uploads/artists/thumb_' . $entity->getImage();
 
                     // Copier l'image originale vers le chemin du thumbnail
                     if (file_exists($originalImagePath)) {
                         if (copy($originalImagePath, $thumbnailPath)) {
-                            $entity->setThumbnail('th_' . $entity->getImage());
+                            $entity->setThumbnail('thumb_' . $entity->getImage());
                             $this->logger->info('Thumbnail created successfully', [
                                 'entity' => $entity
                             ]);
@@ -77,8 +77,8 @@ class ImageUploadSubscriber
                 }
             }
 
-            $this->resizeAndSaveImage($entity, 'Image', 'image', 'webp', 768);
-            $this->resizeAndSaveImage($entity, 'Thumbnail', 'thumbnail', 'webp', 248);
+            $this->resizeAndSaveImage($entity, 'Image', 'artists', 'webp', 768);
+            $this->resizeAndSaveImage($entity, 'Thumbnail', 'artists', 'webp', 248);
 
         }
 
