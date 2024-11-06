@@ -9,6 +9,7 @@ use DateTime;
 use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: EventDateRepository::class)]
 class EventDate
@@ -19,10 +20,8 @@ class EventDate
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[Groups(["getEvent"])]
     private ?\DateTimeInterface $date = null;
-
-    #[ORM\Column]
-    private ?bool $publish = null;
 
     /**
      * @var Collection<int, Event>
@@ -61,28 +60,9 @@ class EventDate
         return $this->date;
     }
 
-/*
-    public function getDate(): string
-    {
-        return $this->date instanceof DateTime ? $this->date->format('d/m/Y') : '';
-    }
-*/
-
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function isPublish(): ?bool
-    {
-        return $this->publish;
-    }
-
-    public function setPublish(bool $publish): static
-    {
-        $this->publish = $publish;
 
         return $this;
     }
