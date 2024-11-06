@@ -113,11 +113,7 @@ class EventCrudController extends AbstractCrudController
                 AssociationField::new('artist','Artiste')
                     //->setFormTypeOption('placeholder', 'Choisissez l\'artiste')
                     ->setFormTypeOption('choice_label', 'name')
-                    ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addArtistUrl))
-                    ->setQueryBuilder(function ($queryBuilder) {
-                        return $queryBuilder->andWhere('entity.publish = :active')
-                                            ->setParameter('active', true);
-                        }),
+                    ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addArtistUrl)),
                 AssociationField::new('eventLocation','Lieu')
                 //    ->setFormTypeOption('placeholder', 'Choisissez le lieu')
                     ->setFormTypeOption('choice_label', 'locationName')
@@ -127,11 +123,7 @@ class EventCrudController extends AbstractCrudController
                                             ->setParameter('active', true);
                         }),
                 AssociationField::new('date','Date de l\'évènement')
-                    ->setFormTypeOption('choice_label', 'datetostring')
-                    ->setQueryBuilder(function ($queryBuilder) {
-                        return $queryBuilder->andWhere('entity.publish = :active')
-                                            ->setParameter('active', true);
-                        }),
+                    ->setFormTypeOption('choice_label', 'datetostring'),
                 TimeField::new('heure_debut','Heure de début')
                     ->setColumns(2),        
                 TimeField::new('heure_fin','Heure de fin')
