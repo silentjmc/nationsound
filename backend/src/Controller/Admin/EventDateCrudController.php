@@ -2,18 +2,31 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Event;
 use App\Entity\EventDate;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class EventDateCrudController extends AbstractCrudController
 {
+    private $entityManager;
+    private $adminUrlGenerator;
+    // injection du service EntityManagerInterface
+    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator)
+    {
+        $this->entityManager = $entityManager;
+        $this->adminUrlGenerator = $adminUrlGenerator;
+    }
+
     public static function getEntityFqcn(): string
     {
         return EventDate::class;
@@ -70,10 +83,32 @@ class EventDateCrudController extends AbstractCrudController
     {
         return [
             DateField::new('date'),
-            BooleanField::new('publish','Publié'),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Faite par')->onlyOnIndex(),
         ];
     }
+
+    public function delete(AdminContext $context)
+    {
+    /** @var EventDate $eventDate */
+    $eventDate = $context->getEntity()->getInstance();
+
+    // Vérifier s'il existe des éléments Suivant liés
+    $hasRelatedItems = $this->entityManager->getRepository(Event::class)
+        ->count(['date' => $eventDate]) > 0;
+
+    if ($hasRelatedItems) {
+        $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléments Évènements concernés');
+        
+        $url = $this->container->get(AdminUrlGenerator::class)
+            ->setController(self::class)
+            ->setAction(Action::INDEX)
+            ->generateUrl();
+
+        return $this->redirect($url);
+    }
+
+    return parent::delete($context);
+}
     
 }
