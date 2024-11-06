@@ -113,7 +113,7 @@ class ImageUploadSubscriber
             $image = $this->imagine->open($path);
             $newPath = preg_replace('/\.[^.]+$/', '.' . $format, $path);
             $newFileName = pathinfo($newPath, PATHINFO_BASENAME);
-
+                
             $image->resize($image->getSize()->heighten($height))
                         ->save($newPath, [
                             'quality' => '75',
