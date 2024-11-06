@@ -100,6 +100,7 @@ class InformationCrudController extends AbstractCrudController
     {
         return $crud
         ->addFormTheme('admin/form.html.twig')
+        ->overrideTemplate('crud/index', 'admin/faq_index.html.twig')
         ->setEntityLabelInSingular('Information')
         ->setEntityLabelInPlural('Informations')
         ->setPageTitle('new', 'Ajouter une nouvelle information')

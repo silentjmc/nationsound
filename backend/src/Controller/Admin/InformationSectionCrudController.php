@@ -99,7 +99,7 @@ class InformationSectionCrudController extends AbstractCrudController
     {
         return $crud
         ->addFormTheme('admin/form.html.twig')
-        //->overrideTemplate('crud/index', 'admin/faq_index.html.twig')
+        ->overrideTemplate('crud/index', 'admin/faq_index.html.twig')
         ->setEntityLabelInSingular('Section d\'information')
         ->setEntityLabelInPlural('Section d\'information')
         ->setPageTitle('new', 'Ajouter une nouvelle section')
