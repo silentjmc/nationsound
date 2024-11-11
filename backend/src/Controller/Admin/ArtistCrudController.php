@@ -3,14 +3,18 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Artist;
+use App\Entity\Event;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Psr\Log\LoggerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 
@@ -18,11 +22,13 @@ class ArtistCrudController extends AbstractCrudController
 {
     private LoggerInterface $logger;
     private CacheManager $cacheManager;
+    private EntityManagerInterface $entityManager;
 
-    public function __construct(LoggerInterface $logger, CacheManager $cacheManager)
+    public function __construct(LoggerInterface $logger, CacheManager $cacheManager, EntityManagerInterface $entityManager)
     {
         $this->logger = $logger;
         $this->cacheManager = $cacheManager;
+        $this->entityManager = $entityManager;
     }
 
     public static function getEntityFqcn(): string
@@ -115,4 +121,27 @@ class ArtistCrudController extends AbstractCrudController
 
         return $fields;
     } 
+
+    public function delete(AdminContext $context)
+    {
+        /** @var Artist $artist */
+        $artist = $context->getEntity()->getInstance();
+
+        // Vérifier s'il existe des éléments Suivant liés
+        $hasRelatedItems = $this->entityManager->getRepository(Event::class)
+            ->count(['artist' => $artist]) > 0;
+
+        if ($hasRelatedItems) {
+            $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléméents Évènements concernés');
+            
+            $url = $this->container->get(AdminUrlGenerator::class)
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::delete($context);
+    }
 }
