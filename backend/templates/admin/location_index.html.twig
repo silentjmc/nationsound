@@ -1,11 +1,19 @@
 {% extends '@!EasyAdmin/crud/index.html.twig' %}
 
 {% block form_start %}
-    {{ parent() }}
+   {{ parent() }}    
 {% endblock %}
+
+{% block delete_form %}
+    {{ parent() }}
+    {{ include('admin/modal/unpublish_request.html.twig', with_context = false) }}
+{% endblock delete_form %}
 
 {% block main %}
     {{ parent() }}
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{ asset('static/admin/scripts/confirmUnpublishRequest.js') }}"></script>
+
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 

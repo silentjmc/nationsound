@@ -15,20 +15,23 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use App\Service\PositionService;
 use App\Service\Direction;
+use App\Service\PublishService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use Symfony\Component\HttpFoundation\Response;
 
 class InformationCrudController extends AbstractCrudController
 {
-    private EntityManagerInterface $em;
+    private EntityManagerInterface $entityManager;
     private PositionService $positionService;
+    private PublishService $publishService;
 
-    public function __construct(EntityManagerInterface $em, PositionService $positionService,private readonly InformationRepository $informationSectionRepository)
+    public function __construct(EntityManagerInterface $entityManager, PositionService $positionService, PublishService $publishService, private readonly InformationRepository $informationSectionRepository)
     {
-        $this->em = $em;
+        $this->entityManager = $entityManager;
         $this->positionService = $positionService;
+        $this->publishService = $publishService;
         
     }
 
@@ -40,6 +43,23 @@ class InformationCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $entityCount = $this->informationSectionRepository->count([]);
+        $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
+        ->addCssClass('btn btn-sm btn-light text-success')
+        ->setLabel(false)
+        ->displayIf(fn ($entity) => !$entity->isPublish())
+        ->linkToCrudAction('publish')
+        ->setHtmlAttributes([
+            'title' => "Publier l'élément",
+        ]);
+
+    $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
+        ->addCssClass('btn btn-ms btn-light text-danger')
+        ->setLabel(false)
+        ->displayIf(fn ($entity) => $entity->isPublish())
+        ->linkToCrudAction('unpublish')
+        ->setHtmlAttributes([
+            'title' => "Dépublier l'élément",       
+        ]);
 
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Mettre en haut de page'])
@@ -93,7 +113,9 @@ class InformationCrudController extends AbstractCrudController
                 ])
                 ->displayAsLink()
                 ->addCssClass('btn btn-sm btn-light');
-        });    
+        })
+        ->add(Crud::PAGE_INDEX,$publishAction) 
+        ->add(Crud::PAGE_INDEX,$unpublishAction);    
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -126,7 +148,8 @@ class InformationCrudController extends AbstractCrudController
                 ->onlyOnForms()
                 ->setTrixEditorConfig(['blockAttributes' => [
                     'default' => ['tagName' => 'p'],],]),
-            BooleanField::new('publish','Publié'),
+            BooleanField::new('publish','Publié')
+                ->renderAsSwitch(false),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];    
@@ -159,5 +182,21 @@ class InformationCrudController extends AbstractCrudController
         $this->positionService->move($context, Direction::Bottom);
         $this->addFlash('success', 'l\'élément a bien été déplacé en bas de page.');
         return $this->redirect($context->getRequest()->headers->get('referer'));
+    }
+
+    public function publish(AdminContext $context): Response
+        {
+            $result = $this->publishService->publish($context);
+            $url = $result['url'];
+            $this->addFlash('success', 'Information publié avec succès');
+            return $this->redirect($url);
+        }
+
+    public function unpublish(AdminContext $context): Response
+    {
+        $result = $this->publishService->unpublish($context);
+        $url = $result['url'];
+        $this->addFlash('success', 'Information dépublié avec succès');            
+        return $this->redirect($url);
     }
 }

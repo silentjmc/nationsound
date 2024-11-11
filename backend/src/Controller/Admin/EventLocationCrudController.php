@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Event;
 use App\Entity\EventLocation;
+use App\Service\PublishService;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
@@ -14,22 +15,26 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\Response;
 
 class EventLocationCrudController extends AbstractCrudController
 {
-    private $entityManager;
-    private $adminUrlGenerator;
-    // injection du service EntityManagerInterface
-    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator)
+    private EntityManagerInterface $entityManager;
+    private AdminUrlGenerator $adminUrlGenerator;
+    private AdminContextProvider $adminContextProvider;
+    private PublishService $publishService;
+
+    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator, AdminContextProvider $adminContextProvider, PublishService $publishService)
     {
         $this->entityManager = $entityManager;
         $this->adminUrlGenerator = $adminUrlGenerator;
+        $this->adminContextProvider = $adminContextProvider;
+        $this->publishService = $publishService;
     }
 
     public static function getEntityFqcn(): string
@@ -39,6 +44,33 @@ class EventLocationCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {        
+        $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
+            ->addCssClass('btn btn-sm btn-light text-success')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => !$entity->isPublish())
+            ->linkToCrudAction('publish')
+            ->setHtmlAttributes([
+                'title' => "Publier l'élément",
+            ]);
+        $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
+            ->addCssClass('btn btn-ms btn-light text-danger')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => $entity->isPublish() && !$this->shouldDisplayUnpublishAction($entity))
+            ->linkToCrudAction('unpublish')
+            ->setHtmlAttributes([
+                'title' => "Dépublier l'élément",       
+            ]);
+        $unpublishWithRelatedEventAction = Action::new('unpublishWithRelatedEvent', 'Dépublier', 'fa fa-eye-slash')
+            ->addCssClass('btn btn-ms btn-light text-danger confirm-action')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => $this->shouldDisplayUnpublishAction($entity))
+            ->linkToCrudAction('unpublish')
+            ->setHtmlAttributes([
+                'title' => "Dépublier l'élément avec ces évènements liés",            
+                'data-bs-toggle' => 'modal',
+               'data-bs-target' => '#modal-unpublish',
+            ]);
+
         //renommage des actions possibles dans le formulaire
         return parent::configureActions($actions)
            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
@@ -69,7 +101,10 @@ class EventLocationCrudController extends AbstractCrudController
                     ])
                     ->displayAsLink()
                     ->addCssClass('btn btn-sm btn-light');
-            });    
+            })
+            ->add(Crud::PAGE_INDEX,$publishAction) 
+            ->add(Crud::PAGE_INDEX,$unpublishAction)
+            ->add(Crud::PAGE_INDEX,$unpublishWithRelatedEventAction); 
         }
 
         public function configureCrud(Crud $crud): Crud
@@ -82,8 +117,7 @@ class EventLocationCrudController extends AbstractCrudController
             ->setPageTitle('new', 'Ajouter un nouveau lieu')
             ->showEntityActionsInlined();
         }
-
-        
+      
         public function configureFields(string $pageName): iterable
         {
 
@@ -96,7 +130,8 @@ class EventLocationCrudController extends AbstractCrudController
                         ->setNumDecimals(14),
                     NumberField::new('longitude','Longitude')
                         ->setNumDecimals(14),
-                    BooleanField::new('publish','Publié'),
+                    BooleanField::new('publish','Publié')
+                        ->renderAsSwitch(false),
                     DateTimeField::new('dateModification', 'Dernière modification'),
                     TextField::new('userModification', 'Utilisateur'),
                     ];
@@ -132,24 +167,57 @@ class EventLocationCrudController extends AbstractCrudController
         public function delete(AdminContext $context)
         {
         /** @var EventLocation $eventLocation */
-        $eventLocation = $context->getEntity()->getInstance();
+            $eventLocation = $context->getEntity()->getInstance();
 
-        // Vérifier s'il existe des éléments Suivant liés
-        $hasRelatedItems = $this->entityManager->getRepository(Event::class)
-            ->count(['eventLocation' => $eventLocation]) > 0;
+            // Vérifier s'il existe des éléments Suivant liés
+            $hasRelatedItems = $this->entityManager->getRepository(Event::class)
+                ->count(['eventLocation' => $eventLocation]) > 0;
 
-        if ($hasRelatedItems) {
-            $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléments Évènements concernés');
+            if ($hasRelatedItems) {
+                $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléments Évènements concernés');
+                
+                $url = $this->container->get(AdminUrlGenerator::class)
+                    ->setController(self::class)
+                    ->setAction(Action::INDEX)
+                    ->generateUrl();
+
+                return $this->redirect($url);
+            }
+
+            return parent::delete($context);
+        }
+
+        public function publish(AdminContext $context): Response
+            {
+                $result = $this->publishService->publish($context);
+                $url = $result['url'];
+                $this->addFlash('success', 'Lieu publié avec succès');
+                return $this->redirect($url);
+            }
+
+        public function unpublish(AdminContext $context): Response
+        {
+            $result = $this->publishService->unpublish($context);
+            $url = $result['url'];
+            $hasRelatedItems = $result['hasRelatedItems'];
+            if ($hasRelatedItems) {
+                $this->addFlash('success', 'Lieu et événements liés dépubliés avec succès');
+            } else {
+                $this->addFlash('success', 'Lieu dépublié avec succès');
+            }
             
-            $url = $this->container->get(AdminUrlGenerator::class)
-                ->setController(self::class)
-                ->setAction(Action::INDEX)
-                ->generateUrl();
-
             return $this->redirect($url);
         }
 
-        return parent::delete($context);
-    }
-        
+        private function shouldDisplayUnpublishAction(EventLocation $eventLocation): bool
+        {
+            if (!$eventLocation->isPublish()) {
+                return false;
+            }
+
+            $hasRelatedPublishedEvents = $this->entityManager->getRepository(Event::class)
+                ->count(['eventLocation' => $eventLocation, 'publish' => true]) > 0;
+
+            return $hasRelatedPublishedEvents;
+        }
 }

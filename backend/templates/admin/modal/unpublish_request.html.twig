@@ -1,0 +1,24 @@
+{# @var ea \EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext #}
+<form class="d-none" method="post" id="unpublish-request">
+    <input type="hidden" name="token" value="{{ ea_csrf_token('ea-unpublish') }}" />
+</form>
+
+<div id="modal-unpublish" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <h4>{{ 'Voulez-vous dépublier le lieu' | trans }}</h4>
+                <p>{{ 'Des évènements liés à ce lieu sont publiés, ils seront aussi dépubliés' }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" data-bs-dismiss="modal" class="btn btn-secondary" id="modal-unpublish-cancel-button">
+                    <span class="btn-label">{{ 'Annuler' }}</span>
+                </button>
+
+                <button type="button" data-bs-dismiss="modal" class="btn btn-warning" id="modal-unpublish-button" form="unpublish_request">
+                    <span class="btn-label">{{ 'Confirmer' }}</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
