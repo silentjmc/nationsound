@@ -15,20 +15,26 @@ use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\Session\SessionFactory;
 
 //use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[AsDoctrineListener(event: Events::prePersist)]
 #[AsDoctrineListener(event: Events::preUpdate)]
-#[AsDoctrineListener(event: Events::postUpdate)]
+//#[AsDoctrineListener(event: Events::postUpdate)]
 #[AsDoctrineListener(event: Events::preRemove)]
-
-
 class EntityListener
 {
     private Security $security;
@@ -36,13 +42,18 @@ class EntityListener
     private array $changedEntities = [];
     private LoggerInterface $logger;
     private Filesystem $filesystem;
+    private RequestStack $requestStack;
+    private MessageService $messageService;
 
-    public function __construct(#[Autowire('%kernel.project_dir%')] private string $projectDir, Security $security, EntityManagerInterface $entityManager, LoggerInterface $logger, Filesystem $filesystem)
+    public function __construct(#[Autowire('%kernel.project_dir%')] private string $projectDir, Security $security, EntityManagerInterface $entityManager, LoggerInterface $logger, Filesystem $filesystem, MessageService $messageService, RequestStack $requestStack)
     {
         $this->security = $security;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->filesystem = $filesystem;
+        $this->messageService = $messageService;
+        $this->requestStack = $requestStack;
+    
     }
 
     public function prePersist(LifecycleEventArgs $args): void
@@ -73,13 +84,17 @@ class EntityListener
                 $entity->setUserModification($user->getEmail());
             }
         }
-
+/*
         if ($entity instanceof EventLocation && $args->hasChangedField('publish') && $args->getNewValue('publish') === false) {
             $this->changedEntities[spl_object_hash($entity)] = true;
-        }
+        }*/
+/*
+        if ($entity instanceof Event && $args->hasChangedField('publish') && $args->getNewValue('publish') === true) {
+            $this->changedEntities[spl_object_hash($entity)] = true;
+        }*/
     }
 
-    public function postUpdate(PostUpdateEventArgs $args): void
+   /* public function postUpdate(PostUpdateEventArgs $args): void
     {
         $entity = $args->getObject();
 
@@ -92,8 +107,28 @@ class EntityListener
                 $event->setPublish(false);
             }
             $this->entityManager->flush();
+
+            //$this->messageService->addMessage('info', 'Les événements associés à ce lieu ont été dépubliés.');
+            $this->addFlash('info', 'Les événements associés à ce lieu ont été dépubliés.');
+            //return $this->redirectToRoute('easyadmin_index');
         }
-    }
+
+        if ($entity instanceof Event && isset($this->changedEntities[spl_object_hash($entity)])) {
+            unset($this->changedEntities[spl_object_hash($entity)]);
+            
+            $eventsLocations = $this->entityManager->getRepository(EventLocation::class)->findBy(['event' => $entity, 'publish'=>false]);
+            foreach ($eventsLocations as $eventLocation) {
+                $entity->setPublish(false);
+            }
+            $this->entityManager->flush();
+
+            $this->messageService->addMessage('info', "Le lieu associé a cet évènement n'est pas publié");
+        
+        }
+    }*/
+
+        
+    
 
     public function preRemove(LifecycleEventArgs $args): void
     {

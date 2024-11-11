@@ -22,6 +22,7 @@ class EventTypeCrudController extends AbstractCrudController
     {
         $this->entityManager = $entityManager;
     }
+    
     public static function getEntityFqcn(): string
     {
         return EventType::class;
