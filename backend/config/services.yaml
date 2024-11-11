@@ -24,11 +24,13 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Service\EntityListener:
+        arguments:
+            $messageService: '@App\Service\MessageService'
         tags:
             - { name: 'doctrine.event_listener', event: 'prePersist' }
             - { name: 'doctrine.event_listener', event: 'preUpdate' }
             - { name: 'doctrine.event_listener', event: 'preRemove' }
-            - { name: doctrine.event_listener, event: postUpdate }
+            #- { name: doctrine.event_listener, event: postUpdate }
 
     App\Service\PositionService:
         arguments:
@@ -36,4 +38,4 @@ services:
     
     App\Service\ImageUploadSubscriber:
         arguments:
-            $projectDir: '%kernel.project_dir%'
+            $projectDir: '%kernel.project_dir%'    
