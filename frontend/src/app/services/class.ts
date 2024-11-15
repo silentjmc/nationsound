@@ -7,12 +7,13 @@ export interface Artist {
     description:string,
     type_musique:string,
     photo_artiste:string,
+    photo_thumbnail:string,
     date:string, 
     heure_debut:string, 
     heure_fin:string, 
     type_evenement:string,
-    scene?:string,
-    lieu_rencontre?:string,
+    scene:string,
+    publish:boolean
   }
 
   export interface CustomEvent {
