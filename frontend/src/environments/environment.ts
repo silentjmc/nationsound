@@ -1,4 +1,4 @@
 export const environment = {
-    production : true,
-    apiUrl: 'https://jmcarre.go.yj.fr/live_event'
+    production : false,
+    apiUrl: 'https://jmcarre.go.yj.fr/admin'
 };
