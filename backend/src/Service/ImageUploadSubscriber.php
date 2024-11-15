@@ -8,11 +8,9 @@ use Psr\Log\LoggerInterface;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use Imagine\Gd\Imagine;
-use Imagine\Image\Box;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\EntityManagerInterface;
-
 #[AsDoctrineListener(event: Events::prePersist)]
 #[AsDoctrineListener(event: Events::preUpdate)]
 
@@ -43,7 +41,6 @@ class ImageUploadSubscriber
     private function imageResize(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
-        //$entityClass = get_class($entity);
 
         if ($entity instanceof Artist) {
             if (empty($entity->getThumbnail())) {
@@ -75,8 +72,8 @@ class ImageUploadSubscriber
                     ]);
                     return; // Sortir si l'image est vide
                 }
-            }
-
+            } 
+            
             $this->resizeAndSaveImage($entity, 'Image', 'artists', 'webp', 768);
             $this->resizeAndSaveImage($entity, 'Thumbnail', 'artists', 'webp', 248);
 
@@ -113,7 +110,7 @@ class ImageUploadSubscriber
             $image = $this->imagine->open($path);
             $newPath = preg_replace('/\.[^.]+$/', '.' . $format, $path);
             $newFileName = pathinfo($newPath, PATHINFO_BASENAME);
-                
+
             $image->resize($image->getSize()->heighten($height))
                         ->save($newPath, [
                             'quality' => '75',
