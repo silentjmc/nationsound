@@ -85,7 +85,7 @@ class PartnersCrudController extends AbstractCrudController
                 ->setUploadDir('public/uploads/partners')
                 ->setBasePath('uploads/partners')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
-                ->setHelp(sprintf('L\'image sera automatiquement converti à une hauteur de 128px et en format webp.'))
+                ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti à une hauteur de 128px et en format webp.</span>'))
                 ->setFormTypeOptions([
                     'required' => ($pageName === Crud::PAGE_NEW ? true : false),
                 ]),

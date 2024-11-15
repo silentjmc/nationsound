@@ -86,7 +86,7 @@ class LocationTypeCrudController extends AbstractCrudController
                 ->setUploadDir('public/uploads/locations')
                 ->setBasePath('uploads/locations')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
-                ->setHelp(sprintf('L\'image sera automatiquement converti en format png avec une hauteur de 24 pixels. Privilégiez une image plutôt carré avec un fond transparent si posible.'))
+                ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti en format png avec une hauteur de 24 pixels. Privilégiez une image plutôt carré avec un fond transparent si posdible.'))
                 ->setFormTypeOptions([
                     'required' => ($pageName === Crud::PAGE_NEW ? true : false),
                 ]),
@@ -95,7 +95,6 @@ class LocationTypeCrudController extends AbstractCrudController
         ];       
         return $fields;
     }
-
     public function delete(AdminContext $context)
     {
         /** @var LocationType $locationType */

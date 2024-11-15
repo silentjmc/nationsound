@@ -99,15 +99,19 @@ class ArtistCrudController extends AbstractCrudController
                 ->setUploadDir('public/uploads/artists')
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
+                ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti en format webp avec une hauteur de 768 pixels.'))
                 ->setFormTypeOptions([
                     'required' => ($pageName === Crud::PAGE_NEW ? true : false),
+                    'allow_delete'=> false
                 ]),
             ImageField::new('thumbnail',' Miniature'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
                 ->setUploadDir('public/uploads/artists')
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('thumb_[name][randomhash].[extension]')
+                ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti en format webp avec une hauteur de 248 pixels. Privilégiez une image plutôt carré si possible.'))
                 ->setFormTypeOptions([
                     'required' => false,
+                    'allow_delete'=> false
                 ]),
             TextField::new('type_music', 'Type de musique')
                 ->setFormTypeOptions([
