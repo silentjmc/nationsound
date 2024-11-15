@@ -13,13 +13,4 @@ return [
     EasyCorp\Bundle\EasyAdminBundle\EasyAdminBundle::class => ['all' => true],
     Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle::class => ['all' => true],
     Liip\ImagineBundle\LiipImagineBundle::class => ['all' => true],
-    //Symfony\Bundle\DebugBundle\DebugBundle::class => ['dev' => true],
-    //Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['dev' => true, 'test' => true],
-    //Symfony\Bundle\MakerBundle\MakerBundle::class => ['dev' => true],
-    //Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['dev' => true, 'test' => true],
-    Symfony\Bundle\DebugBundle\DebugBundle::class => ['all' => true],
-    Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['all' => true],
-    Symfony\Bundle\MakerBundle\MakerBundle::class => ['all' => true],
-    Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['all' => true],
 ];
-
