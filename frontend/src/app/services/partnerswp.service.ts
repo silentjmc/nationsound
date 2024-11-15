@@ -1,9 +1,11 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
+import { environment } from '../../environments/environment';
 
 // Service pour se connecter à l'API wordpress de la liste des partenaires
 //const BASE_URL = 'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-json/wp/v2/partenaires?per_page=100&acf_format=standard';
-const BASE_URL = 'http://127.0.0.1:8000/api/partners'
+//const BASE_URL = 'http://127.0.0.1:8000/api/partners'
+const BASE_URL = `${environment.apiUrl}/api/partners`;
 @Injectable({
   providedIn: 'root'
 })

@@ -4,7 +4,8 @@ import { Observable, map, shareReplay,} from 'rxjs';
 import { Artist } from './class';
 import { environment } from '../../environments/environment';
 
-const BASE_URL = 'http://127.0.0.1:8000/api/event'
+//const BASE_URL = 'http://127.0.0.1:8000/api/event'
+const BASE_URL = `${environment.apiUrl}/api/event`;
 @Injectable({
   providedIn: 'root'
 })
@@ -43,12 +44,13 @@ export class EventService {
             description: event.artist.description, 
             type_musique: event.artist.type_music,
             photo_artiste: `${environment.apiUrl}/uploads/artists/${event.artist.image}`,
+            photo_thumbnail: `${environment.apiUrl}/uploads/artists/${event.artist.thumbnail}`,
             date: this.formatDate(event.date.date), 
             heure_debut: this.formatTime(event.heure_debut), 
             heure_fin: this.formatTime(event.heure_fin),
             type_evenement: event.type.type,
             scene: event.eventLocation.locationName,
-            lieu_rencontre: event.eventLocation.locationName
+            publish: event.publish
           }));
         }),
         shareReplay(1)  // Ajoutez cette ligne pour éviter de recharger les données à chaque fois
