@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, OnDestroy  } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
-//import { ScheduleService } from '../services/schedule.service';
 import { EventService } from '../services/event.service';
 import { Artist } from '../services/class';
 import { Observable, BehaviorSubject, combineLatest, EMPTY, Subscription } from 'rxjs';
