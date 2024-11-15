@@ -55,7 +55,7 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     //  Chargement des filtres
     //  Load filters
     this.loadFilters();
-    this.applyFilters();
+    this.applyFilters(); 
   }
   // Désabonnement de l'observable lors de la destruction du composant
   // Unsubscribe from the observable when the component is destroyed
@@ -85,7 +85,8 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
         // Récupération des lieux de rencontre
         // Get meeting places
         //const locations = [...new Set(artists.map(artist => artist.scene || artist.lieu_rencontre))];
-        const locations = [...new Set(artists.map(artist => artist.scene || artist.lieu_rencontre))];
+        console.log('Artsites', artists); 
+        const locations = [...new Set(artists.map(artist => artist.scene))];
         this.locationFilters = locations.map((location, index) => ({
           id: index,
           name: location,
@@ -169,7 +170,7 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
         // Filter artists based on location
         if (locations.length) {
           artists = artists.filter(artist => {
-            const sceneOrLocation = artist.scene || artist.lieu_rencontre;
+            const sceneOrLocation = artist.scene;
             return sceneOrLocation && locations.includes(sceneOrLocation);
           });
         }

@@ -10,15 +10,9 @@
       <p class="font-title text-black text-normal italic md:text-lg font-semibold pb-2">{{ artist.description }}</p>
       <!-- Affichage du lieu de l'évènement selon le type d'évènement -->
       <!-- Display event location according to event type -->
-      @if(artist.scene){
       <div class="flex gap-2">
         <p class="font-title text-black text-base font-semibold pb-2">{{ artist.type_evenement }} - Scène {{ artist.scene }} </p><img class="inline-flex h-5 place-content-start" src="../assets/music.png" alt="">
       </div>
-      } @else {
-      <div class="flex gap-2">
-        <p class="font-title text-black text-base font-semibold pb-2"> {{ artist.type_evenement }} - {{ artist.lieu_rencontre }}</p><img  class="inline-flex h-5 place-content-start" src="../assets/house.png" alt="">
-      </div>
-      }
       <p class="font-title text-black text-base font-semibold pb-2">{{ artist.date }} de {{ artist.heure_debut }} à {{ artist.heure_fin }}</p>
     </div>
   </div>

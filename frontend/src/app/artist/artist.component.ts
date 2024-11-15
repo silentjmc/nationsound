@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-//import { ScheduleService } from '../services/schedule.service';
 import { EventService } from '../services/event.service';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
