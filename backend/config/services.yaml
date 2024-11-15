@@ -24,8 +24,6 @@ services:
     # please note that last definitions always *replace* previous ones
 
     App\Service\EntityListener:
-        arguments:
-            $messageService: '@App\Service\MessageService'
         tags:
             - { name: 'doctrine.event_listener', event: 'prePersist' }
             - { name: 'doctrine.event_listener', event: 'preUpdate' }
