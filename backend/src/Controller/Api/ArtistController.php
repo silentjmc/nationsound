@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
+use App\Entity\Artist;
 
 class ArtistController extends AbstractController
 {
@@ -45,13 +46,17 @@ class ArtistController extends AbstractController
     public function getArtistList(ArtistRepository $artistRepository, SerializerInterface $serializer): JsonResponse
     {
         $artistList = $artistRepository->findAll();
-        
-        // Filtrer les événements publiés pour chaque artiste
-        foreach ($artistList as $artist) {
-            $artist->publishedEventsLinked();
-        }
 
-        $jsonArtistList = $serializer->serialize($artistList, 'json', ['groups' => 'getArtist']);
+
+        // Filtrer pour ne garder que les artistes avec des événements publiés
+        $artistsWithPublishedEvents = array_filter($artistList, function(Artist $artist) {
+            // Filtrer les événements publiés
+            $artist->publishedEventsLinked();
+            // Ne garder que les artistes qui ont au moins un événement publié
+            return count($artist->getEvents()) > 0;
+        });
+
+        $jsonArtistList = $serializer->serialize(array_values($artistsWithPublishedEvents), 'json', ['groups' => 'getArtist']);
         return new JsonResponse($jsonArtistList, Response::HTTP_OK, [], true);
     }
 }
