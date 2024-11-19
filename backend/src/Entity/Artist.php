@@ -15,32 +15,34 @@ class Artist
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["getArtist"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent","getArtist"])]
     private ?string $name = null;
 
     #[ORM\Column(type: Types::TEXT)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent","getArtist"])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent","getArtist"])]
     private ?string $image = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent","getArtist"])]
     private ?string $thumbnail = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent","getArtist"])]
     private ?string $type_music = null;
 
     /**
      * @var Collection<int, Event>
      */
     #[ORM\OneToMany(targetEntity: Event::class, mappedBy: 'artist')]
+    #[Groups(["getArtist"])]
     private Collection $events;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -183,5 +185,12 @@ class Artist
         $this->thumbnail = $thumbnail;
 
         return $this;
+    }
+
+    public function publishedEventsLinked(): void
+    {
+        $this->events = $this->events->filter(function(Event $event) {
+            return $event->isPublish();
+        });
     }
 }

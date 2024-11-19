@@ -20,7 +20,7 @@ class EventDate
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent", "getArtist"])]
     private ?\DateTimeInterface $date = null;
 
     /**

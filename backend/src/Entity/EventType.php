@@ -18,7 +18,7 @@ class EventType
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent", "getArtist"])]
     private ?string $type = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]

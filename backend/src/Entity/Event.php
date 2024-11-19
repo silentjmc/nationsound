@@ -17,16 +17,16 @@ class Event
     private ?int $id = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent", "getArtist"])]
     private ?\DateTimeInterface $heure_debut = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent", "getArtist"])]
     private ?\DateTimeInterface $heure_fin = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent", "getArtist"])]
     private ?EventType $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
@@ -36,7 +36,7 @@ class Event
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent", "getArtist"])]
     private ?EventDate $date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -46,12 +46,12 @@ class Event
     private ?string $userModification = null;
 
     #[ORM\Column]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent", "getArtist"])]
     private ?bool $publish = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["getEvent"])]
+    #[Groups(["getEvent", "getArtist"])]
     private ?EventLocation $eventLocation = null;
 
     public function getId(): ?int
