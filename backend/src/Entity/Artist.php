@@ -15,7 +15,7 @@ class Artist
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(["getArtist"])]
+    #[Groups(["getEvent","getArtist"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
