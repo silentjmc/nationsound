@@ -1,7 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA,OnInit, ViewChild, AfterViewInit, ElementRef, NgZone } from '@angular/core';
 import { CommonModule } from '@angular/common';
 //import { ScheduleService } from '../services/schedule.service';
-import { EventService } from '../services/event.service';
+import { ArtistService } from '../services/artist.service';
 import { Observable } from 'rxjs';
 import { Artist } from '../services/class';
 import { RouterLink, RouterModule } from '@angular/router';
@@ -18,13 +18,12 @@ import { RouterLink, RouterModule } from '@angular/router';
 
 export class CarouselComponent implements OnInit  {
   artists$!: Observable<Artist[]>;
-  constructor(private scheduleService: EventService) {
+  constructor(private artistService: ArtistService) {
   }
 
   ngOnInit(): void {
     //  Récupération des données artistes depuis le service
     //  Get artist data from the service
-    this.artists$ = this.scheduleService.artists$;
+    this.artists$ = this.artistService.getAllArtists();
   }
 }
-
