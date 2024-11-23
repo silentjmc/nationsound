@@ -32,7 +32,7 @@ class EventController extends AbstractController
      */   
         
     #[Route('/api/event', name: 'app_api_event', methods: ['GET'])]
-    public function getFaqList(EventRepository $eventRepository, SerializerInterface $serializer): JsonResponse
+    public function getEventList(EventRepository $eventRepository, SerializerInterface $serializer): JsonResponse
     {
         //$eventList = $eventRepository->findAll();
         $eventList = $eventRepository->findBy(
