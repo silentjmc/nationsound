@@ -1,20 +1,55 @@
 import { Marker } from "leaflet";
 
-// Classe pour les artistes
 export interface Artist {
-    id:number,
-    name:string,
-    description:string,
-    type_musique:string,
-    photo_artiste:string,
-    photo_thumbnail:string,
-    date:string, 
-    heure_debut:string, 
-    heure_fin:string, 
-    type_evenement:string,
-    scene:string,
-    publish:boolean
-  }
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  thumbnail: string;
+  type_music: string;
+  events?: ArtistEvent[]
+}
+
+export interface ArtistEvent {
+  heure_debut: string;
+  heure_fin: string;
+  type: EventType;
+  date: EventDate;
+  publish: boolean;
+  eventLocation: EventLocation;
+}
+
+export interface ProgramArtist {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  thumbnail: string;
+  type_music: string;
+}
+
+export interface Program {
+  id: number;
+  heure_debut: string;
+  heure_fin: string;
+  type: EventType;
+  artist: ProgramArtist;
+  date: EventDate;
+  publish: boolean;
+  eventLocation: EventLocation;
+}
+
+export interface EventType {
+  type: string;
+}
+
+export interface EventDate {
+  date: string;
+}
+
+export interface EventLocation {
+  locationName: string;
+}
 
   export interface CustomEvent {
     target: HTMLSelectElement;
@@ -54,4 +89,13 @@ export interface Artist {
   export interface PoiType {
     type: string;
     exactType: string;
+  }
+
+  export interface News {
+    id: number;
+    title: string;
+    content: string;
+    type: string;
+    publish: boolean;
+    date: string;
   }
