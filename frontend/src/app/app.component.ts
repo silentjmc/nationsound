@@ -9,24 +9,25 @@ import { PartnerFilterPipe } from './pipe/partner-filter.pipe';
 import { SortPipe } from './pipe/sort-by.pipe';
 import { FooterComponent } from './footer/footer.component';
 import { MapComponent } from './map/map.component';
+import { AlertNewsComponent } from './alert-news/alert-news.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, CommonModule, HeaderComponent, InformationComponent, PartnerFilterPipe, FooterComponent, MapComponent],
+  imports: [RouterOutlet, CommonModule, HeaderComponent, InformationComponent, PartnerFilterPipe, FooterComponent, MapComponent, AlertNewsComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'nationsound';
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
-  ngOnInit() {
+  /*ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       initFlowbite();
     }
-  }
+  }*/
 }
