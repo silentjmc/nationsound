@@ -36,4 +36,8 @@ services:
     
     App\Service\ImageUploadSubscriber:
         arguments:
-            $projectDir: '%kernel.project_dir%'    
+            $projectDir: '%kernel.project_dir%'
+
+    App\Service\PushyService:
+        arguments:
+            $apiKey: '%env(PUSHY_API_KEY)%'    
