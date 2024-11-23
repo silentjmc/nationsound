@@ -12,6 +12,7 @@ use App\Entity\Faq;
 use App\Entity\Information;
 use App\Entity\InformationSection;
 use App\Entity\LocationType;
+use App\Entity\News;
 use App\Entity\Partners;
 use App\Entity\PartnerType;
 use App\Entity\Role;
@@ -97,6 +98,9 @@ class DashboardController extends AbstractDashboardController
 
         yield MenuItem::section('HISTORIQUE','fa fa-lightbulb');
         yield MenuItem::linkToCrud('historiques','fa fa-info-circle', EntityHistory::class);
+        
+        yield MenuItem::section('ACTUALITÉS','fa fa-lightbulb');
+        yield MenuItem::linkToCrud('actualités','fa fa-info-circle', News::class);
 
 
 
