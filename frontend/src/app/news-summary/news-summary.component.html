@@ -1,0 +1,28 @@
+<div class="container mx-auto px-4 py-8">
+    <h1 class="font-title text-black text-3xl md:text-5xl uppercase font-extrabold text-center pb-2">Actualités</h1> 
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        @for(news of news$ | async ; track news.id) {
+            <article class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div class="p-6">
+                    <!-- Zone d'importance - même hauteur pour toutes les cartes -->
+                    <div class="h-10 mb-4">
+                        @if (news.type == "important") {
+                            <div class="bg-red-100 text-red-700 rounded-lg p-2">
+                                <p class="text-sm font-medium">⚠️ Information importante</p>
+                            </div>
+                        }
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2 text-gray-800">{{ news.title }}</h3>
+                    <p class="text-gray-600 mb-4">{{ news.content.length > maxLength ? (news.content | slice:0:maxLength) + '...' : news.content }}</p>
+                    @if (news.content.length > maxLength) {
+                        <a href="/informations/actualite/{{ news.id }}" class="text-blue-logo hover:text-blue-800 font-medium hover:underline">Lire la suite →</a>
+                    }
+                </div>
+            </article>
+        } @empty {
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-500 text-lg">Aucune actualité disponible pour le moment.</p>
+            </div>
+        }
+    </div>
+</div>
