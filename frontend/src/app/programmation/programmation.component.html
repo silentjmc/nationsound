@@ -11,10 +11,13 @@
         <div>
           <h3 class="font-title">Lieux</h3>
           @for(filter of locationFilters | sortBy:'name' ; track filter.id) {
-          <div>
-            <input type="checkbox" id="{{filter.name}}" (change)="locationChanged(filter.name)" />
-            <label class="mx-2 font-text" for="{{filter.name}}">{{filter.name}}</label>
-          </div>
+            <div>
+              <input type="checkbox" 
+                     [id]="filter.name" 
+                     [checked]="filter.isChecked"
+                     (change)="onLocationFilterChange(filter)" />
+              <label class="mx-2 font-text" [for]="filter.name">{{filter.name}}</label>
+            </div>
           }
         </div>
         <!-- filtre des événements -->
@@ -22,10 +25,13 @@
         <div>
           <h3 class="font-title">Événements</h3>
           @for(filter of eventFilters | sortBy:'name' ; track filter.id) {
-          <div>
-            <input type="checkbox" id="{{filter.name}}" (change)="eventChanged(filter.name)" />
-            <label class="mx-2 font-text" for="{{filter.name}}">{{filter.name}}</label>
-          </div>
+            <div>
+              <input type="checkbox" 
+                     [id]="filter.name" 
+                     [checked]="filter.isChecked"
+                     (change)="onEventFilterChange(filter)" />
+              <label class="mx-2 font-text" [for]="filter.name">{{filter.name}}</label>
+            </div>
           }
         </div>
         <!-- Filtre des dates -->
@@ -33,10 +39,15 @@
         <div>
           <h3 class="font-title">Dates</h3>
           @for(filter of dateFilters | sortBy:'name' ; track filter.id) {
-          <div>
-            <input type="checkbox" id="{{filter.name}}" (change)="dateChanged(filter.name)" />
-            <label class="mx-2 font-text" for="{{filter.name}}">{{filter.name}}</label>
-          </div>
+            <div>
+              <input type="checkbox" 
+                     [id]="filter.name" 
+                     [checked]="filter.isChecked"
+                     (change)="onDateFilterChange(filter)" />
+              <label class="mx-2 font-text" [for]="filter.name">
+                {{filter.name | date:'dd/MM/yyyy'}}
+              </label>
+            </div>
           }
         </div>
         <!-- filtre des horaires -->
@@ -45,19 +56,19 @@
           <h3 class="font-title">Horaires</h3>
           <div class="flex gap-3 font-text">
             <label for="timeStart" class="mt-1 w-7">De : </label>
-            <select id="timeStart" (change)="onTimeStartChange($event)" class="p-1 w-36">
+            <select id="timeStart" (change)="onTimeStartChange($event)" [value]="timeFiltersStart || ''" class="p-1 w-36">
               <option value="">- indifférent -</option>
               @for(filter of timeFilters | sortBy:'name'; track filter.id) {
-                <option [value]="filter.name">{{filter.name}}</option>
+                <option [value]="filter.name" [selected]="timeFiltersStart === filter.name">{{filter.name}}</option>
             }
             </select>
           </div>
           <div class="flex gap-3 mt-2 font-text">
             <label for="timeEnd" class="mt-1 w-7">A : </label>
-            <select id="timeEnd" (change)="onTimeEndChange($event)" class="p-1 w-36">
+            <select id="timeEnd" (change)="onTimeEndChange($event)"  [value]="timeFiltersEnd || ''" class="p-1 w-36">
               <option value="">- indifférent -</option>
               @for(filter of timeFinalFilters | sortBy:'name'; track filter.id) {
-                <option [value]="filter.name">{{filter.name}}</option>
+                <option [value]="filter.name" [selected]="timeFiltersEnd === filter.name">{{filter.name}}</option>
             }
             </select>
           </div>
@@ -72,35 +83,32 @@
     <!-- grilles des artistes  -->
     <!-- artists grids -->
     <div class="relative grid grid-cols-1 gap-5 m-1 mt-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 justify-items-center">
-    @for(artist of filteredArtists$ | async | sortBy :'name'| sortBy :'date'; track artist.id) {
-      @defer (on viewport) {
-      <a [routerLink]="['/artist', artist.id]">
-      <div class="flex flex-col bg-white rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100 my-6 w-48">
-        <div class="overflow-hidden rounded-md h-48 flex justify-center items-center">
-          <img class="w-full h-full object-cover" src="{{ artist.photo_thumbnail }}" alt="{{ artist.name }}" />
-        </div>
-        <div class="text-left px-2">
-          <h4 class="font-text font-semibold text-gray-700">{{ artist.type_evenement }}</h4>
-          @if(artist.name.length>20){
-            <h5 class="font-text text-lg leading-tight font-bold tracking-tight text-gray-900">{{ artist.name }}</h5>
-          } @else {
-            <h5 class="font-text text-xl font-bold tracking-tight text-gray-900">{{ artist.name }}</h5>
+    <!--@for(artist of filteredArtists$ | async | sortBy :'name'| sortBy :'date'; track artist.id) {-->
+      @for(program of (filteredPrograms$ | async); track program.id) {
+        @defer (on viewport) {
+          <a [routerLink]="['/artist', program.artist.id]">
+            <div class="flex flex-col bg-white rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100 my-6 w-48">
+              <div class="overflow-hidden rounded-md h-48 flex justify-center items-center">
+                <img class="w-full h-full object-cover" src="{{ program.artist.thumbnail }}" alt="{{ program.artist.name }}" />
+              </div>
+              <div class="text-left px-2">
+                <h4 class="font-text font-semibold text-gray-700">{{ program.type.type }}</h4>
+                @if(program.artist.name.length>20){
+                  <h5 class="font-text text-lg leading-tight font-bold tracking-tight text-gray-900">{{ program.artist.name }}</h5>
+                } @else {
+                  <h5 class="font-text text-xl font-bold tracking-tight text-gray-900">{{ program.artist.name }}</h5>
+                }
+                <p class="font-text text-base text-gray-700">{{program.date.date | date:'dd/MM/yyyy'}}</p>
+                <p class="font-text text-base text-gray-700">{{program.heure_debut | date:'HH:mm'}} - {{program.heure_fin | date:'HH:mm'}}</p>
+                <p class="font-text text-base text-gray-700">{{program.eventLocation.locationName}}</p>
+              </div>
+            </div>
+          </a>
+          } 
+          @placeholder {
+            <div class="w-full h-64 bg-gray-200 animate-pulse rounded-lg"></div>
           }
-          <p class="font-text text-base text-gray-700">{{ artist.date }}</p>
-          <p class="font-text text-base text-gray-700">{{ artist.heure_debut }} - {{ artist.heure_fin }} </p>
-          @if(artist.scene){
-            <p class="font-text text-base text-gray-700">Scène {{ artist.scene }}</p>
-          } @else {
-            <p class="font-text text-base text-gray-700"> {{ artist.lieu_rencontre }}</p>
-          }
-          </div>
-        </div>
-      </a>
-      } 
-      @placeholder {
-        <div class="w-full h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-      }
-    }
+        }
     </div>
   </div>
 </main>
