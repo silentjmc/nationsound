@@ -3,8 +3,6 @@ import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { initFlowbite } from 'flowbite';
 import { RouterLink, RouterLinkActive, RouterModule } from '@angular/router';
 
-
-
 @Component({
   selector: 'app-header',
   standalone: true,
@@ -19,7 +17,7 @@ export class HeaderComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
-  ngOnInit() {
+  *ngOnInit() {
     if (isPlatformBrowser(this.platformId)) initFlowbite();
   }
 
