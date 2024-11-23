@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EventService } from '../services/event.service';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+//import { EventService } from '../services/event.service';
+import { Observable, BehaviorSubject } from 'rxjs';
+//import { map } from 'rxjs/operators';
 import { Artist } from '../services/class';
 import { CommonModule } from '@angular/common';
+import { ArtistService } from '../services/artist.service';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-artist',
@@ -16,22 +18,51 @@ import { CommonModule } from '@angular/common';
 
 export class ArtistComponent implements OnInit{
   artist$!: Observable<Artist | null>;
+  loading$ = new BehaviorSubject<boolean>(true);
+  error$ = new BehaviorSubject<boolean>(false);
 
-  constructor(private route: ActivatedRoute,private scheduleService: EventService)
+  constructor(private route: ActivatedRoute,private artistService: ArtistService, private location: Location)
    {}
 
   ngOnInit(): void {
     // Récupération de l'identifiant de l'artiste
     // Getting the artist's ID
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    // Si l'identifiant existe, on récupère l'artiste correspondant sinon on renvoie null
-    // If the ID exists, we get the corresponding artist otherwise we return null
+    /*
     if (id) {
-    //  Récupération des données artistes depuis le service selon l'identifiant
-    //  Get artist data from the service according to the ID
-      this.artist$ = this.scheduleService.artists$.pipe(
-        map(artists => artists.find(artist => artist.id === id) ?? null)
-      );
+      this.artist$ = this.artistService.getArtist(id);
+    } else {
+      this.artist$ = new Observable<null>();
+    }*/
+
+    if (id) {
+      this.loading$.next(true);
+      this.error$.next(false);
+      
+      this.artistService.getArtist(id).subscribe({
+        next: (artist) => {
+          if (artist) {
+            this.artist$ = new Observable(observer => {
+              observer.next(artist);
+              observer.complete();
+            });
+          } else {
+            this.error$.next(true);
+          }
+          this.loading$.next(false);
+        },
+        error: () => {
+          this.error$.next(true);
+          this.loading$.next(false);
+        }
+      });
+    } else {
+      this.error$.next(true);
+      this.loading$.next(false);
     }
+  }
+
+  goBack(): void {
+    this.location.back();
   }
 }
