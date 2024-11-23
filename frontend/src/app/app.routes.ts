@@ -8,6 +8,8 @@ import { FaqComponent } from './faq/faq.component';
 import { HomeComponent } from './home/home.component';
 import { MapComponent } from './map/map.component';
 import { ArtistComponent } from './artist/artist.component';
+import { NewsSummaryComponent } from './news-summary/news-summary.component';
+import { NewsDetailComponent } from './news-detail/news-detail.component';
 
 export const routes: Routes = [
     {path:'accueil', component:HomeComponent},
@@ -15,6 +17,8 @@ export const routes: Routes = [
     {path:'carte', component:MapComponent},
     {path:'informations', component:NavBarInformationsComponent,    
     children: [
+        { path: 'actualites', component: NewsSummaryComponent },
+        { path: 'actualite/:id', component: NewsDetailComponent },
         { path: 'infos', component: InformationComponent },
         { path: 'faq', component: FaqComponent }, 
         { path: '', redirectTo: 'infos', pathMatch: 'full' }
