@@ -48,4 +48,17 @@ class NewsController extends AbstractController
         
         return new JsonResponse($jsonNews, 200, [], true);
     }
+
+    #[Route('api/latestNotification', name: 'app_api_latest_notification', methods: ['GET'])]
+    public function getLatestNotification(NewsRepository $newsRepository, SerializerInterface $serializer): JsonResponse
+    {
+        $news = $newsRepository->findLatestActiveNotification();
+        
+        if (!$news) {
+            return new JsonResponse(null, 204);
+        }
+        
+        $jsonNews = $serializer->serialize($news, 'json', ['groups' => ['getNews']]);
+        return new JsonResponse($jsonNews, 200, [], true);
+    }
 }

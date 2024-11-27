@@ -16,7 +16,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\PublishService;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class NewsCrudController extends AbstractCrudController
 {
@@ -38,15 +41,24 @@ class NewsCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             ChoiceField::new('type', 'Type')
                 ->setChoices([
-                    'Normal' => 'normal',
-                    'Important' => 'important',
+                    'Normal' => 'primary',
+                    'Important' => 'warning',
+                    'Urgent' => 'danger'
                 ]),
             TextField::new('title','Titre'),
-            TextareaField::new('content','description'),
-            BooleanField::new('publish','Publier')->renderAsSwitch(false),
+            TextareaField::new('content','Contenu'),
+            BooleanField::new('publish','Publier')->onlyOnIndex()->renderAsSwitch(false),
+            BooleanField::new('publish','Publier')->HideOnIndex()->renderAsSwitch(true),
             BooleanField::new('push','Notifier ?')->onlyOnIndex()->renderAsSwitch(false),
+            BooleanField::new('push','Notifier ?')->HideOnIndex()->renderAsSwitch(true)
+            ->setHelp("Seule la dernière actualité notifiée sera affichée sur l'application"),
+            DateTimeField::new('notificationDate', 'Date de notification')->hideOnForm(),
+            DateField::new('notificationEndDate', 'Fin de notification')
+            ->setHelp('Date de fin d\'affichage de la notification (optionnel)')
+            ->setRequired(false),
             DateTimeField::new('dateModification','Date de modification')->hideOnForm(),
             TextField::new('userModification','Utilisateur')->hideOnForm(),
         ];
@@ -57,7 +69,8 @@ class NewsCrudController extends AbstractCrudController
         $sendNotification = Action::new('sendNotification', 'Envoyer la notification', 'fa fa-bell')
             ->linkToCrudAction('sendNotification')
             ->addCssClass('btn btn-sm btn-light')
-            ->setLabel(false);
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => !$entity->isPush());
 
         $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
         ->addCssClass('btn btn-sm btn-light text-success')
@@ -117,24 +130,27 @@ class NewsCrudController extends AbstractCrudController
     public function sendNotification(AdminContext $context)
     {
         $news = $context->getEntity()->getInstance();
-        $data = [
+        /*$data = [
             'title' => $news->getTitle(),
             'content' => $news->getContent(),
         ];
-        $this->pushyService->sendNotification($data);
+        $this->pushyService->sendNotification($data);*/
 
         $news->setPush(true);
-        $this->entityManager->persist($news);
+        //$news->setNotificationDate(new \DateTime());
+        //$this->entityManager->persist($news);
         $this->entityManager->flush();
 
-        $this->addFlash('success', 'Notification envoyée avec succès');
-
+        $this->addFlash('success', 'Notification envoyée');
+/*
              $url = $this->generateUrl('admin', [
                 'crudAction' => 'index',
                 'crudControllerFqcn' => self::class,
-            ]);
+            ]);*/
+        $url = $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->setController(self::class)->generateUrl();
         return $this->redirect($url);
     }
+
 
     public function publish(AdminContext $context): Response
             {
@@ -157,7 +173,4 @@ class NewsCrudController extends AbstractCrudController
         
         return $this->redirect($url);
     }
-
-
-
 }
