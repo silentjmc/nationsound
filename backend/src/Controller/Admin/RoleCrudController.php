@@ -3,18 +3,24 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Role;
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
-
-
-
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class RoleCrudController extends AbstractCrudController
 {
+    private EntityManagerInterface $entityManager;
 
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
     public static function getEntityFqcn(): string
     {
         return Role::class;
@@ -27,6 +33,8 @@ class RoleCrudController extends AbstractCrudController
         ->setEntityLabelInSingular('Rôle')
         ->setEntityLabelInPlural('Rôles')
         ->setPageTitle('new', 'Ajouter un nouveau rôle')
+        ->setPageTitle('index', 'Liste des Rôles (Lecture seule)')
+        ->showEntityActionsInlined(false);
             ;
     }
 
@@ -34,15 +42,11 @@ class RoleCrudController extends AbstractCrudController
     {
 
     return $actions
-        ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-            return $action->setLabel('Ajouter un rôle');
-        })
-        ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
-            return $action->setLabel('Créer le rôle');
-        })
-        ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
-            return $action->setLabel('Créer et ajouter un autre rôle');
-        });
+        ->remove(Crud::PAGE_DETAIL, Action::DELETE)
+        ->remove(Crud::PAGE_DETAIL, Action::EDIT)
+        ->remove(Crud::PAGE_INDEX, Action::NEW)
+        ->disable(Action::DELETE, Action::EDIT, Action::NEW);
+
     }
 
     /*
@@ -70,6 +74,10 @@ class RoleCrudController extends AbstractCrudController
 
         ];
     }
+
+    
+
+    
 
 
 
