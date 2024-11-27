@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Confirmation de demande d'inscription - Nation Sound</title>
+</head>
+<body>
+<div style="max-width: 600px; margin: 0 auto; padding: 20px; font-family: Arial, sans-serif;">
+    <h1 style="color: #4299e1; text-align: center;">Confirmation de demande d'inscription</h1>
+    
+    <div style="background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <p>Bonjour {{ user.firstname }} {{ user.lastname }},</p>
+        
+        <p>Nous vous confirmons que votre demande d'inscription sur la plateforme Nation Sound a bien été enregistrée.</p>
+        
+        <p>Un administrateur va examiner votre demande dans les plus brefs délais. Vous recevrez un email dès que votre inscription aura été validée.</p>
+        
+        <p>Voici un récapitulatif de vos informations :</p>
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin: 10px 0;"><strong>Nom :</strong> {{ user.lastname }}</li>
+            <li style="margin: 10px 0;"><strong>Prénom :</strong> {{ user.firstname }}</li>
+            <li style="margin: 10px 0;"><strong>Email :</strong> {{ user.email }}</li>
+        </ul>
+    </div>
+
+    <p style="color: #64748b; text-align: center; margin-top: 30px; font-size: 14px;">
+        Cet email a été envoyé automatiquement, merci de ne pas y répondre.
+    </p>
+</div>
+</body>
+</html>

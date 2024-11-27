@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Validation d'inscription - Administration Nation Sound{% endblock %}
+
+{% block body %}
+<div class="min-h-screen bg-slate-600 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-2xl">
+        <div class="text-center">
+            <img class="mx-auto h-24 w-auto rounded-lg border border-black/10" src="{{ asset('images/logo_ns_rect_txtw.png') }}" alt="Nation Sound">
+            <h2 class="mt-6 text-3xl font-bold text-gray-900">
+                Validation d'inscription
+            </h2>
+            <p class="mt-2 text-sm text-gray-600">
+                Veuillez valider ou refuser l'inscription de l'utilisateur
+            </p>
+        </div>
+
+        <div class="mt-8 space-y-6">
+            <!-- Informations de l'utilisateur -->
+            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nom</label>
+                        <div class="mt-1 text-gray-900">{{ user.lastname }}</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Prénom</label>
+                        <div class="mt-1 text-gray-900">{{ user.firstname }}</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Email</label>
+                        <div class="mt-1 text-gray-900">{{ user.email }}</div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Date d'inscription</label>
+                        <div class="mt-1 text-gray-900">{{ user.registrationDate|date('d/m/Y H:i') }}</div>
+                    </div>
+                    <!-- Sélection du rôle -->
+                    <div class="mt-6">
+                        <label for="role" class="block text-sm font-medium text-gray-700">Rôle à attribuer</label>
+                        <select id="role" name="role" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                            {% for role in roles %}
+                                <option value="{{ role.id }}">{{ role.role }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="mt-5 flex justify-center space-x-4">
+                <form method="post" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir valider cette inscription ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ token) }}">
+                    <input type="hidden" name="action" value="validate">
+                    <input type="hidden" name="role" id="selected_role">
+                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded" onclick="document.getElementById('selected_role').value = document.getElementById('role').value;">
+                        Valider l'inscription
+                    </button>
+                </form>
+
+                <form method="post" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir refuser cette inscription ? Cette action est irréversible.');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ token) }}">
+                    <input type="hidden" name="action" value="reject">
+                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">
+                        Refuser l'inscription
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Message d'aide -->
+        <div class="mt-6">
+            <p class="text-sm text-gray-600 text-center">
+                Un email sera automatiquement envoyé à l'utilisateur pour l'informer de l'inscription ou non.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
