@@ -2,4 +2,4 @@ framework:
     mailer:
         dsn: '%env(MAILER_DSN)%'
         envelope:
-            sender: 'nationsound@jmcarre.go.yj.fr'
+            sender: 'votre-email@domaine.com'
