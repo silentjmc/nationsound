@@ -135,6 +135,7 @@ class FaqCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             IntegerField::new('position', 'position')->onlyOnIndex(),
             TextField::new('question'),
             TextareaField::new('reponse'),

@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class LocationTypeCrudController extends AbstractCrudController
@@ -81,6 +82,7 @@ class LocationTypeCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable 
     {
         $fields = [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             TextField::new('type','Type de lieu'),
             ImageField::new('symbol',($pageName === Crud::PAGE_INDEX ? 'symbole' : 'Télécharger le symbole représentant le lieu sur la carte'))
                 ->setUploadDir('public/uploads/locations')

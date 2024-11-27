@@ -11,6 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
@@ -75,6 +76,7 @@ class PartnerTypeCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             TextField::new('type'),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),

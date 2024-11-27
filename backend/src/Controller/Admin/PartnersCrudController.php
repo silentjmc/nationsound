@@ -14,6 +14,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 
@@ -80,6 +81,7 @@ class PartnersCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             TextField::new('name','Nom du partenaire'),
             ImageField::new('image',($pageName === Crud::PAGE_INDEX ? 'logo' :'Télécharger le logo du partenaire'))
                 ->setUploadDir('public/uploads/partners')

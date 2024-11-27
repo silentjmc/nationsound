@@ -13,6 +13,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
@@ -82,6 +83,7 @@ class EventDateCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             DateField::new('date'),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Faite par')->onlyOnIndex(),

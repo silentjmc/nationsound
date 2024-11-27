@@ -24,6 +24,7 @@ use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -129,7 +130,8 @@ class EventCrudController extends AbstractCrudController
         $fields = [];
 
         if ($pageName === Crud::PAGE_INDEX) { 
-            $fields=[TextField::new('type.type', 'Type d\'évènement' ),
+            $fields=[IntegerField::new('id', 'Identifiant'),
+            TextField::new('type.type', 'Type d\'évènement' ),
             TextField::new('artist.name','Artiste'),
             TextField::new('eventLocation.location_name','Lieu'),
             TextField::new('date','Date de l\'évènement'),

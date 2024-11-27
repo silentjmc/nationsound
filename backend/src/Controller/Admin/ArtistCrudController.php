@@ -12,6 +12,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
@@ -83,6 +84,7 @@ class ArtistCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             TextField::new('name', 'Nom de l\'artiste ou du groupe')
                 ->setFormTypeOptions([
                     'attr' => [

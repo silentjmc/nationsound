@@ -111,6 +111,7 @@ class InformationSectionCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             IntegerField::new('position', 'Position')->onlyOnIndex(),
             TextField::new('section',($pageName === Crud::PAGE_INDEX ? 'Section' : 'Section (partie dans la page informations)')),
             TextField::new('title',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre dans la page informations')),

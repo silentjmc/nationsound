@@ -133,6 +133,7 @@ class InformationCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $fields = [
+            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             IntegerField::new('position', 'Position')->onlyOnIndex(),
             TextField::new('typeSection', 'Section')->hideOnForm(),
             AssociationField::new('typeSection', 'Section')->onlyOnForms()

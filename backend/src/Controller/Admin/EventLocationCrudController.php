@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -123,6 +124,7 @@ class EventLocationCrudController extends AbstractCrudController
 
             if ($pageName === Crud::PAGE_INDEX) {
                 $fields = [
+                    IntegerField::new('id', 'Identifiant'),
                     TextField::new('locationName','Nom du lieu'),
                     TextareaField::new('description','Description'),
                     TextField::new('typeLocation', 'Type de lieu'),
