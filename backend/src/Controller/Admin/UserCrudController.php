@@ -3,6 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
@@ -10,11 +11,22 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
+use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserCrudController extends AbstractCrudController
 {
+
+    private $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     public static function getEntityFqcn(): string
     {
         return User::class;
@@ -74,7 +86,8 @@ class UserCrudController extends AbstractCrudController
                 TextField::new('email','Email'),
                 TextField::new('lastname','Nom'),
                 TextField::new('firstname','Prénom'),
-                TextField::new('role','Rôle')];
+                TextField::new('role','Rôle'),
+                BooleanField::new('isVerified','Utilisateur vérifié')->renderAsSwitch(false)];
 
         } else {    
         $fields = [
@@ -98,29 +111,74 @@ class UserCrudController extends AbstractCrudController
                 ]),
             AssociationField::new('role','Rôle')
                 ->setFormTypeOption('placeholder', 'Choisissez le rôle de l\'utilisateur')
-                ->setFormTypeOption('choice_label', 'role')
+                ->setFormTypeOption('choice_label', 'role'),
+            BooleanField::new('isVerified','Utilisateur vérifié'),
         ];}
-
-        if ($pageName === Crud::PAGE_NEW) {
-            $fields[] = TextField::new('password', 'Mot de passe')
-                ->setFormType(RepeatedType::class)
-                ->setFormTypeOptions([
-                    'type' => PasswordType::class,
-                    'first_options' => ['label' => 'Mot de passe'],
-                    'second_options' => ['label' => 'Répéter le mot de passe'],
-                    'mapped' => false,
-                ]);
-        } elseif ($pageName === Crud::PAGE_EDIT) {
-            $fields[] = TextField::new('password', 'Mot de passe')
-                ->setFormType(PasswordType::class)
-                ->setFormTypeOptions([
-                    'attr' => ['placeholder' => 'Laissez vide pour ne pas changer'],
-                    'required' => false,
-                    'mapped' => false,
-                ]);
-        }
 
         return $fields;
     }
 
+    public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
+    {
+        /** @var User $user */
+        $user = $entityInstance;
+        
+        // Récupérer l'ancien rôle avant modification
+        $originalUser = $entityManager->getUnitOfWork()->getOriginalEntityData($user);
+        $originalRole = $originalUser['role'];
+        $originalIsVerified = $originalUser['isVerified'];
+
+        if ($originalRole->getRole() === 'Administrateur') {
+            $adminCount = $entityManager->getRepository(User::class)->count(['role' => $originalRole]);
+
+            if ($adminCount <= 1) {
+                $hasChanged = false;
+
+                if ($user->getRole()->getRole() !== 'Administrateur') {
+                    $user->setRole($originalRole);
+                    $hasChanged = true;
+                }
+
+                if ($originalIsVerified && !$user->isVerified()) {
+                    $user->setIsVerified(true);
+                    $hasChanged = true;
+                }
+
+                if ($hasChanged) {
+                    $this->addFlash(
+                        'danger',
+                        'Impossible de modifier le rôle ou le statut de vérification du dernier administrateur. Veuillez d\'abord créer un autre administrateur.'
+                    );
+                    return;
+                }
+            }
+        }
+    
+        parent::updateEntity($entityManager, $entityInstance);
+    }
+
+
+
+    public function delete(AdminContext $context)
+    {
+        /** @var User $user */
+        $principal = $context->getEntity()->getInstance();
+        $userRole = $principal->getRole();
+
+        $hasRelatedItems = $this->entityManager->getRepository(User::class)
+        ->count(['role' => $principal]) > 0;
+
+        if ($hasRelatedItems && $userRole->getRole() === 'Administrateur' ) {
+            $this->addFlash('danger', 'Impossible de supprimer cet utilisateur car c\'est le dernier administrateur du système. Veuillez d\'abord créer un autre administrateur.');
+            
+            $url = $this->container->get(AdminUrlGenerator::class)
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl();
+
+            return $this->redirect($url);
+        }
+
+        return parent::delete($context);
+    }
 }
