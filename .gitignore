@@ -1,2 +1,3 @@
 backend/php.ini
 backend/cacert.pem
+backend/config/packages/mailer_dev-prod.yaml
