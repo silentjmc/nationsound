@@ -1,1 +1,53 @@
-<p>alert-news works!</p>
+@if (notification$ | async; as notification) {
+  <div [class]="getAlertClass(notification.type)" class="fixed top-0 left-0 right-0 z-50 px-4 py-3 border-t-4 shadow-md">
+      <div class="flex justify-between container mx-auto">
+        <div class="flex-grow">
+          <!-- En-tête avec icône et titre -->
+          <div class="flex items-center mb-1">
+          <!-- Icône selon le type -->
+          @switch (notification.type) {
+            @case ('primary') {
+              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/>
+              </svg>
+            }
+            @case ('warning') {
+              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/>
+              </svg>
+            }
+            @case ('danger') {
+              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+              </svg>
+            }
+          }
+          <h3 class="font-medium text-lg">{{ notification.title }}</h3>
+        </div>
+        <!-- Contenu tronqué et lien "Lire la suite" -->
+        @if (notification.content) {
+          <div class="ml-7">
+            <p class="text-sm">{{ getTruncatedContent(notification) }}</p>
+            @if (isContentTruncated(notification)) {
+              <button (click)="goToNewsDetail(notification)" 
+                      class="text-sm font-medium hover:underline mt-1">
+                [Lire la suite ...]
+              </button>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Boutons d'action -->
+      <div class="flex items-start space-x-2 ml-4">
+        <!-- Bouton fermeture définitive -->
+        <button (click)="dismissNotification(notification)" 
+                class="p-1 hover:bg-opacity-75 rounded-full">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+}

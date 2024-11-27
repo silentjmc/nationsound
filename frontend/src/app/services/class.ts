@@ -95,7 +95,9 @@ export interface EventLocation {
     id: number;
     title: string;
     content: string;
-    type: string;
     publish: boolean;
-    date: string;
+    push: boolean;
+    type: string;
+    notificationDate: string;
+    notificationEndDate: string;
   }

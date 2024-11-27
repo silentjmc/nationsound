@@ -1,7 +1,7 @@
-import { Component, OnInit, PLATFORM_ID , Inject } from '@angular/core';
-import Pushy from 'pushy-sdk-web';
-import 'babel-polyfill';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { NotificationService } from '../services/notification.service';
+import { News } from '../services/class';
 
 @Component({
   selector: 'app-alert-news',
@@ -10,44 +10,51 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
   templateUrl: './alert-news.component.html',
   styleUrl: './alert-news.component.css'
 })
-export class AlertNewsComponent implements OnInit {
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
-  async ngOnInit() {
-    if (isPlatformBrowser(this.platformId)) {
-      // Import Pushy dynamiquement seulement côté client
-      try {
-        const Pushy = (await import('pushy-sdk-web')).default;
-        
-        Pushy.register({ appId: '6738f360377b179337a402cb' })
-          .then((deviceToken) => {
-            console.log('Pushy device token: ' + deviceToken);
-            alert('Pushy device token: ' + deviceToken);
 
-            // Check if the user is registered
-            if (Pushy.isRegistered()) {
-              // Subscribe the user to a topic
-              Pushy.subscribe('news')
-              .then(() => {
-                // Notify user of success
-                console.log('Successfully subscribed to the topic "news"');
-                alert('Successfully subscribed to the topic "news"');
-              })
-              .catch(function (err) {
-                  // Notify user of failure
-                  alert('Subscribe failed: ' + err.message);
-              });
-            }
-          })
-          .catch((err) => {
-            console.error('Registration failed:', err);
-            alert('Registration failed: ' + err.message);
-          });
-      } catch (error) {
-        console.error('Error loading Pushy:', error);
+  export class AlertNewsComponent {
+  notification$ = this.notificationService.getCurrentNotification();
+  readonly MAX_CONTENT_LENGTH = 150; // Limite de caractères pour le content
+
+  constructor(private notificationService: NotificationService) {}
+      getNotificationClass(notification: News): string {
+        return `alert-${notification.type}`; 
+    }
+
+    dismissNotification(notification: News) {
+      this.notificationService.dismissNotification(notification.id);
+    }
+
+    getAlertClass(type: string): string {
+      if (!type) return '';
+  
+      const baseClasses = 'bg-opacity-90 border-2';
+      switch (type) {
+        case 'primary': return `${baseClasses} bg-blue-50 border-blue-500 text-blue-700`;
+        case 'warning': return `${baseClasses} bg-yellow-50 border-yellow-500 text-yellow-700`;
+        case 'danger': return `${baseClasses} bg-red-50 border-red-500 text-red-700`;
+        default: return `${baseClasses} bg-gray-50 border-gray-500 text-gray-700`;
       }
     }
+
+  isContentTruncated(notification: News): boolean {
+    return notification?.content?.length > this.MAX_CONTENT_LENGTH;
   }
-} 
+
+  getTruncatedContent(notification: News): string {
+    if (!notification?.content) return '';
+    if (notification.content.length <= this.MAX_CONTENT_LENGTH) {
+      return notification.content;
+    }
+    return `${notification.content.slice(0, this.MAX_CONTENT_LENGTH)}...`;
+  }
+
+  goToNewsDetail(notification: News) {
+    // Fermer la notification
+    this.dismissNotification(notification);
+    // Rediriger vers la page de détail
+    window.location.href = `/informations/actualite/${notification.id}`;
+  }
+}
   
 
