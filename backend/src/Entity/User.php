@@ -25,7 +25,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'Marketing' => 'ROLE_MARKETING',
             'Redacteur' => 'ROLE_REDACTEUR',
             'Utilisateur' => 'ROLE_USER',
-            // Ajoutez d'autres mappings si nécessaire ROLE_EDITOR
+            'En attente' => 'ROLE_PENDING'
         ];
     
         $symfonyRole = $roleMap[$roleName] ?? 'ROLE_USER';
@@ -50,34 +50,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column]
     private ?string $password = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
     private ?string $firstname = null;
 
-    #[ORM\OneToOne]
+    #[ORM\Column(length: 255)]
+    private ?string $lastname = null;
+
+    #[ORM\ManyToOne(inversedBy: 'users')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Role $role = null;
+
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $registrationToken = null;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $resetPasswordToken = null;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isVerified = false;
+
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $registrationDate;
+
+    public function __construct()
+    {
+        $this->registrationDate = new \DateTime();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
-
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
 
     public function getEmail(): ?string
     {
@@ -87,11 +96,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -99,19 +107,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
-        return $this;
-    }
-
-    public function getLastname(): ?string
-    {
-        return $this->lastname;
-    }
-
-    public function setLastname(string $lastname): static
-    {
-        $this->lastname = $lastname;
-
         return $this;
     }
 
@@ -126,9 +121,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getFullName()
+    public function getLastname(): ?string
     {
-        return $this->getFirstName().' '.$this->getLastName();
+        return $this->lastname;
+    }
+
+    public function setLastname(string $lastname): static
+    {
+        $this->lastname = $lastname;
+        return $this;
     }
 
     public function getRole(): ?Role
@@ -136,13 +137,58 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->role;
     }
 
-    public function setRole(Role $role): static
+    public function setRole(?Role $role): static
     {
         $this->role = $role;
-
         return $this;
     }
+
+    public function getRegistrationToken(): ?string
+    {
+        return $this->registrationToken;
+    }
+
+    public function setRegistrationToken(?string $registrationToken): static
+    {
+        $this->registrationToken = $registrationToken;
+        return $this;
+    }
+
+    public function getResetPasswordToken(): ?string
+    {
+        return $this->resetPasswordToken;
+    }
+
+    public function setResetPasswordToken(?string $resetPasswordToken): self
+    {
+        $this->resetPasswordToken = $resetPasswordToken;
+        return $this;
+    }
+
+    public function isVerified(): bool
+    {
+        return $this->isVerified;
+    }
+
+    public function setIsVerified(bool $isVerified): static
+    {
+        $this->isVerified = $isVerified;
+        return $this;
+    }
+
+    public function getRegistrationDate(): \DateTimeInterface
+    {
+        return $this->registrationDate;
+    }
+
+    public function setRegistrationDate(\DateTimeInterface $registrationDate): static
+    {
+        $this->registrationDate = $registrationDate;
+        return $this;
+    }
+
+    public function getFullName()
+    {
+        return $this->getFirstname().' '.$this->getLastname();
+    }
 }
-
-
-
