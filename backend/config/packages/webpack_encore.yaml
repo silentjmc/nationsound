@@ -1,0 +1,22 @@
+webpack_encore:
+    # The path where Encore is building the assets
+    output_path: '%kernel.project_dir%/public/build'
+    
+    # Set attributes that will be rendered on all script and link tags
+    script_attributes:
+        defer: true
+    
+    strict_mode: true
+
+framework:
+    assets:
+        json_manifest_path: '%kernel.project_dir%/public/build/manifest.json'
+
+when@prod:
+    webpack_encore:
+        output_path: '/home/gxefrysq/public_html/admin/build'
+    
+    framework:
+        assets:
+            base_path: '/admin'
+            #json_manifest_path: '/home/gxefrysq/public_html/admin/build/manifest.json'

@@ -7,14 +7,15 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 Encore
     .setOutputPath('public/build/')
     .setPublicPath('/build')
+    .setManifestKeyPrefix('build/')
     .addEntry('app', './assets/app.js')
+    .addEntry('register', './assets/js/register-form.js')
     .splitEntryChunks()
     .enableSingleRuntimeChunk()
     .cleanupOutputBeforeBuild()
     .enableBuildNotifications()
     .enableSourceMaps(!Encore.isProduction())
     .enableVersioning(Encore.isProduction())
-    .enablePostCssLoader()
     .configureBabel((config) => {
         config.plugins.push('@babel/plugin-proposal-class-properties');
     })
@@ -22,6 +23,7 @@ Encore
         config.useBuiltIns = 'usage';
         config.corejs = '3.23';
     })
+    .enablePostCssLoader()
 ;
 
 module.exports = Encore.getWebpackConfig();

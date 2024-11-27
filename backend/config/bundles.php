@@ -17,4 +17,5 @@ return [
     Symfony\Bundle\WebProfilerBundle\WebProfilerBundle::class => ['all' => true],
     Symfony\Bundle\MakerBundle\MakerBundle::class => ['all' => true],
     Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle::class => ['all' => true],
+    Symfony\WebpackEncoreBundle\WebpackEncoreBundle::class => ['all' => true],
 ];
