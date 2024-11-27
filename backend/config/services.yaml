@@ -4,6 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.admin_email: '%env(ADMIN_EMAIL)%'
 
 services:
     # default configuration for services in *this* file
@@ -40,4 +41,4 @@ services:
 
     App\Service\PushyService:
         arguments:
-            $apiKey: '%env(PUSHY_API_KEY)%'    
+            $apiKey: '%env(PUSHY_API_KEY)%'
