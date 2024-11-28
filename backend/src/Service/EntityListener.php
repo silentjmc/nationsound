@@ -66,7 +66,7 @@ class EntityListener
 
             $user = $this->security->getUser();
             if ($user instanceof User) {
-                $entity->setUserModification($user->getEmail());
+                $entity->setUserModification($user->getFullName());
             }
         }
     }
@@ -81,54 +81,10 @@ class EntityListener
 
             $user = $this->security->getUser();
             if ($user instanceof User) {
-                $entity->setUserModification($user->getEmail());
+                $entity->setUserModification($user->getFullName());
             }
         }
-/*
-        if ($entity instanceof EventLocation && $args->hasChangedField('publish') && $args->getNewValue('publish') === false) {
-            $this->changedEntities[spl_object_hash($entity)] = true;
-        }*/
-/*
-        if ($entity instanceof Event && $args->hasChangedField('publish') && $args->getNewValue('publish') === true) {
-            $this->changedEntities[spl_object_hash($entity)] = true;
-        }*/
     }
-
-   /* public function postUpdate(PostUpdateEventArgs $args): void
-    {
-        $entity = $args->getObject();
-
-        // Vérifiez si l'entité a été marquée comme ayant changé dans preUpdate
-        if ($entity instanceof EventLocation && isset($this->changedEntities[spl_object_hash($entity)])) {
-            unset($this->changedEntities[spl_object_hash($entity)]);
-
-            $events = $this->entityManager->getRepository(Event::class)->findBy(['eventLocation' => $entity]);
-            foreach ($events as $event) {
-                $event->setPublish(false);
-            }
-            $this->entityManager->flush();
-
-            //$this->messageService->addMessage('info', 'Les événements associés à ce lieu ont été dépubliés.');
-            $this->addFlash('info', 'Les événements associés à ce lieu ont été dépubliés.');
-            //return $this->redirectToRoute('easyadmin_index');
-        }
-
-        if ($entity instanceof Event && isset($this->changedEntities[spl_object_hash($entity)])) {
-            unset($this->changedEntities[spl_object_hash($entity)]);
-            
-            $eventsLocations = $this->entityManager->getRepository(EventLocation::class)->findBy(['event' => $entity, 'publish'=>false]);
-            foreach ($eventsLocations as $eventLocation) {
-                $entity->setPublish(false);
-            }
-            $this->entityManager->flush();
-
-            $this->messageService->addMessage('info', "Le lieu associé a cet évènement n'est pas publié");
-        
-        }
-    }*/
-
-        
-    
 
     public function preRemove(LifecycleEventArgs $args): void
     {
@@ -137,12 +93,12 @@ class EntityListener
         if (method_exists($entity, 'setUserModification')) {
             $user = $this->security->getUser();
             if ($user instanceof User) {
-                $currentUserEmail = $user->getEmail();
+                $currentUserName = $user->getFullName();
             } else {
-                $currentUserEmail = 'unknown';
+                $currentUserName = 'unknown';
             }
             $connection = $this->entityManager->getConnection();
-            $connection->executeQuery("SET @current_user_email = :email", ['email' => $currentUserEmail]);
+            $connection->executeQuery("SET @current_user_name = :name", ['name' => $currentUserName]);
         }
 
         if ($entity instanceof Artist) {
