@@ -23,7 +23,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'Administrateur' => 'ROLE_ADMIN',
             'Commercial' => 'ROLE_COMMERCIAL',
             'Marketing' => 'ROLE_MARKETING',
-            'Redacteur' => 'ROLE_REDACTEUR',
+            'Rédacteur' => 'ROLE_REDACTEUR',
             'Utilisateur' => 'ROLE_USER',
             'En attente' => 'ROLE_PENDING'
         ];
@@ -87,6 +87,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id;
     }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
 
     public function getEmail(): ?string
     {
