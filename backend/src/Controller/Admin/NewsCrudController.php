@@ -11,7 +11,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-use App\Service\PushyService;
+//use App\Service\PushyService;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\PublishService;
@@ -24,24 +24,22 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 class NewsCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
-    private PushyService $pushyService;
+    //private PushyService $pushyService;
     private PublishService $publishService;
-    public function __construct(EntityManagerInterface $entityManager, PushyService $pushyService, PublishService $publishService)
+    public function __construct(EntityManagerInterface $entityManager, PublishService $publishService)
     {
         $this->entityManager = $entityManager;
-        $this->pushyService = $pushyService;
         $this->publishService = $publishService;
     }
     public static function getEntityFqcn(): string
     {
         return News::class;
     }
-
     
     public function configureFields(string $pageName): iterable
     {
         return [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
+            IntegerField::new('id', 'Id')->onlyOnIndex(),
             ChoiceField::new('type', 'Type')
                 ->setChoices([
                     'Normal' => 'primary',
@@ -49,7 +47,7 @@ class NewsCrudController extends AbstractCrudController
                     'Urgent' => 'danger'
                 ]),
             TextField::new('title','Titre'),
-            TextareaField::new('content','Contenu'),
+            TextareaField::new('content','Contenu')->hideOnIndex(),
             BooleanField::new('publish','Publier')->onlyOnIndex()->renderAsSwitch(false),
             BooleanField::new('publish','Publier')->HideOnIndex()->renderAsSwitch(true),
             BooleanField::new('push','Notifier ?')->onlyOnIndex()->renderAsSwitch(false),
@@ -81,7 +79,7 @@ class NewsCrudController extends AbstractCrudController
             'title' => "Publier l'élément",
         ]);
         $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
-        ->addCssClass('btn btn-ms btn-light text-danger')
+        ->addCssClass('btn btn-sm btn-light text-danger')
         ->setLabel(false)
         ->displayIf(fn ($entity) => $entity->isPublish())
         ->linkToCrudAction('unpublish')
@@ -98,6 +96,7 @@ class NewsCrudController extends AbstractCrudController
                         'title' => 'Modifier cet élément',
                     ])
                     ->displayAsLink()
+                    //->addCssClass('btn btn-sm btn-light');
                     ->addCssClass('btn btn-sm btn-light');
             })
             ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
@@ -113,7 +112,6 @@ class NewsCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX,$publishAction) 
             ->add(Crud::PAGE_INDEX,$unpublishAction)
             ->add(Crud::PAGE_INDEX, $sendNotification);    
-            //->add(Crud::PAGE_NEW, $sendNotification);
     }
 
     public function configureCrud(Crud $crud): Crud
