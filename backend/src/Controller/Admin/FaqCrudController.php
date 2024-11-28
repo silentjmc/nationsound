@@ -17,24 +17,20 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\HttpFoundation\Response;
-
-enum Direction
-{
-    case Top;
-    case Up;
-    case Down;
-    case Bottom;
-}
+use App\Service\Direction;
+use App\Service\PositionService;
 
 class FaqCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
     private PublishService $publishService;
+    private PositionService $positionService;
 
-    public function __construct(EntityManagerInterface $entityManager, private readonly FaqRepository $faqRepository, PublishService $publishService) 
+    public function __construct(EntityManagerInterface $entityManager, private readonly FaqRepository $faqRepository, PublishService $publishService, PositionService $positionService) 
     {
         $this->entityManager = $entityManager;
         $this->publishService = $publishService;
+        $this->positionService = $positionService;
     }
 
     public static function getEntityFqcn(): string
@@ -45,23 +41,6 @@ class FaqCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $entityCount = $this->faqRepository->count([]);
-
-        $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
-            ->addCssClass('btn btn-sm btn-light text-success')
-            ->setLabel(false)
-            ->displayIf(fn ($entity) => !$entity->isPublish())
-            ->linkToCrudAction('publish')
-            ->setHtmlAttributes([
-                'title' => "Publier l'élément",
-            ]);
-        $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
-            ->addCssClass('btn btn-ms btn-light text-danger')
-            ->setLabel(false)
-            ->displayIf(fn ($entity) => $entity->isPublish())
-            ->linkToCrudAction('unpublish')
-            ->setHtmlAttributes([
-                'title' => "Dépublier l'élément",       
-            ]);
 
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Move to top'])
@@ -82,7 +61,28 @@ class FaqCrudController extends AbstractCrudController
             ->setHtmlAttributes(['title' => 'Move to bottom'])
             ->linkToCrudAction('moveBottom')
             ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
+
+        $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
+            ->addCssClass('btn btn-sm btn-light text-success')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => !$entity->isPublish())
+            ->linkToCrudAction('publish')
+            ->setHtmlAttributes([
+                'title' => "Publier l'élément",
+            ]);
+
+        $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
+            ->addCssClass('btn btn-ms btn-light text-danger')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => $entity->isPublish())
+            ->linkToCrudAction('unpublish')
+            ->setHtmlAttributes([
+                'title' => "Dépublier l'élément",       
+            ]);
+
     return $actions
+        ->add(Crud::PAGE_INDEX, $publishAction) 
+        ->add(Crud::PAGE_INDEX, $unpublishAction)
         ->add(Crud::PAGE_INDEX, $moveBottom)
         ->add(Crud::PAGE_INDEX, $moveDown)
         ->add(Crud::PAGE_INDEX, $moveUp)
@@ -115,9 +115,7 @@ class FaqCrudController extends AbstractCrudController
                 ])
                 ->displayAsLink()
                 ->addCssClass('btn btn-sm btn-light');
-        })
-        ->add(Crud::PAGE_INDEX,$publishAction) 
-        ->add(Crud::PAGE_INDEX,$unpublishAction);    
+        });  
     }
 
     public function configureCrud(Crud $crud): Crud
@@ -146,45 +144,33 @@ class FaqCrudController extends AbstractCrudController
         ];
     }
 
-
-    public function moveTop(AdminContext $context): Response
+    public function moveTop(AdminContext $context)
     {
-        return $this->move($context, Direction::Top);
-    }
-    
-    public function moveUp(AdminContext $context): Response
-    {
-        return $this->move($context, Direction::Up);
-    }
-    
-    public function moveDown(AdminContext $context): Response
-    {
-        return $this->move($context, Direction::Down);
-    }
-    
-    public function moveBottom(AdminContext $context): Response
-    {
-        return $this->move($context, Direction::Bottom);
-    }
-    
-    private function move(AdminContext $context, Direction $direction): Response
-    {
-        $object = $context->getEntity()->getInstance();
-        $newPosition = match($direction) {
-            Direction::Top => 0,
-            Direction::Up => $object->getPosition() - 1,
-            Direction::Down => $object->getPosition() + 1,
-            Direction::Bottom => -1,
-        };
-    
-        $object->setPosition($newPosition);
-        $this->entityManager->flush();
-    
-        $this->addFlash('success', 'The element has been successfully moved.');
-    
+        $this->positionService->move($context, Direction::Top);
+        $this->addFlash('success', 'l\'élément a bien été déplacé en haut de page.');
         return $this->redirect($context->getRequest()->headers->get('referer'));
     }
     
+    public function moveUp(AdminContext $context)
+    {
+        $this->positionService->move($context, Direction::Up);
+        $this->addFlash('success', 'l\'élément a bien été déplacé d\'un cran en haut.');
+        return $this->redirect($context->getRequest()->headers->get('referer'));
+    }
+    
+    public function moveDown(AdminContext $context)
+    {
+        $this->positionService->move($context, Direction::Down);
+        $this->addFlash('success', 'l\'élément a bien été déplacé d\'un cran en bas.');
+        return $this->redirect($context->getRequest()->headers->get('referer'));
+    }
+    
+    public function moveBottom(AdminContext $context)
+    {
+        $this->positionService->move($context, Direction::Bottom);
+        $this->addFlash('success', 'l\'élément a bien été déplacé en bas de page.');
+        return $this->redirect($context->getRequest()->headers->get('referer'));
+    }    
     public function publish(AdminContext $context): Response
             {
                 $result = $this->publishService->publish($context);
