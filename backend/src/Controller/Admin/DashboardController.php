@@ -40,13 +40,25 @@ class DashboardController extends AbstractDashboardController
         //$this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
+        //return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
 
         // Option 2. You can make your dashboard redirect to different pages depending on the user
         //
         // if ('jane' === $this->getUser()->getUsername()) {
         //     return $this->redirect('...');
         // }
+
+        if ($this->isGranted('ROLE_ADMIN')) {
+            return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
+        } elseif ($this->isGranted('ROLE_MARKETING')) {
+            return $this->redirect($adminUrlGenerator->setController(NewsCrudController::class)->generateUrl());
+        } elseif ($this->isGranted('ROLE_COMMERCIAL')) {
+            return $this->redirect($adminUrlGenerator->setController(PartnersCrudController::class)->generateUrl());
+        } elseif ($this->isGranted('ROLE_REDACTEUR')) {
+            return $this->redirect($adminUrlGenerator->setController(InformationCrudController::class)->generateUrl());
+        }
+        
+
 
         // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
         // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
@@ -70,41 +82,58 @@ class DashboardController extends AbstractDashboardController
 */
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::section('Administration', 'fa fa-home');
-        yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class);
-        yield MenuItem::linkToCrud('Roles', 'fas fa-user-tag', Role::class);
+        if ($this->isGranted('ROLE_ADMIN')) {
+            yield MenuItem::section('Administration', 'fa fa-home');
+            yield MenuItem::linkToCrud('Utilisateurs', 'fas fa-users', User::class);
+            yield MenuItem::linkToCrud('Roles', 'fas fa-user-tag', Role::class);
+        }
 
-        yield MenuItem::section('Festival','fa fa-star');
-        yield MenuItem::linkToCrud('Dates du festival','fas fa-calendar-day', EventDate::class);
+        if ($this->isGranted('ROLE_MARKETING')) {
+            yield MenuItem::section('Festival','fa fa-star');
+            yield MenuItem::linkToCrud('Dates du festival','fas fa-calendar-day', EventDate::class);
+        }
 
-        yield MenuItem::section('Partenaires','fa fa-handshake');
-        yield MenuItem::linkToCrud('Type de partenaires', 'fas fa-tags', PartnerType::class);
-        yield MenuItem::linkToCrud('Partenaires', 'fas fa-building', Partners::class);
+        if ($this->isGranted('ROLE_COMMERCIAL')) {
+            yield MenuItem::section('Partenaires','fa fa-handshake');
+            yield MenuItem::linkToCrud('Type de partenaires', 'fas fa-tags', PartnerType::class);
+            yield MenuItem::linkToCrud('Partenaires', 'fas fa-building', Partners::class);
+        }
 
-        yield MenuItem::section('Artistes','fa fa-music');
-        yield MenuItem::linkToCrud('Artistes', 'fas fa-user', Artist::class);
+        if ($this->isGranted('ROLE_MARKETING') || $this->isGranted('ROLE_REDACTEUR')) {
+            yield MenuItem::section('Artistes','fa fa-music');
+            yield MenuItem::linkToCrud('Artistes', 'fas fa-user', Artist::class);
+        }
 
-        yield MenuItem::section('Évènements','fa fa-calendar');
-        yield MenuItem::linkToCrud('Types d\'évènements', 'fas fa-icons', EventType::class);
-        yield MenuItem::linkToCrud('Évènements', 'fas fa-clock', Event::class);
+        if ($this->isGranted('ROLE_MARKETING')) {
+            yield MenuItem::section('Évènements','fa fa-calendar');
+            yield MenuItem::linkToCrud('Types d\'évènements', 'fas fa-icons', EventType::class);
+            yield MenuItem::linkToCrud('Évènements', 'fas fa-clock', Event::class);
+        }
 
-        yield MenuItem::section('Lieux','fa fa-map');
-        yield MenuItem::linkToCrud('Types de lieux', 'fas fa-mountain-city', LocationType::class);
-        yield MenuItem::linkToCrud('Lieux', 'fas fa-location-dot', EventLocation::class);
+        if ($this->isGranted('ROLE_COMMERCIAL')) {
+            yield MenuItem::section('Lieux','fa fa-map');
+            yield MenuItem::linkToCrud('Types de lieux', 'fas fa-mountain-city', LocationType::class);
+            yield MenuItem::linkToCrud('Lieux', 'fas fa-location-dot', EventLocation::class);
+        }
 
-        yield MenuItem::section('Informations générales','fa fa-lightbulb');
-        yield MenuItem::linkToCrud('Section d\'informations','fa fa-info-circle', InformationSection::class);
-        yield MenuItem::linkToCrud('Informations','fa fa-info-circle', Information::class);
-        yield MenuItem::linkToCrud('FAQ','fa fa-question-circle', Faq::class);
-
-        yield MenuItem::section('HISTORIQUE','fa fa-lightbulb');
-        yield MenuItem::linkToCrud('historiques','fa fa-info-circle', EntityHistory::class);
+        if ($this->isGranted('ROLE_MARKETING') || $this->isGranted('ROLE_REDACTEUR')) {
+            yield MenuItem::section('Informations générales','fa fa-lightbulb');
+        }
         
-        yield MenuItem::section('ACTUALITÉS','fa fa-lightbulb');
-        yield MenuItem::linkToCrud('actualités','fa fa-info-circle', News::class);
+        if ($this->isGranted('ROLE_MARKETING')) {
+            yield MenuItem::linkToCrud('Section d\'informations','fa fa-receipt', InformationSection::class);
+        }
+
+        if ($this->isGranted('ROLE_MARKETING') || $this->isGranted('ROLE_REDACTEUR')) {
+            yield MenuItem::linkToCrud('Informations','fa fa-info-circle', Information::class);
+            yield MenuItem::linkToCrud('FAQ','fa fa-question-circle', Faq::class);
+            yield MenuItem::linkToCrud('Actualités','fa fa-bell', News::class);
+        }
 
 
-
+        if ($this->isGranted('ROLE_ADMIN')) {
+            yield MenuItem::section('HISTORIQUE','fa fa-database');
+            yield MenuItem::linkToCrud('Historiques','fa fa-box-archive', EntityHistory::class);
+        }
     }
-
 }
