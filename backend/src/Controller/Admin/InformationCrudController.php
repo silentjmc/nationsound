@@ -43,23 +43,6 @@ class InformationCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $entityCount = $this->informationSectionRepository->count([]);
-        $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
-        ->addCssClass('btn btn-sm btn-light text-success')
-        ->setLabel(false)
-        ->displayIf(fn ($entity) => !$entity->isPublish())
-        ->linkToCrudAction('publish')
-        ->setHtmlAttributes([
-            'title' => "Publier l'élément",
-        ]);
-
-    $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
-        ->addCssClass('btn btn-ms btn-light text-danger')
-        ->setLabel(false)
-        ->displayIf(fn ($entity) => $entity->isPublish())
-        ->linkToCrudAction('unpublish')
-        ->setHtmlAttributes([
-            'title' => "Dépublier l'élément",       
-        ]);
 
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Mettre en haut de page'])
@@ -80,7 +63,29 @@ class InformationCrudController extends AbstractCrudController
             ->setHtmlAttributes(['title' => 'Mettre en bas de page'])
             ->linkToCrudAction('moveBottom')
             ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
+
+        $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
+            ->addCssClass('btn btn-sm btn-light text-success')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => !$entity->isPublish())
+            ->linkToCrudAction('publish')
+            ->setHtmlAttributes([
+                'title' => "Publier l'élément",
+            ]);
+    
+        $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
+            ->addCssClass('btn btn-ms btn-light text-danger')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => $entity->isPublish())
+            ->linkToCrudAction('unpublish')
+            ->setHtmlAttributes([
+                'title' => "Dépublier l'élément",       
+            ]);
+
+            
     return $actions
+        ->add(Crud::PAGE_INDEX, $publishAction) 
+        ->add(Crud::PAGE_INDEX, $unpublishAction)
         ->add(Crud::PAGE_INDEX, $moveBottom)
         ->add(Crud::PAGE_INDEX, $moveDown)
         ->add(Crud::PAGE_INDEX, $moveUp)
@@ -113,9 +118,7 @@ class InformationCrudController extends AbstractCrudController
                 ])
                 ->displayAsLink()
                 ->addCssClass('btn btn-sm btn-light');
-        })
-        ->add(Crud::PAGE_INDEX,$publishAction) 
-        ->add(Crud::PAGE_INDEX,$unpublishAction);    
+        });
     }
 
     public function configureCrud(Crud $crud): Crud
