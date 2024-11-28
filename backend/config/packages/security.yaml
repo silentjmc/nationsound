@@ -55,11 +55,19 @@ security:
         - { path: ^/, roles: ROLE_USER }
 
     role_hierarchy:
-        ROLE_ADMIN:       # Rôle supérieur
-            - ROLE_MANAGER # Rôle subordonné
-            - ROLE_USER    # Rôle subordonné
-        ROLE_MANAGER:     # Rôle supérieur
-            - ROLE_USER    # Rôle subordonné
+        ROLE_ADMIN: 
+            - ROLE_COMMERCIAL
+            - ROLE_MARKETING
+            - ROLE_REDACTEUR
+            - ROLE_USER
+        ROLE_COMMERCIAL: 
+            - ROLE_USER
+        ROLE_MARKETING: 
+            - ROLE_USER
+        ROLE_REDACTEUR:
+            - ROLE_USER
+        ROLE_USER: 
+            - ROLE_PENDING
 
 when@test:
     security:
