@@ -11,7 +11,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
-//use App\Service\PushyService;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use Symfony\Component\HttpFoundation\Response;
 use App\Service\PublishService;
@@ -24,7 +23,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 class NewsCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
-    //private PushyService $pushyService;
     private PublishService $publishService;
     public function __construct(EntityManagerInterface $entityManager, PublishService $publishService)
     {
