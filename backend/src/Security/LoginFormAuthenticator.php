@@ -57,18 +57,9 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         $this->logger->info('Authentication success, attempting redirect...');
-/*
-        if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
-            $this->logger->info('Found target path: ' . $targetPath);
-            return new RedirectResponse($targetPath);
-        }*/
 
-        //$adminUrl = $this->urlGenerator->generate('admin');
-        //$this->logger->info('Generated admin URL: ' . $adminUrl);
-        //return new RedirectResponse($this->urlGenerator->generate('app_home'));
         return new RedirectResponse($this->urlGenerator->generate('admin'));
-        //return new RedirectResponse($adminUrl);
-        //return new RedirectResponse($this->urlGenerator->generate('admin', [], UrlGeneratorInterface::ABSOLUTE_URL));
+
     }
 
     protected function getLoginUrl(Request $request): string
