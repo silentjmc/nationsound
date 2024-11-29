@@ -1,3 +1,4 @@
 backend/php.ini
 backend/cacert.pem
 backend/config/packages/mailer_dev-prod.yaml
+frontend/src/environments/environment.production.ts
