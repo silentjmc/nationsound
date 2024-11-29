@@ -27,7 +27,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class DashboardController extends AbstractDashboardController
 {
-    #[Route('/admin', name: 'admin')]
+    #[Route('/', name: 'admin')]
     public function index(): Response
     {
         // return parent::index();
@@ -70,7 +70,8 @@ class DashboardController extends AbstractDashboardController
     {
         return Dashboard::new()
             //->setTitle('Live Event Backend');
-            ->setTitle('<img src="assets/logo_ns_rect_txtw.png" class="img-fluid d-block mx-auto" style="max-width:100px; width:100%;">')
+            ->setTitle('<img src="./assets/logo_ns_rect_txtw.png" class="img-fluid d-block mx-auto" style="max-width:100px; width:100%;">')
+            //->setTitle('<img src="/admin/images/logo_ns_rect_txtw.png" class="img-fluid d-block mx-auto" style="max-width:100px; width:100%;">')
             ->renderContentMaximized()
             ;
     }

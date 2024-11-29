@@ -18,5 +18,5 @@ when@prod:
     
     framework:
         assets:
-            base_path: '/admin'
-            #json_manifest_path: '/home/gxefrysq/public_html/admin/build/manifest.json'
+            #base_path: '/admin'
+            json_manifest_path: '/home/gxefrysq/public_html/admin/build/manifest.json'

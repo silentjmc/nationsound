@@ -4,10 +4,15 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
     Encore.configureRuntimeEnvironment(process.env.NODE_ENV || 'dev');
 }
 
+const isProduction = Encore.isProduction();
+const publicPath = isProduction ? '/admin/build' : '/build';
+
 Encore
     .setOutputPath('public/build/')
-    .setPublicPath('/build')
-    .setManifestKeyPrefix('build/')
+    //.setPublicPath('/build')
+    //.setManifestKeyPrefix('build/')
+    .setPublicPath(publicPath)
+    .setManifestKeyPrefix('')
     .addEntry('app', './assets/app.js')
     .addEntry('register', './assets/js/register-form.js')
     .splitEntryChunks()
