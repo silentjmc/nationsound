@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-// Pipe pour filtrer les partenaires par type
+// Pipe to filter partners by type
 @Pipe({
   name: 'partnerFilter',
   standalone: true

@@ -1,12 +1,11 @@
 <div class="mx-6 my-5 md:mx-20 md:my-10">
-  <!-- Bouton retour -->
-<button (click)="goBack()" class="mb-4 flex items-center gap-2 text-black hover:text-gray-600 transition-colors">
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-  </svg>
-  <span class="font-title">Retour</span>
-</button>
-  <!-- Affichage des informations de l'arstiste si l'artiste existe -->
+  <!-- Back button --> 
+  <button (click)="goBack()" class="mb-4 flex items-center gap-2 text-black hover:text-gray-600 transition-colors">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+    </svg>
+    <span class="font-title">Retour</span>
+  </button>
   <!-- Display artist information if artist exists -->
   @if (loading$ | async) {
     <div class="flex">
@@ -22,9 +21,6 @@
     </div>
   } @else {
     @if (artist$ | async ; as artist) {
-    <!--<div class="flex flex-col-reverse md:flex-row gap-5">
-      <img class="min-w-48 min-h-48 md:min-w-96 md:min-h-96 place-self-center" src="{{ artist.image }}" alt="{{ artist.name }}" />
-      <div>  -->
       <div class="flex flex-col-reverse md:flex-row md:justify-between gap-5">
         <div class="md:w-1/2">
           <img class="w-full object-cover rounded-lg" src="{{ artist.image }}" alt="{{ artist.name }}" />
@@ -33,25 +29,17 @@
         <h1 class="font-title text-black text-2xl sm:text-3xl md:text-5xl uppercase font-extrabold pb-2">{{ artist.name }}</h1>
         <p class="font-title text-black text-normal sm:text-xl md:text-3xl font-semibold pb-2">( {{ artist.type_music }} )</p>
         <p class="font-title text-black text-normal italic md:text-lg font-semibold pb-2">{{ artist.description }}</p>
-        
-        <!-- Liste des événements -->
+        <!-- List of events -->
         <div class="mt-4">
           <h2 class="font-title text-black text-xl font-bold mb-2">Événements :</h2>
           @for (event of artist.events; track event) {
-            <!-- <div class="mb-4 p-4 bg-gray-100 rounded-lg"> -->
             <div class="mb-4 p-4 bg-white/50 backdrop-blur-sm border border-blue-logo/20 rounded-lg hover:bg-white/70 transition-colors">
               <div class="flex gap-2 items-center">
                 <div class="p-1.5 bg-blue-logo/20 rounded-full">
                   <img class="h-4 w-4" src="../assets/music.png" alt="">
                 </div>
-                <!--<p class="font-title text-black text-base font-semibold">-->
                 <p class="font-title text-slate-900 text-base font-semibold">{{ event.type.type }} - {{ event.eventLocation.locationName }}</p>
               </div>
-              <!--<p class="font-title text-black text-base font-semibold mt-2">
-                {{ event.date.date | date:'dd/MM/yyyy' }} de 
-                {{ event.heure_debut | date:'HH:mm' }} à 
-                {{ event.heure_fin | date:'HH:mm' }}
-              </p>-->
               <div class="mt-2 pl-8">
                 <p class="font-title text-slate-800 text-base font-medium">
                   {{ event.date.date | date:'dd/MM/yyyy' }}

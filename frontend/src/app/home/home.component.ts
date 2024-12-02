@@ -11,25 +11,7 @@ import { CarouselComponent } from '../carousel/carousel.component';
   styleUrl: './home.component.css'
 })
 export class HomeComponent implements OnDestroy{
-  carouselImages: string[] = [
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    'https://jmcarre.go.yj.fr/nationsound/nationsoundbe/wp-content/uploads/2024/05/Afrobeat_Vibes.webp',
-    
-    // ... ajoutez autant d'images que vous voulez
-  ];
 
-    // Information pour SEO
     // Information for SEO
   constructor(private meta: Meta, private title: Title) {
     title.setTitle("Nation Sound Festival 2024 - Le Rendez-vous Musical de l'Été");
@@ -39,7 +21,6 @@ export class HomeComponent implements OnDestroy{
   }
 
   ngOnDestroy(): void {
-    // Supprimer la balise meta lorsque le composant est détruit
     // Remove the meta tag when the component is destroyed
     this.meta.removeTag("name='description'");
   }

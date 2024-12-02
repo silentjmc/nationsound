@@ -1,6 +1,6 @@
 import {Pipe, PipeTransform} from '@angular/core';
 
-//  Pipe pour trier les données
+// Pipe to sort data
 @Pipe({
   name: 'sortBy',
   standalone: true,

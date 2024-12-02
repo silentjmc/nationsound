@@ -5,7 +5,6 @@ import { Observable, map, shareReplay,} from 'rxjs';
 import { Poi } from './class';
 import { environment } from '../../environments/environment';
 
-//const BASE_URL = 'http://127.0.0.1:8000/api/eventLocation'
 const BASE_URL = `${environment.apiUrl}/api/eventLocation`;
 @Injectable()
 export class MapService {

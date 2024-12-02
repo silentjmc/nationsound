@@ -1,5 +1,5 @@
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { AfterViewInit, Component, Inject, PLATFORM_ID, OnDestroy, inject  } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Component, Inject, PLATFORM_ID, OnDestroy, inject  } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { FaqService } from '../services/faq.service';
 import { HttpClient } from '@angular/common/http';
@@ -17,9 +17,8 @@ export class FaqComponent implements   OnDestroy  {
   faqs: any = [];
   mappedFaq: any = [];
 
-  // Information pour SEO
+
   // Information for SEO
-  
   constructor(private meta: Meta, private title: Title, @Inject(PLATFORM_ID) private platformId: Object) {
     title.setTitle("Nation Sound Festival 2024 - FAQ");
     meta.addTags([
@@ -32,7 +31,6 @@ export class FaqComponent implements   OnDestroy  {
   }
 
   ngOnDestroy(): void {
-    // Supprimer la balise meta lorsque le composant est détruit
     // Remove the meta tag when the component is destroyed
     this.meta.removeTag("name='description'");
   }
@@ -47,7 +45,7 @@ export class FaqComponent implements   OnDestroy  {
             reponse: faq.reponse,
           }
         });
-        console.log('Faq', this.mappedFaq);
+        //console.log('Faq', this.mappedFaq);
       },
       error : (error) => console.log('Error fetching faq', error)
     });

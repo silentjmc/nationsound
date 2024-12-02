@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../services/notification.service';
 import { News } from '../services/class';
@@ -11,10 +11,9 @@ import { News } from '../services/class';
   styleUrl: './alert-news.component.css'
 })
 
-
-  export class AlertNewsComponent {
+export class AlertNewsComponent {
   notification$ = this.notificationService.getCurrentNotification();
-  readonly MAX_CONTENT_LENGTH = 150; // Limite de caractères pour le content
+  readonly MAX_CONTENT_LENGTH = 150;
 
   constructor(private notificationService: NotificationService) {}
       getNotificationClass(notification: News): string {
@@ -50,9 +49,7 @@ import { News } from '../services/class';
   }
 
   goToNewsDetail(notification: News) {
-    // Fermer la notification
     this.dismissNotification(notification);
-    // Rediriger vers la page de détail
     window.location.href = `/informations/actualite/${notification.id}`;
   }
 }

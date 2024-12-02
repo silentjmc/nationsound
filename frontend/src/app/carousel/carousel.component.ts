@@ -1,6 +1,5 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA,OnInit, ViewChild, AfterViewInit, ElementRef, NgZone } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA,OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-//import { ScheduleService } from '../services/schedule.service';
 import { ArtistService } from '../services/artist.service';
 import { Observable } from 'rxjs';
 import { Artist } from '../services/class';
@@ -22,7 +21,6 @@ export class CarouselComponent implements OnInit  {
   }
 
   ngOnInit(): void {
-    //  Récupération des données artistes depuis le service
     //  Get artist data from the service
     this.artists$ = this.artistService.getAllArtists();
   }

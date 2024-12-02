@@ -14,7 +14,7 @@ import { NewsService } from '../services/news.service';
 })
 export class NewsSummaryComponent {
   news$: Observable<News[]>;
-  readonly maxLength = 150; // Nombre maximum de caractères à afficher
+  readonly maxLength = 150;
 
   constructor(private newsService: NewsService) {
     this.news$ = this.newsService.getAllNews();

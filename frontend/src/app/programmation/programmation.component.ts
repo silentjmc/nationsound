@@ -36,7 +36,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
   public timeFiltersStart!: string | null;
   public timeFiltersEnd!: string | null;
   errorMessage: string | null = null;
-  // Information pour SEO
   // Information for SEO
   constructor(private meta: Meta, private title: Title, private eventService: EventService, private filterStatusService: FilterStatusService) {
     title.setTitle("Programmation du Nation Sound Festival 2024 - Horaires et Artistes");
@@ -44,12 +43,11 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
       { name: 'description', content: 'Consultez la programmation complète du Nation Sound Festival 2024. Retrouvez les horaires et les artistes pour chaque scène : métal, rock, rap/urban, world et électro. Préparez votre agenda pour ne rien manquer !' }
     ]);
   }
-  // Initilisation des données artistes, filtres et application des filtres
   // Initialization of artists, filters and application of filters  
   ngOnInit(): void {
     this.programs$ = this.eventService.programs$;
     this.loadFilters();
-    // Restaurer les filtres sauvegardés
+    // Restore saved filters
     this.filterStatusService.getLocationFilters().pipe(take(1)).subscribe(filters => {
       if (filters.length > 0) {
         this.locationFilters = filters;
@@ -82,13 +80,10 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
 
     this.applyFilters(); 
   }
-  // Désabonnement de l'observable lors de la destruction du composant
   // Unsubscribe from the observable when the component is destroyed
   ngOnDestroy() {
-    // Se désinscrire lorsque le composant est détruit
     // Unsubscribe when the component is destroyed
     this.subscription.unsubscribe(); 
-    // Supprimer la balise meta lorsque le composant est détruit
     // Remove the meta tag when the component is destroyed
     this.meta.removeTag("name='description'");
   }
@@ -97,7 +92,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     this.subscription = this.programs$.pipe(
       filter(programs => !!programs),
       map(programs => {
-        // Récupération des lieux de rencontre
         // Get meeting places
         const locations = [...new Set(programs.map(program => program.eventLocation.locationName))];
         this.locationFilters = locations.map((location, index) => ({
@@ -106,7 +100,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
           isChecked: false
         }));
 
-        // Récupération des types d'événements
         // Get event types
         const events = [...new Set(programs.map(program => program.type.type))];
         this.eventFilters = events.map((event, index) => ({
@@ -115,7 +108,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
           isChecked: false
         }));
 
-        // Récupération des dates
         // Get dates
         const dates = [...new Set(programs.map(program => program.date.date))];
         this.dateFilters = dates.map((date, index) => ({
@@ -124,7 +116,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
           isChecked: false
         }));
 
-        // Récupération des heures de début
         // Get start times
         const times = [...new Set(programs.map(program => program.heure_debut))];
         this.timeFilters = times.map((time, index) => ({
@@ -133,7 +124,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
           isChecked: false
         }));
 
-        //  Récupération des heures de fin
         // Get end times
         const timesEnd = [...new Set(programs.map(program => program.heure_fin))];
         this.timeFinalFilters = timesEnd.map((time, index) => ({
@@ -143,7 +133,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
         }));
       }),
       catchError(error => {
-        // Retourne un observable vide en cas d'erreur
         // Return an empty observable in case of error
         console.error('Une erreur est survenue lors de la récupération des artistes :', error);
         return EMPTY;
@@ -160,12 +149,10 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
       this.timeFiltersApplied$
     ]).pipe(
       map(([programs, locations, events, dates, times]) => {
-        // Retourner tous les artistes si aucune case à cocher n'est cochée
         // Return all artists if no checkbox is checked
         if (!locations.length && !events.length && !dates.length && !this.timeFiltersStart && !this.timeFiltersEnd) {
           return programs; 
         }
-        // Filtrer les artistes en fonction de la localisation
         // Filter artists based on location
         if (locations.length) {
           programs = programs.filter(program => {
@@ -173,34 +160,31 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
             return sceneOrLocation && locations.includes(sceneOrLocation);
           });
         }
-        // Filtrer les artistes en fonction du type d'événement
         // Filter artists based on event type
         if (events.length) {
           programs = programs.filter(program => program.type.type && events.includes(program.type.type));
         }
-        // Filtrer les artistes en fonction de la date
         // Filter artists based on date
         if (dates.length) {
           programs = programs.filter(program => program.date.date && dates.includes(this.eventService.formatDate(program.date.date)));
         }
-        //  Filtrer les artistes en fonction de l'heure de début et de fin
         //  Filter artists based on start and end time
         if (this.timeFiltersStart || this.timeFiltersEnd) {
           programs = programs.filter(program => {
             const eventStartTime = this.eventService.formatTime(program.heure_debut);
             const eventEndTime = this.eventService.formatTime(program.heure_fin);
             
-            // Si seulement l'heure de début est définie
+            // If only the start time is defined
             if (this.timeFiltersStart && !this.timeFiltersEnd) {
               return eventStartTime >= this.timeFiltersStart;
             }
             
-            // Si seulement l'heure de fin est définie
+            // If only the end time is defined
             if (!this.timeFiltersStart && this.timeFiltersEnd) {
               return eventEndTime <= this.timeFiltersEnd;
             }
             
-            // Si les deux heures sont définies
+            // If both times are defined
             if (this.timeFiltersStart && this.timeFiltersEnd) {
               return eventStartTime >= this.timeFiltersStart && eventEndTime <= this.timeFiltersEnd;
             }
@@ -269,7 +253,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     this.applyFilters();
   }
 
-  // Gestion du filtre d'heure de début
   // Start time filter management
   onTimeStartChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
@@ -291,7 +274,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     this.applyFilters();
   }
 
-  // Gestion du filtre d'heure de fin
   // End time filter management
   onTimeEndChange(event: Event): void {
     const selectElement = event.target as HTMLSelectElement;
@@ -313,7 +295,6 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     this.applyFilters();
   }
 
-  // Validation que le choix de l'heure de début ne dépasse pas l'heure de fin et inversement
   // Validation that the choice of start time does not exceed the end time and vice versa
   validateTime(): boolean {
     if (this.timeFiltersStart && this.timeFiltersEnd) {

@@ -1,66 +1,71 @@
 <footer class="bg-slate-600 flex flex-col md:flex-row text-white gap-4 py-5 px-5 md:px-10 lg:px-20">
-    <!-- section contact -->
-    <!-- contact section -->
-    <div class="basis-2/5">
-        <h3 class="text-lm font-medium mb-4 font-title uppercase">Nation Sound by Live-event</h3>
-        <h4 class="text-base mb-4 font-title font-medium uppercase">Contact</h4>
-        <address class="text-sm font-text not-italic font-medium">Adresse : 42 rue de la musique 75000 Paris</address>
-        <address class="text-sm font-text not-italic font-medium">Téléphone : 01 23 45 67 89</address>
-        <address class="text-sm font-text not-italic font-medium">contact&#64;nationsound.com</address>
-
+  <!-- contact section -->
+  <div class="basis-2/5">
+    <h3 class="text-lm font-medium mb-4 font-title uppercase">Nation Sound by Live-event</h3>
+    <h4 class="text-base mb-4 font-title font-medium uppercase">Contact</h4>
+    <address class="text-sm font-text not-italic font-medium">Adresse : 42 rue de la musique 75000 Paris</address>
+    <address class="text-sm font-text not-italic font-medium">Téléphone : 01 23 45 67 89</address>
+    <address class="text-sm font-text not-italic font-medium">contact&#64;nationsound.com</address>
+  </div>
+  <!-- link section -->
+  <div class="basis-1/5">
+    <p class="text-lm font-title font-medium uppercase">liens</p>
+      <ul class="text-sm font-text not-italic">
+        <li>
+          <a routerLink="accueil" class="block text-white hover:bg-transparent hover:text-blue-logo">Accueil</a>
+        </li>
+        <li>
+          <a routerLink="programmation" class="block text-white hover:bg-transparent hover:text-blue-logo ">Programmation</a>
+        </li>
+        <li>
+          <a routerLink="informations" class="block text-white hover:bg-transparent hover:text-blue-logo">Informations</a>
+        </li>
+        <li>
+          <a routerLink="partenaires" class="block text-white hover:bg-transparent hover:text-blue-logo">Partenaires</a>
+        </li>
+        <li>
+          <a href="https://www.billetreduc.com/" target="_blank" class="block text-white hover:bg-transparent hover:text-blue-logo">Billetterie</a>
+        </li>
+        <li>
+          <a routerLink="carte" class="block text-white hover:bg-transparent hover:text-blue-logo">Carte</a>
+        </li>
+      </ul>
+  </div>
+  <!-- policy section -->
+  <div class="basis-2/5">
+    <p class="text-sm font-title font-medium uppercase">Politique</p>
+    <ul class="text-sm font-text not-italic">
+      <li>
+        <button type="button" data-drawer-target="drawer-mentions" data-drawer-show="drawer-mentions" aria-controls="drawer-mentions" data-drawer-placement="bottom">Mentions légales</button>
+      </li>
+      <li>
+        <button type="button" data-drawer-target="drawer-confidentialite" data-drawer-show="drawer-confidentialite" aria-controls="drawer-confidentialite" data-drawer-placement="bottom">Politique de confidentialité</button>
+      </li>
+    </ul>
+    <!-- social networks subsection -->
+    <div>
+      <ul class="flex flex-row my-3 gap-5 md:my-12">
+        <li>
+          <a href="http://www.facebook.com" target="_blank"><img src="./assets/facebook.svg" alt="Logo Facebook" class="size-12 block"></a>
+        </li>
+        <li>
+          <a href="https://www.instagram.com/" target="_blank"><img src="./assets/instagram.svg" alt="Logo Instagram" class="size-12 block"></a>
+        </li>
+        <li>
+          <a href="http://www.twitter.com" target="_blank"><img src="./assets/X_logo.svg" alt="Logo X / Twitter" class="size-12 block"></a>
+        </li>
+        <li>
+          <a href="http://www.youtube.com" target="_blank"><img src="./assets/youtube.svg" alt="Logo Youtube" class="size-12 block"></a>
+        </li>
+        <li>
+          <a href="http://www.snapchat.com" target="_blank"><img src="./assets/snapchat.svg" alt="Logo Snapchat" class="size-12 block"></a>
+        </li>
+        <li>
+          <a href="http://www.linkedin.com" target="_blank"><img src="./assets/linkedin.svg" alt="Logo Linkedin" class="size-12 block"></a>
+        </li>
+      </ul>
     </div>
-    <!-- section liens -->
-    <!-- link section -->
-    <div class="basis-1/5">
-        <p class="text-lm font-title font-medium uppercase">liens</p>
-            <ul class="text-sm font-text not-italic">
-            <li>
-                <a routerLink="accueil" class="block text-white hover:bg-transparent hover:text-blue-logo">Accueil</a>
-              </li>
-              <li>
-                <a routerLink="programmation" class="block text-white hover:bg-transparent hover:text-blue-logo ">Programmation</a>
-              </li>
-              <li>
-                <a routerLink="informations" class="block text-white hover:bg-transparent hover:text-blue-logo">Informations</a>
-              </li>
-              <li>
-                <a routerLink="partenaires" class="block text-white hover:bg-transparent hover:text-blue-logo">Partenaires</a>
-              </li>
-              <li>
-                <a href="https://www.billetreduc.com/" target="_blank" class="block text-white hover:bg-transparent hover:text-blue-logo">Billetterie</a>
-              </li>
-              <li>
-                <a routerLink="carte" class="block text-white hover:bg-transparent hover:text-blue-logo">Carte</a>
-              </li>
-            </ul>
-    </div>
-    <!-- section politique -->
-    <!-- policy section -->
-    <div class="basis-2/5">
-        <p class="text-sm font-title font-medium uppercase">Politique</p>
-            <ul class="text-sm font-text not-italic">
-                <li><button type="button" data-drawer-target="drawer-mentions" data-drawer-show="drawer-mentions" aria-controls="drawer-mentions" data-drawer-placement="bottom">Mentions légales</button></li>
-                <li><button type="button" data-drawer-target="drawer-confidentialite" data-drawer-show="drawer-confidentialite" aria-controls="drawer-confidentialite" data-drawer-placement="bottom">Politique de confidentialité</button></li>
-            </ul>
-            <!-- sous-section réseaux sociaux -->
-            <!-- social networks subsection -->
-            <div>
-                <ul class="flex flex-row my-3 gap-5 md:my-12">
-                  <li><a href="http://www.facebook.com" target="_blank"><img src="./assets/facebook.svg" alt="Logo Facebook"
-                      class="size-12 block"></a></li>
-                  <li><a href="https://www.instagram.com/" target="_blank"><img src="./assets/instagram.svg" alt="Logo Instagram"
-                      class="size-12 block"></a></li>
-                  <li><a href="http://www.twitter.com" target="_blank"><img src="./assets/X_logo.svg" alt="Logo X / Twitter"
-                      class="size-12 block"></a></li>
-                  <li> <a href="http://www.youtube.com" target="_blank"><img src="./assets/youtube.svg" alt="Logo Youtube"
-                        class="size-12 block"></a></li>
-                  <li><a href="http://www.snapchat.com" target="_blank"><img src="./assets/snapchat.svg" alt="Logo Snapchat"
-                          class="size-12 block"></a></li>
-                  <li><a href="http://www.linkedin.com" target="_blank"><img src="./assets/linkedin.svg" alt="Logo Linkedin"
-                            class="size-12 block"></a></li>
-                </ul>
-            </div>
-    </div>
+  </div>
 </footer>
 <app-mentions></app-mentions>
 <app-confidentialite></app-confidentialite>

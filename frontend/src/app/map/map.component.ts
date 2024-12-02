@@ -28,7 +28,6 @@ import { CommonModule } from '@angular/common';
   private poiEa: Poi[] = [];  
   private filter: { [key: string]: boolean } = { 'all': true };
 
-  // Information pour SEO
   // Information for SEO
   constructor(
     private meta: Meta,
@@ -45,11 +44,10 @@ import { CommonModule } from '@angular/common';
     this.poiEa$ = this.mapService.poiEa$;
     this.subscription = this.poiEa$.subscribe(poiEas => {
       this.poiEa = poiEas;
-      console.log('POI Ea:', this.poiEa);
+      //console.log('POI Ea:', this.poiEa);
       this.setupMap();
     });
     this.loadFilters();
-    // Mettre à jour le titre de la page si nécessaire
     // Update the page title if necessary
     if (this.changeTitle) {
       this.title.setTitle('Plan du Nation Sound Festival 2024 - Localisez vos Scènes et Points de Restauration');
@@ -57,12 +55,13 @@ import { CommonModule } from '@angular/common';
   }
   
   loadFilters() {
+    /*
     if (!this.poiEa$) {
       console.error("No data available in this.poiEa$");
       return; 
     } else {
       console.log("Data available in this.poiEa$");
-    }
+    }*/
     
     this.subscription = this.poiEa$.pipe(
       filter(poiEa => !!poiEa),
@@ -85,13 +84,11 @@ import { CommonModule } from '@angular/common';
     ).subscribe();
   }
 
-  // Initialisation de la carte
   // Map initialization
   private setupMap() {
     if (this.mapService && this.mapService.L) {
       this.map = this.mapService.L.map('map').setView([48.6045, 2.3400], 14);
      
-      // Ajouter une couche de tuiles OpenStreetMap
       // Add an OpenStreetMap tile layer
       this.mapService.L.tileLayer(
         'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
@@ -102,7 +99,6 @@ import { CommonModule } from '@angular/common';
         }
       ).addTo(this.map);
 
-      // Ajouter les marqueurs à la carte
       // Add markers to the map
       for (const point of this.poiEa) {
         let icon = this.mapService?.L?.icon({
@@ -122,14 +118,11 @@ import { CommonModule } from '@angular/common';
     }
   }
 
-  // Filtrer les points sur la carte
   // Filter points on the map
   setFilter(filterName: string, event: Event) {
-    // Mettre à jour le filtre
     // Update the filter
     this.filter[filterName] = (event.target as HTMLInputElement).checked;
 
-    // Vérifier si des checkbox de filtres sont cochés ou non
     // Check if any filter checkboxes are checked
     const isNoneChecked = Object.keys(this.filter)
       .filter(key => key !== 'all')
@@ -137,7 +130,6 @@ import { CommonModule } from '@angular/common';
 
     this.filter['all'] = isNoneChecked;
 
-    // Parcourir tous les points et les affcher ou les masquer en fonction du filtre et si rien n'est coché tous les points sont affichés
     // Loop through all points and show or hide them based on the filter and if nothing is checked all points are shown
     for (const point of this.poiEa) {
         if (typeof point.type === 'string' && this.map && point.marker) {
@@ -154,7 +146,6 @@ import { CommonModule } from '@angular/common';
   }
 
   ngOnDestroy(): void {
-    // Supprimer la balise meta lorsque le composant est détruit
     // Remove the meta tag when the component is destroyed
     this.meta.removeTag("name='description'");
   }

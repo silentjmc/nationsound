@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-//import { EventService } from '../services/event.service';
 import { Observable, BehaviorSubject } from 'rxjs';
-//import { map } from 'rxjs/operators';
 import { Artist } from '../services/class';
 import { CommonModule } from '@angular/common';
 import { ArtistService } from '../services/artist.service';

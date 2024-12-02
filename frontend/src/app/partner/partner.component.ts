@@ -14,7 +14,6 @@ import { environment } from '../../environments/environment';
   styleUrl: './partner.component.css'
 })
 export class PartnerComponent implements OnDestroy{
-  // Information pour SEO
   // Information for SEO
   constructor(private meta: Meta, private title: Title) {
     title.setTitle("Partenaires du Nation Sound Festival 2024");
@@ -25,24 +24,20 @@ export class PartnerComponent implements OnDestroy{
 
   http = inject(HttpClient);
   partners: any = [];
-  //uniquePartnerTypes: { id: number, nom: string }[] = [];
   uniquePartnerTypes: string[] = [];
   mappedPartners: any = [];
   private partnersService = inject(PartnerswpService);
 
-  // fonction pour charger les partenaires au chargement de la page 
   // function to load partners when the page is loaded
   ngOnInit(): void {
     this.loadPartners();
   }
 
   ngOnDestroy(): void {
-    // Supprimer la balise meta lorsque le composant est détruit
     // Remove the meta tag when the component is destroyed
     this.meta.removeTag("name='description'");
   }
 
-  // fonction pour charger les partenaires et mapper les données
   // function to load partners and map the data
   loadPartners() {
     this.partnersService.getPosts().subscribe({
@@ -56,11 +51,9 @@ export class PartnerComponent implements OnDestroy{
             typePartenaire:partner.type.type,
           }
         });
-        //const uniqueTypesSet = new Set<string>(this.mappedPartners.map((partner: any) => partner.typePartenaire));
-        //this.uniquePartnerTypes = Array.from(uniqueTypesSet).map((type, index) => ({ id: index + 1, nom: type }));
         this.uniquePartnerTypes = [...new Set(this.mappedPartners.map((partner: any) => partner.typePartenaire))] as string[];
-        console.log('Partners', this.mappedPartners);
-        console.log('Partner Types', this.uniquePartnerTypes);  
+        //console.log('Partners', this.mappedPartners);
+        //console.log('Partner Types', this.uniquePartnerTypes);  
       },
       error : (error) => console.log('Error fetching partners', error)
     });

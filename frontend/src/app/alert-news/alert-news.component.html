@@ -2,9 +2,9 @@
   <div [class]="getAlertClass(notification.type)" class="fixed top-0 left-0 right-0 z-50 px-4 py-3 border-t-4 shadow-md">
       <div class="flex justify-between container mx-auto">
         <div class="flex-grow">
-          <!-- En-tête avec icône et titre -->
+          <!-- Header with icon and title --> 
           <div class="flex items-center mb-1">
-          <!-- Icône selon le type -->
+          <!-- icon according to type of news-->
           @switch (notification.type) {
             @case ('primary') {
               <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -24,7 +24,7 @@
           }
           <h3 class="font-medium text-lg">{{ notification.title }}</h3>
         </div>
-        <!-- Contenu tronqué et lien "Lire la suite" -->
+        <!-- Content truncated and link "Read more" --> 
         @if (notification.content) {
           <div class="ml-7">
             <p class="text-sm">{{ getTruncatedContent(notification) }}</p>
@@ -38,9 +38,8 @@
         }
       </div>
 
-      <!-- Boutons d'action -->
+      <!-- Bouton fermeture -->
       <div class="flex items-start space-x-2 ml-4">
-        <!-- Bouton fermeture définitive -->
         <button (click)="dismissNotification(notification)" 
                 class="p-1 hover:bg-opacity-75 rounded-full">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
