@@ -45,25 +45,34 @@ class ImageUploadSubscriber
         if ($entity instanceof Artist) {
             if (empty($entity->getThumbnail())) {
                 if (!empty($entity->getImage())) {
+                    // Détermine le chemin de base selon l'environnement
+                    $basePath = str_contains($this->projectDir, 'public_html/symfony')
+                        ? dirname($this->projectDir) . '/admin/uploads/artists'
+                        : $this->projectDir . '/public/uploads/artists';
                     // Récupérer le chemin de l'image originale
-                    $originalImagePath = $this->projectDir . '/public/uploads/artists/' . $entity->getImage();
-                    $thumbnailPath = $this->projectDir . '/public/uploads/artists/thumb_' . $entity->getImage();
+                    //$originalImagePath = $this->projectDir . '/public/uploads/artists/' . $entity->getImage();
+                    //$thumbnailPath = $this->projectDir . '/public/uploads/artists/thumb_' . $entity->getImage();
+                    $originalImagePath = $basePath . '/' . $entity->getImage();
+                    $thumbnailPath = $basePath . '/thumb_' . $entity->getImage();
 
                     // Copier l'image originale vers le chemin du thumbnail
                     if (file_exists($originalImagePath)) {
                         if (copy($originalImagePath, $thumbnailPath)) {
                             $entity->setThumbnail('thumb_' . $entity->getImage());
                             $this->logger->info('Thumbnail created successfully', [
-                                'entity' => $entity
+                                'entity' => $entity,
+                                'path' => $thumbnailPath
                             ]);
                         } else {
                             $this->logger->error('Failed to create thumbnail', [
-                                'entity' => $entity
+                                'entity' => $entity,
+                                'path' => $thumbnailPath
                             ]);
                         }
                     } else {
                         $this->logger->warning('Original image does not exist', [
-                            'entity' => $entity
+                            'entity' => $entity,
+                            'path' => $originalImagePath
                         ]);
                     }
                 } else {
@@ -97,7 +106,13 @@ class ImageUploadSubscriber
         try {
             $this->entityManager->getConnection()->executeQuery('SET @TRIGGER_DISABLED = TRUE');
 
-            $path = $this->projectDir . '/public/uploads/'. $folder . '/'. $image;
+            //$path = $this->projectDir . '/public/uploads/'. $folder . '/'. $image;
+            // En production, utiliser le chemin ../admin/uploads
+            $basePath = str_contains($this->projectDir, 'public_html/symfony') 
+            ? dirname($this->projectDir) . '/admin/uploads'
+            : $this->projectDir . '/public/uploads';
+                    
+            $path = $basePath . '/'. $folder . '/'. $image;
 
             if (!file_exists($path)) {
                 $this->logger->warning('Image file does not exist', [

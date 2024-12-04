@@ -18,18 +18,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Psr\Log\LoggerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ArtistCrudController extends AbstractCrudController
 {
     private LoggerInterface $logger;
     private CacheManager $cacheManager;
     private EntityManagerInterface $entityManager;
+    private $projectDir;
 
-    public function __construct(LoggerInterface $logger, CacheManager $cacheManager, EntityManagerInterface $entityManager)
+    public function __construct(LoggerInterface $logger, CacheManager $cacheManager, EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%')] string $projectDir)
     {
         $this->logger = $logger;
         $this->cacheManager = $cacheManager;
         $this->entityManager = $entityManager;
+        $this->projectDir = $projectDir;
     }
 
     public static function getEntityFqcn(): string
@@ -83,6 +86,9 @@ class ArtistCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // Détermine le chemin d'upload selon l'environnement
+        $isProduction = str_contains($this->projectDir, 'public_html/symfony');
+        $uploadPath = $isProduction ? '../admin/uploads/artists' : 'public/uploads/artists';
         $fields = [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             TextField::new('name', 'Nom de l\'artiste ou du groupe')
@@ -98,7 +104,8 @@ class ArtistCrudController extends AbstractCrudController
                 ],
             ]),
             ImageField::new('image','Image'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
-                ->setUploadDir('public/uploads/artists')
+                //->setUploadDir('public/uploads/artists')
+                ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
                 ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti en format webp avec une hauteur de 768 pixels.'))
@@ -107,7 +114,8 @@ class ArtistCrudController extends AbstractCrudController
                     'allow_delete'=> false
                 ]),
             ImageField::new('thumbnail',' Miniature'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
-                ->setUploadDir('public/uploads/artists')
+                //->setUploadDir('public/uploads/artists')
+                ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('thumb_[name][randomhash].[extension]')
                 ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti en format webp avec une hauteur de 248 pixels. Privilégiez une image plutôt carré si possible.'))

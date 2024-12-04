@@ -17,14 +17,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class LocationTypeCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
+    private $projectDir;
 
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct(EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%')] string $projectDir)
     {
         $this->entityManager = $entityManager;
+        $this->projectDir = $projectDir;
 
     }
 
@@ -81,11 +84,15 @@ class LocationTypeCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable 
     {
+        // Détermine le chemin d'upload selon l'environnement
+        $isProduction = str_contains($this->projectDir, 'public_html/symfony');
+        $uploadPath = $isProduction ? '../admin/uploads/locations' : 'public/uploads/locations';
         $fields = [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             TextField::new('type','Type de lieu'),
             ImageField::new('symbol',($pageName === Crud::PAGE_INDEX ? 'symbole' : 'Télécharger le symbole représentant le lieu sur la carte'))
-                ->setUploadDir('public/uploads/locations')
+                //->setUploadDir('public/uploads/locations')
+                ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/locations')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
                 ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti en format png avec une hauteur de 24 pixels. Privilégiez une image plutôt carré avec un fond transparent si posdible.'))

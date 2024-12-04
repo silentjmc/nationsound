@@ -29,7 +29,7 @@
         currentMarker = L.marker(initialLatLng).addTo(mymap);
         } 
         // ajout des marqueurs existants sauf celui en cours d'édition
-        fetch('/api/eventLocation')
+        fetch('./api/eventLocation')
             .then(response => response.json())
             .then(data => {
                 data.forEach(location => {

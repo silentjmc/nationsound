@@ -16,17 +16,21 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 
 class PartnersCrudController extends AbstractCrudController
 {
     private $entityManager;
     private $adminUrlGenerator;
+    private $projectDir;
+    
     // injection du service EntityManagerInterface
-    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator)
+    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator, #[Autowire('%kernel.project_dir%')] string $projectDir)
     {
         $this->entityManager = $entityManager;
         $this->adminUrlGenerator = $adminUrlGenerator;
+        $this->projectDir = $projectDir;
     }
 
     public static function getEntityFqcn(): string
@@ -80,11 +84,16 @@ class PartnersCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        // Détermine le chemin d'upload selon l'environnement
+        $isProduction = str_contains($this->projectDir, 'public_html/symfony');
+        $uploadPath = $isProduction ? '../admin/uploads/partners' : 'public/uploads/partners';
         $fields = [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             TextField::new('name','Nom du partenaire'),
             ImageField::new('image',($pageName === Crud::PAGE_INDEX ? 'logo' :'Télécharger le logo du partenaire'))
-                ->setUploadDir('public/uploads/partners')
+                //->setUploadDir('../admin/uploads/partners')
+                ->setUploadDir($uploadPath)
+                //->setBasePath('../admin/uploads/partners')
                 ->setBasePath('uploads/partners')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
                 ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti à une hauteur de 128px et en format webp.</span>'))

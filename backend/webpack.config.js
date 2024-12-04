@@ -6,6 +6,8 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 
 const isProduction = Encore.isProduction();
 const publicPath = isProduction ? '/admin/build' : '/build';
+//const publicPath = isProduction ? '.' : '/build';
+//
 
 Encore
     .setOutputPath('public/build/')
