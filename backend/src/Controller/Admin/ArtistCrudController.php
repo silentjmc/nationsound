@@ -16,20 +16,17 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use Psr\Log\LoggerInterface;
 use Liip\ImagineBundle\Imagine\Cache\CacheManager;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ArtistCrudController extends AbstractCrudController
 {
-    private LoggerInterface $logger;
     private CacheManager $cacheManager;
     private EntityManagerInterface $entityManager;
-    private $projectDir;
+    private string $projectDir;
 
-    public function __construct(LoggerInterface $logger, CacheManager $cacheManager, EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%')] string $projectDir)
+    public function __construct(CacheManager $cacheManager, EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%')] string $projectDir)
     {
-        $this->logger = $logger;
         $this->cacheManager = $cacheManager;
         $this->entityManager = $entityManager;
         $this->projectDir = $projectDir;
@@ -86,25 +83,20 @@ class ArtistCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        // Détermine le chemin d'upload selon l'environnement
+        // Determines the upload path according to the environment
         $isProduction = str_contains($this->projectDir, 'public_html/symfony');
         $uploadPath = $isProduction ? '../admin/uploads/artists' : 'public/uploads/artists';
         $fields = [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             TextField::new('name', 'Nom de l\'artiste ou du groupe')
                 ->setFormTypeOptions([
-                    'attr' => [
-                        'placeholder' => 'Saisissez le nom de l\'artiste'
-                    ],
+                    'attr' => ['placeholder' => 'Saisissez le nom de l\'artiste'],
                 ]),
             TextareaField::new('description', 'Description' . ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
-            ->setFormTypeOptions([
-                'attr' => [
-                    'placeholder' => 'Saisissez la description de l\'artiste'
-                ],
-            ]),
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saisissez la description de l\'artiste'],
+                ]),
             ImageField::new('image','Image'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
-                //->setUploadDir('public/uploads/artists')
                 ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
@@ -114,7 +106,6 @@ class ArtistCrudController extends AbstractCrudController
                     'allow_delete'=> false
                 ]),
             ImageField::new('thumbnail',' Miniature'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
-                //->setUploadDir('public/uploads/artists')
                 ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('thumb_[name][randomhash].[extension]')
@@ -125,9 +116,7 @@ class ArtistCrudController extends AbstractCrudController
                 ]),
             TextField::new('type_music', 'Type de musique')
                 ->setFormTypeOptions([
-                    'attr' => [
-                        'placeholder' => 'Saisissez le type de musique de l\'artiste'
-                    ],
+                    'attr' => ['placeholder' => 'Saisissez le type de musique de l\'artiste'],
                 ]),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
@@ -141,7 +130,7 @@ class ArtistCrudController extends AbstractCrudController
         /** @var Artist $artist */
         $artist = $context->getEntity()->getInstance();
 
-        // Vérifier s'il existe des éléments Suivant liés
+        // Verify if there are related Following items
         $hasRelatedItems = $this->entityManager->getRepository(Event::class)
             ->count(['artist' => $artist]) > 0;
 

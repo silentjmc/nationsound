@@ -77,7 +77,10 @@ class PartnerTypeCrudController extends AbstractCrudController
     {
         return [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            TextField::new('type'),
+            TextField::new('type')
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saississez le type du partenaire'],
+                ]),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
@@ -85,16 +88,15 @@ class PartnerTypeCrudController extends AbstractCrudController
 
     public function delete(AdminContext $context)
     {
-        /** @var PartnerType $principal */
-        $principal = $context->getEntity()->getInstance();
+        /** @var PartnerType $partnerType */
+        $partnerType = $context->getEntity()->getInstance();
 
-        // Vérifier s'il existe des éléments Suivant liés
+        // Verify if there are related items
         $hasRelatedItems = $this->entityManager->getRepository(Partners::class)
-            ->count(['type' => $principal]) > 0;
+            ->count(['type' => $partnerType]) > 0;
 
         if ($hasRelatedItems) {
-            $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Partenaires. il faut d\'abord supprimer ou reaffecter les éléméents Partenaires concernés');
-            
+            $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Partenaires. il faut d\'abord supprimer ou reaffecter les éléméents Partenaires concernés'); 
             $url = $this->container->get(AdminUrlGenerator::class)
                 ->setController(self::class)
                 ->setAction(Action::INDEX)
@@ -102,8 +104,6 @@ class PartnerTypeCrudController extends AbstractCrudController
 
             return $this->redirect($url);
         }
-
         return parent::delete($context);
     }
-    
 }

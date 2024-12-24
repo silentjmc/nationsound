@@ -37,6 +37,9 @@ class LocationType
     #[ORM\OneToMany(targetEntity: EventLocation::class, mappedBy: 'typeLocation')]
     private Collection $eventLocations;
 
+    #[ORM\Column]
+    private ?bool $eventHostable = null;
+
     public function __construct()
     {
         $this->eventLocations = new ArrayCollection();
@@ -132,6 +135,18 @@ class LocationType
                 $eventLocation->setTypeLocation(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isEventHostable(): ?bool
+    {
+        return $this->eventHostable;
+    }
+
+    public function setEventHostable(bool $eventHostable): static
+    {
+        $this->eventHostable = $eventHostable;
 
         return $this;
     }

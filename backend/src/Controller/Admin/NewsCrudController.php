@@ -39,12 +39,18 @@ class NewsCrudController extends AbstractCrudController
         return [
             IntegerField::new('id', 'Id')->onlyOnIndex(),
             ChoiceField::new('type', 'Type')
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saississez le type de l\'actualité'],
+                    ])
                 ->setChoices([
                     'Normal' => 'primary',
                     'Important' => 'warning',
                     'Urgent' => 'danger'
                 ]),
-            TextField::new('title','Titre'),
+            TextField::new('title','Titre')
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saississez le titre de l\'actualité'],
+                ]),
             TextareaField::new('content','Contenu')->hideOnIndex(),
             BooleanField::new('publish','Publier')->onlyOnIndex()->renderAsSwitch(false),
             BooleanField::new('publish','Publier')->HideOnIndex()->renderAsSwitch(true),
@@ -62,6 +68,7 @@ class NewsCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
+        // New actions
         $sendNotification = Action::new('sendNotification', 'Envoyer la notification', 'fa fa-bell')
             ->linkToCrudAction('sendNotification')
             ->addCssClass('btn btn-sm btn-light')
@@ -126,47 +133,26 @@ class NewsCrudController extends AbstractCrudController
     public function sendNotification(AdminContext $context)
     {
         $news = $context->getEntity()->getInstance();
-        /*$data = [
-            'title' => $news->getTitle(),
-            'content' => $news->getContent(),
-        ];
-        $this->pushyService->sendNotification($data);*/
-
         $news->setPush(true);
-        //$news->setNotificationDate(new \DateTime());
-        //$this->entityManager->persist($news);
         $this->entityManager->flush();
-
         $this->addFlash('success', 'Notification envoyée');
-/*
-             $url = $this->generateUrl('admin', [
-                'crudAction' => 'index',
-                'crudControllerFqcn' => self::class,
-            ]);*/
         $url = $this->container->get(AdminUrlGenerator::class)->setAction(Action::INDEX)->setController(self::class)->generateUrl();
         return $this->redirect($url);
     }
 
-
     public function publish(AdminContext $context): Response
-            {
-                $result = $this->publishService->publish($context);
-                $url = $result['url'];
-                $this->addFlash('success', 'Actualité publié avec succès');
-                return $this->redirect($url);
-            }
+    {
+        $result = $this->publishService->publish($context);
+        $url = $result['url'];
+        $this->addFlash('success', 'Actualité publié avec succès');
+        return $this->redirect($url);
+    }
 
     public function unpublish(AdminContext $context): Response
     {
         $result = $this->publishService->unpublish($context);
         $url = $result['url'];
-        //$hasRelatedItems = $result['hasRelatedItems'];
-        //if ($hasRelatedItems) {
-        //    $this->addFlash('success', 'FAQ et événements liés dépubliés avec succès');
-        //} else {
-            $this->addFlash('success', 'Actualité dépublié avec succès');
-        //}
-        
+        $this->addFlash('success', 'Actualité dépublié avec succès');        
         return $this->redirect($url);
     }
 }

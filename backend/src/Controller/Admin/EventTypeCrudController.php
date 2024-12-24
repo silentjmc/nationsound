@@ -77,7 +77,10 @@ class EventTypeCrudController extends AbstractCrudController
     {
         return [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            TextField::new('type','Type d\'évènement'),
+            TextField::new('type','Type d\'évènement')
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saisissez le type d\'évènement'],
+                ]),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
@@ -87,8 +90,7 @@ class EventTypeCrudController extends AbstractCrudController
     {
         /** @var EventType $eventType */
         $eventType = $context->getEntity()->getInstance();
-
-        // Vérifier s'il existe des éléments Suivant liés
+        // Verify if there are related items
         $hasRelatedItems = $this->entityManager->getRepository(Event::class)
             ->count(['type' => $eventType]) > 0;
 

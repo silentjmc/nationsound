@@ -34,7 +34,7 @@ class EventCrudController extends AbstractCrudController
     private EntityManagerInterface $entityManager;
     private AdminUrlGenerator $adminUrlGenerator;
     private PublishService $publishService;
-    // injection de service
+
     public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator, PublishService $publishService)
     {
         $this->entityManager = $entityManager;
@@ -49,35 +49,36 @@ class EventCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {        
-    $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
-        ->addCssClass('btn btn-sm btn-light text-success')
+        // New actions
+        $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
+            ->addCssClass('btn btn-sm btn-light text-success')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => !$entity->isPublish() && !$this->hasrelatedPublishEventLocation($entity))
+            ->linkToCrudAction('publish')
+            ->setHtmlAttributes([
+                'title' => "Publier l'élément",
+            ]);
+
+        $publishWithRelationAction = Action::new('publishWithRelatedEventLocation', 'Publier', 'fa fa-eye')
+        ->addCssClass('btn btn-sm btn-light text-success confirm-action')
         ->setLabel(false)
-        ->displayIf(fn ($entity) => !$entity->isPublish() && !$this->hasrelatedPublishEventLocation($entity))
+        ->displayIf(fn ($entity) => !$entity->isPublish() && $this->hasrelatedPublishEventLocation($entity))
         ->linkToCrudAction('publish')
         ->setHtmlAttributes([
-            'title' => "Publier l'élément",
+            'title' => "Publier l'élément et les lieux en relation",
+            'data-bs-toggle' => 'modal',
+            'data-bs-target' => '#modal-publish',
         ]);
 
-    $publishWithRelationAction = Action::new('publishWithRelatedEventLocation', 'Publier', 'fa fa-eye')
-    ->addCssClass('btn btn-sm btn-light text-success confirm-action')
-    ->setLabel(false)
-    ->displayIf(fn ($entity) => !$entity->isPublish() && $this->hasrelatedPublishEventLocation($entity))
-    ->linkToCrudAction('publish')
-    ->setHtmlAttributes([
-        'title' => "Publier l'élément et les lieux en relation",
-        'data-bs-toggle' => 'modal',
-        'data-bs-target' => '#modal-publish',
-    ]);
+        $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
+            ->addCssClass('btn btn-ms btn-light text-danger')
+            ->setLabel(false)
+            ->displayIf(fn ($entity) => $entity->isPublish())
+            ->linkToCrudAction('unpublish')
+            ->setHtmlAttributes([
+                'title' => "Dépublier l'élément",       
+            ]);
 
-    $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
-        ->addCssClass('btn btn-ms btn-light text-danger')
-        ->setLabel(false)
-        ->displayIf(fn ($entity) => $entity->isPublish())
-        ->linkToCrudAction('unpublish')
-        ->setHtmlAttributes([
-            'title' => "Dépublier l'élément",       
-        ]);
-        //rennomage des actions possibles dans le formulaire
         return parent::configureActions($actions)
            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Ajouter un évènement');
@@ -126,97 +127,94 @@ class EventCrudController extends AbstractCrudController
         }
 
         public function configureFields(string $pageName): iterable
-    {
-        $fields = [];
+        {
+            $fields = [];
+            $artistRepository = $this->entityManager->getRepository(Artist::class);
 
-        if ($pageName === Crud::PAGE_INDEX) { 
-            $fields=[IntegerField::new('id', 'Identifiant'),
-            TextField::new('type.type', 'Type d\'évènement' ),
-            TextField::new('artist.name','Artiste'),
-            TextField::new('eventLocation.location_name','Lieu'),
-            TextField::new('date','Date de l\'évènement'),
-            TimeField::new('heure_debut','Heure de début'),
-            TimeField::new('heure_fin','Heure de fin'),
-            BooleanField::new('publish','Publié'),
-            DateTimeField::new('dateModification', 'Dernière modification'),
-            TextField::new('userModification', 'Utilisateur')];
-        } else {
-            $addTypeEventUrl = $this->addUrl(EventTypeCrudController::class);
-            $addArtistUrl = $this->addUrl(ArtistCrudController::class);
-            $addLocationUrl = $this->addUrl(EventLocationCrudController::class);
+            if ($pageName === Crud::PAGE_INDEX) { 
+                $fields=[IntegerField::new('id', 'Identifiant'),
+                TextField::new('type.type', 'Type d\'évènement' ),
+                TextField::new('artist.name','Artiste'),
+                TextField::new('eventLocation.location_name','Lieu'),
+                TextField::new('date','Date de l\'évènement'),
+                TimeField::new('heure_debut','Heure de début'),
+                TimeField::new('heure_fin','Heure de fin'),
+                BooleanField::new('publish','Publié')->renderAsSwitch(false),
+                DateTimeField::new('dateModification', 'Dernière modification'),
+                TextField::new('userModification', 'Utilisateur')];
+            } else {
+                $addTypeEventUrl = $this->addUrl(EventTypeCrudController::class);
+                $addArtistUrl = $this->addUrl(ArtistCrudController::class);
+                $addLocationUrl = $this->addUrl(EventLocationCrudController::class);
 
-            $fields=[
-                AssociationField::new('type', 'Type d\'évènement' )
-                    //->setFormTypeOption('placeholder', 'Choisissez le type d\'évènement')
-                    ->setFormTypeOption('choice_label', 'type')
-                    ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeEventUrl)),
-                AssociationField::new('artist','Artiste')
-                    //->setFormTypeOption('placeholder', 'Choisissez l\'artiste')
-                    ->setFormTypeOption('choice_label', 'name')
-                    ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addArtistUrl)),
-                AssociationField::new('eventLocation','Lieu')
-                //    ->setFormTypeOption('placeholder', 'Choisissez le lieu')
-                    ->setFormTypeOption('choice_label', 'locationName')
-                    ->setHelp(sprintf('Pas de lieu adapté ? <a href="%s">Créer un nouveau lieu</a>', $addLocationUrl))
-                    ->setQueryBuilder(function ($queryBuilder) {
-                        return $queryBuilder->andWhere('entity.publish = :active')
-                                            ->setParameter('active', true);
-                        }),
-                AssociationField::new('date','Date de l\'évènement')
-                    ->setFormTypeOption('choice_label', 'datetostring'),
-                TimeField::new('heure_debut','Heure de début')
-                    ->setColumns(2),        
-                TimeField::new('heure_fin','Heure de fin')
-                    ->setColumns(2),
-                BooleanField::new('publish','Publié')
-            ];
-
-        }
-        return $fields;
-    }
-
-    public function publish(AdminContext $context): Response
-    {
-        $result = $this->publishService->publish($context);
-        $url = $result['url'];
-        $hasRelatedItems = $result['hasRelatedItems'];
-        if ($hasRelatedItems) {
-            $this->addFlash('success', 'Évènement et lieu liés dépubliés avec succès');
-        } else {
-            $this->addFlash('success', 'Évènement publié avec succès');
-        }
-        return $this->redirect($url);
-    }
-
-
-    public function unpublish(AdminContext $context): Response
-    {
-        $result = $this->publishService->unpublish($context);
-        $url = $result['url'];
-        $this->addFlash('success', 'Évènement dépublié avec succès');            
-        return $this->redirect($url);
-    }
-    /*
-    private function hasrelatedPublishEventLocation(AdminContext $context, Event $event): bool
-    {
-        $entity = $context->getEntity()->getInstance();
-        if (!$event->isPublish()) {
-            return false;
+                $fields=[
+                    AssociationField::new('type', 'Type d\'évènement')
+                        ->setQueryBuilder(
+                            fn (QueryBuilder $queryBuilder) => $queryBuilder->orderBy('entity.type', 'ASC')
+                            )
+                        ->setFormTypeOptions([
+                                'choice_label' => 'type',
+                                'placeholder' => 'Choisissez le type d\'évènement'
+                        ])
+                        ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeEventUrl)),
+                    AssociationField::new('artist','Artiste')
+                        ->setQueryBuilder(
+                            fn (QueryBuilder $queryBuilder) => $queryBuilder->orderBy('entity.name', 'ASC')
+                            )
+                        ->setFormTypeOptions([
+                            'choice_label' => 'name',
+                            'placeholder' => 'Choisissez l\'artiste'
+                    ])
+                        ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addArtistUrl)),
+                    AssociationField::new('eventLocation','Lieu')
+                        ->setFormTypeOptions([
+                            'choice_label' => 'locationName',
+                            'placeholder' => 'Choisissez le lieu de l\'évènement'
+                    ])
+                        ->setQueryBuilder(function ($queryBuilder) {
+                            return $queryBuilder->andWhere('entity.publish = :active')
+                                                ->setParameter('active', true)
+                                                ->orderBy('entity.locationName', 'ASC');
+                            })
+                            ->setHelp(sprintf('Pas de lieu adapté ? <a href="%s">Créer un nouveau lieu</a>', $addLocationUrl)),
+                    AssociationField::new('date','Date de l\'évènement')
+                        ->setFormTypeOption('choice_label', 'datetostring'),
+                    TimeField::new('heure_debut','Heure de début')
+                        ->setColumns(2),        
+                    TimeField::new('heure_fin','Heure de fin')
+                        ->setColumns(2),
+                    BooleanField::new('publish','Publié')
+                ];
+            }
+            return $fields;
         }
 
-        $hasrelatedPublishEventLocation = $this->entityManager->getRepository(EventLocation::class)
-                ->count(['id' => $entity->getEventLocation()->getId(), 'publish' => false]) > 0;
+        public function publish(AdminContext $context): Response
+        {
+            $result = $this->publishService->publish($context);
+            $url = $result['url'];
+            $hasRelatedItems = $result['hasRelatedItems'];
+            if ($hasRelatedItems) {
+                $this->addFlash('success', 'Évènement et lieu liés dépubliés avec succès');
+            } else {
+                $this->addFlash('success', 'Évènement publié avec succès');
+            }
+            return $this->redirect($url);
+        }
 
-        return $hasrelatedPublishEventLocation;
-    }*/
-    private function hasrelatedPublishEventLocation(Event $event): bool
-    {
-        //$hasRelatedPublishedEvents = $this->entityManager->getRepository(Event::class)
-        //    ->count(['eventLocation' => $event->getEventLocation(), 'publish' => false]) > 0;
-        $hasRelatedPublishedEvents = $this->entityManager->getRepository(EventLocation::class)
-        ->count(['id' => $event->getEventLocation()->getId(), 'publish' => false]) > 0;
+        public function unpublish(AdminContext $context): Response
+        {
+            $result = $this->publishService->unpublish($context);
+            $url = $result['url'];
+            $this->addFlash('success', 'Évènement dépublié avec succès');            
+            return $this->redirect($url);
+        }
 
-        return $hasRelatedPublishedEvents;
-    }
+        private function hasrelatedPublishEventLocation(Event $event): bool
+        {
+            $hasRelatedPublishedEvents = $this->entityManager->getRepository(EventLocation::class)
+            ->count(['id' => $event->getEventLocation()->getId(), 'publish' => false]) > 0;
 
+            return $hasRelatedPublishedEvents;
+        }
 }

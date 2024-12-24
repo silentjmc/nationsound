@@ -44,7 +44,8 @@ class EventLocationCrudController extends AbstractCrudController
     }
 
     public function configureActions(Actions $actions): Actions
-    {        
+    {   
+        // New actions     
         $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
             ->addCssClass('btn btn-sm btn-light text-success')
             ->setLabel(false)
@@ -72,7 +73,6 @@ class EventLocationCrudController extends AbstractCrudController
                'data-bs-target' => '#modal-unpublish',
             ]);
 
-        //renommage des actions possibles dans le formulaire
         return parent::configureActions($actions)
            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Ajouter un lieu');
@@ -121,7 +121,6 @@ class EventLocationCrudController extends AbstractCrudController
       
         public function configureFields(string $pageName): iterable
         {
-
             if ($pageName === Crud::PAGE_INDEX) {
                 $fields = [
                     IntegerField::new('id', 'Identifiant'),
@@ -143,23 +142,31 @@ class EventLocationCrudController extends AbstractCrudController
                     ->setAction(Action::NEW)
                     ->generateUrl();
                 $fields = [
-                    TextField::new('locationName','Nom du lieu'),
-                    TextareaField::new('description','Courte description du lieu pour afficher sur la carte interactive'),
+                    TextField::new('locationName','Nom du lieu')
+                        ->setFormTypeOptions([
+                            'attr' => ['placeholder' => 'Saisissez le nom du lieu'],
+                        ]),
+                    TextareaField::new('description','Courte description du lieu pour afficher sur la carte interactive')
+                        ->setFormTypeOptions([
+                            'attr' => ['placeholder' => 'Saisissez la description du lieu'],
+                        ]),
                     AssociationField::new('typeLocation', 'Type de lieu')
-                        //->setFormTypeOption('placeholder', 'Choisissez le type de lieu')
-                        ->setFormTypeOption('choice_label', 'type')
+                        ->setFormTypeOptions([
+                            'choice_label' => 'type',
+                            'placeholder' => 'Sélectionnez le type du lieu'
+                        ])
                         ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl)),
                     FormField::addPanel('Position géographique')
                         ->setHelp('Vous devez indiquer la position en cliquant directement sur la carte ci-dessous. <br>Le marqueur du lieu actuel avec un marqueur bleu. Vous pouvez déplacer le marqueur bleu en cliquant sur la carte pour ajuster la position du lieu. <br>Les autres marqueurs de lieux déjà enregistrés sont fixes.'),
                     FormField::addRow(),
                     NumberField::new('latitude','Latitude')
-                    ->setNumDecimals(14)
-                    ->setFormTypeOption('attr', ['readonly' => true])
-                    ->setColumns(3),
+                        ->setNumDecimals(14)
+                        ->setFormTypeOption('attr', ['readonly' => true])
+                        ->setColumns(3),
                     NumberField::new('longitude','Longitude')
-                    ->setNumDecimals(14)
-                    ->setFormTypeOption('attr', ['readonly' => true])
-                    ->setColumns(3),
+                        ->setNumDecimals(14)
+                        ->setFormTypeOption('attr', ['readonly' => true])
+                        ->setColumns(3),
                     BooleanField::new('publish','Publié'),
                 ];
             }
@@ -171,7 +178,7 @@ class EventLocationCrudController extends AbstractCrudController
         /** @var EventLocation $eventLocation */
             $eventLocation = $context->getEntity()->getInstance();
 
-            // Vérifier s'il existe des éléments Suivant liés
+            // Verify if there are related items
             $hasRelatedItems = $this->entityManager->getRepository(Event::class)
                 ->count(['eventLocation' => $eventLocation]) > 0;
 
@@ -190,12 +197,12 @@ class EventLocationCrudController extends AbstractCrudController
         }
 
         public function publish(AdminContext $context): Response
-            {
-                $result = $this->publishService->publish($context);
-                $url = $result['url'];
-                $this->addFlash('success', 'Lieu publié avec succès');
-                return $this->redirect($url);
-            }
+        {
+            $result = $this->publishService->publish($context);
+            $url = $result['url'];
+            $this->addFlash('success', 'Lieu publié avec succès');
+            return $this->redirect($url);
+        }
 
         public function unpublish(AdminContext $context): Response
         {
@@ -207,7 +214,6 @@ class EventLocationCrudController extends AbstractCrudController
             } else {
                 $this->addFlash('success', 'Lieu dépublié avec succès');
             }
-            
             return $this->redirect($url);
         }
 

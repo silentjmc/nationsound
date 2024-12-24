@@ -21,9 +21,9 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class PartnersCrudController extends AbstractCrudController
 {
-    private $entityManager;
-    private $adminUrlGenerator;
-    private $projectDir;
+    private EntityManagerInterface $entityManager;
+    private AdminUrlGenerator $adminUrlGenerator;
+    private string $projectDir;
     
     // injection du service EntityManagerInterface
     public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator, #[Autowire('%kernel.project_dir%')] string $projectDir)
@@ -84,25 +84,27 @@ class PartnersCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
-        // Détermine le chemin d'upload selon l'environnement
+        // Determines the upload path according to the environment
         $isProduction = str_contains($this->projectDir, 'public_html/symfony');
         $uploadPath = $isProduction ? '../admin/uploads/partners' : 'public/uploads/partners';
         $fields = [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            TextField::new('name','Nom du partenaire'),
+            TextField::new('name','Nom du partenaire')
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saississez le nom du partenaire'],
+                ]),
             ImageField::new('image',($pageName === Crud::PAGE_INDEX ? 'logo' :'Télécharger le logo du partenaire'))
-                //->setUploadDir('../admin/uploads/partners')
                 ->setUploadDir($uploadPath)
-                //->setBasePath('../admin/uploads/partners')
                 ->setBasePath('uploads/partners')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
                 ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti à une hauteur de 128px et en format webp.</span>'))
+                ->setFormTypeOption('required' , ($pageName === Crud::PAGE_NEW ? true : false)),
+            TextField::new('url','URL du site du partenaire')
                 ->setFormTypeOptions([
-                    'required' => ($pageName === Crud::PAGE_NEW ? true : false),
+                    'attr' => ['placeholder' => 'Saississez l\'url du site du partenaire'],
                 ]),
-            TextField::new('url','URL du site du partenaire'),
         ];
-        // Affiche le type de partenaire dans la liste des partenaires sans lien cliquable sinon dans la page de création garde le choix de liste
+
         if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {             
             $fields[] = TextField::new('type.type', 'Type de partenaire');
         } else {
@@ -111,17 +113,15 @@ class PartnersCrudController extends AbstractCrudController
             ->setAction(Action::NEW)
             ->generateUrl();
             $fields[] = AssociationField::new('type', 'Type de partenaire')
-                ->setFormTypeOption('placeholder', 'Choisissez le type de partenaire')
-                ->setFormTypeOption('choice_label', 'type')
+                ->setFormTypeOptions([
+                    'placeholder' => 'Selectionnez le type de partenaire',
+                    'choice_label' => 'type',
+                ])
                 ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl));
         }
         $fields[] = BooleanField::new('publish','Publié');
         $fields[] = DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex();
-        $fields[] = TextField::new('userModification', 'Utilisateur')->onlyOnIndex();
-        
-
+        $fields[] = TextField::new('userModification', 'Utilisateur')->onlyOnIndex(); 
         return $fields;
-    
     }
-
 }

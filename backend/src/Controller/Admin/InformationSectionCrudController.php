@@ -39,7 +39,7 @@ class InformationSectionCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         $entityCount = $this->informationSectionRepository->count([]);
-
+        // New actions
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Mettre en haut de page'])
             ->linkToCrudAction('moveTop')
@@ -59,41 +59,41 @@ class InformationSectionCrudController extends AbstractCrudController
             ->setHtmlAttributes(['title' => 'Mettre en bas de page'])
             ->linkToCrudAction('moveBottom')
             ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
-    return $actions
-        ->add(Crud::PAGE_INDEX, $moveBottom)
-        ->add(Crud::PAGE_INDEX, $moveDown)
-        ->add(Crud::PAGE_INDEX, $moveUp)
-        ->add(Crud::PAGE_INDEX, $moveTop)
-        ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-            return $action->setLabel('Ajouter une nouvelle section');
-        })
-        ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
-            return $action->setLabel('Créer la section');
-        })
-        ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
-            return $action->setLabel('Créer et ajouter une autre section');
-        })
-        ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
-            return $action
-                ->setIcon('fa fa-edit')
-                ->setLabel(false)
-                ->setHtmlAttributes([
-                    'title' => 'Modifier cet élément',
-                ])
-                ->displayAsLink()
-                ->addCssClass('btn btn-sm btn-light');
-        })
-        ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
-            return $action
-                ->setIcon('fa fa-trash')
-                ->setLabel(false)
-                ->setHtmlAttributes([
-                    'title' => 'Supprimer cet élément',
-                ])
-                ->displayAsLink()
-                ->addCssClass('btn btn-sm btn-light');
-        });    
-    }
+        return $actions
+            ->add(Crud::PAGE_INDEX, $moveBottom)
+            ->add(Crud::PAGE_INDEX, $moveDown)
+            ->add(Crud::PAGE_INDEX, $moveUp)
+            ->add(Crud::PAGE_INDEX, $moveTop)
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+                return $action->setLabel('Ajouter une nouvelle section');
+            })
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
+                return $action->setLabel('Créer la section');
+            })
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
+                return $action->setLabel('Créer et ajouter une autre section');
+            })
+            ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
+                return $action
+                    ->setIcon('fa fa-edit')
+                    ->setLabel(false)
+                    ->setHtmlAttributes([
+                        'title' => 'Modifier cet élément',
+                    ])
+                    ->displayAsLink()
+                    ->addCssClass('btn btn-sm btn-light');
+            })
+            ->update(Crud::PAGE_INDEX, Action::DELETE, function (Action $action) {
+                return $action
+                    ->setIcon('fa fa-trash')
+                    ->setLabel(false)
+                    ->setHtmlAttributes([
+                        'title' => 'Supprimer cet élément',
+                    ])
+                    ->displayAsLink()
+                    ->addCssClass('btn btn-sm btn-light');
+            });    
+        }
 
     public function configureCrud(Crud $crud): Crud
     {
@@ -113,9 +113,17 @@ class InformationSectionCrudController extends AbstractCrudController
         return [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             IntegerField::new('position', 'Position')->onlyOnIndex(),
-            TextField::new('section',($pageName === Crud::PAGE_INDEX ? 'Section' : 'Section (partie dans la page informations)')),
-            TextField::new('title',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre dans la page informations')),
-            TextareaField::new('description',($pageName === Crud::PAGE_INDEX ? 'Sous-texte' : 'Sous-texte de la section dans la page Informations')),
+            TextField::new('section',($pageName === Crud::PAGE_INDEX ? 'Section' : 'Section (partie dans la page informations)'))
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saississez le nom de la section dans l\'administration'],
+                ]),
+            TextField::new('title',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre dans la page informations'))
+                ->setFormTypeOptions(['attr' => ['placeholder' => 'Saississez le titre de l\'information dans le site'],
+            ]),
+            TextareaField::new('description',($pageName === Crud::PAGE_INDEX ? 'Sous-texte' : 'Sous-texte de la section dans la page Informations'))
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saississez le contenu de l\'information'],
+                ]),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
             TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
         ];
@@ -151,16 +159,15 @@ class InformationSectionCrudController extends AbstractCrudController
 
     public function delete(AdminContext $context)
     {
-        /** @var PartnerType $principal */
+        /** @var InformationSection $section */
         $section = $context->getEntity()->getInstance();
 
-        // Vérifier s'il existe des éléments Suivant liés
+        // Verify if there are related items
         $hasRelatedItems = $this->entityManager->getRepository(Information::class)
             ->count(['typeSection' => $section]) > 0;
 
         if ($hasRelatedItems) {
             $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Informations. il faut d\'abord supprimer ou reaffecter les éléménts Informations concernés');
-            
             $url = $this->container->get(AdminUrlGenerator::class)
                 ->setController(self::class)
                 ->setAction(Action::INDEX)
@@ -168,8 +175,6 @@ class InformationSectionCrudController extends AbstractCrudController
 
             return $this->redirect($url);
         }
-
         return parent::delete($context);
     }
-
 }

@@ -2,8 +2,6 @@
 
 namespace App\Controller\Admin;
 
-//use App\Entity\EntityHistory;
-
 use App\Entity\EventLocation;
 use App\Entity\LocationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,22 +11,23 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class LocationTypeCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
-    private $projectDir;
+    private string $projectDir;
 
     public function __construct(EntityManagerInterface $entityManager, #[Autowire('%kernel.project_dir%')] string $projectDir)
     {
         $this->entityManager = $entityManager;
         $this->projectDir = $projectDir;
-
     }
 
     public static function getEntityFqcn(): string
@@ -84,23 +83,26 @@ class LocationTypeCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable 
     {
-        // Détermine le chemin d'upload selon l'environnement
+        // Determines the upload path according to the environment
         $isProduction = str_contains($this->projectDir, 'public_html/symfony');
         $uploadPath = $isProduction ? '../admin/uploads/locations' : 'public/uploads/locations';
         $fields = [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            TextField::new('type','Type de lieu'),
+            TextField::new('type','Type de lieu')
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saississez le type de lieu'],
+                ]),
             ImageField::new('symbol',($pageName === Crud::PAGE_INDEX ? 'symbole' : 'Télécharger le symbole représentant le lieu sur la carte'))
-                //->setUploadDir('public/uploads/locations')
                 ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/locations')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
                 ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti en format png avec une hauteur de 24 pixels. Privilégiez une image plutôt carré avec un fond transparent si posdible.'))
-                ->setFormTypeOptions([
-                    'required' => ($pageName === Crud::PAGE_NEW ? true : false),
-                ]),
-                DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-                TextField::new('userModification', 'Utilisateur')->onlyOnIndex()
+                ->setFormTypeOption('required' , ($pageName === Crud::PAGE_NEW ? true : false)),
+            BooleanField::new('eventHostable', 'Lieu d\'événement')->renderAsSwitch(false)->onlyOnIndex(),
+            BooleanField::new('eventHostable', 'Lieu d\'événement')
+                ->setHelp('Ce type de lieu peut-il accueillir des événements ?'),
+            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModification', 'Utilisateur')->onlyOnIndex()
         ];       
         return $fields;
     }
@@ -109,25 +111,20 @@ class LocationTypeCrudController extends AbstractCrudController
         /** @var LocationType $locationType */
         $locationType = $context->getEntity()->getInstance();
 
-        // Vérifier s'il existe des éléments Suivant liés
+        // Verify if there are related items
         $hasRelatedItems = $this->entityManager->getRepository(EventLocation::class)
             ->count(['typeLocation' => $locationType]) > 0;
 
         if ($hasRelatedItems) {
             $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Lieux. il faut d\'abord supprimer ou reaffecter les éléméents Lieux concernés');
-            
             $url = $this->container->get(AdminUrlGenerator::class)
                 ->setController(self::class)
                 ->setAction(Action::INDEX)
                 ->generateUrl();
-
             return $this->redirect($url);
         }
-
         return parent::delete($context);
     }
-
-
 }
 
 

@@ -42,6 +42,7 @@ class FaqCrudController extends AbstractCrudController
     {
         $entityCount = $this->faqRepository->count([]);
 
+        // New actions
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Move to top'])
             ->linkToCrudAction('moveTop')
@@ -135,8 +136,14 @@ class FaqCrudController extends AbstractCrudController
         return [
             IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
             IntegerField::new('position', 'position')->onlyOnIndex(),
-            TextField::new('question'),
-            TextareaField::new('reponse'),
+            TextField::new('question')
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saisissez une question'],
+                ]),
+            TextareaField::new('reponse')
+                ->setFormTypeOptions([
+                    'attr' => ['placeholder' => 'Saisissez la réponse à la question'],
+                ]),
             BooleanField::new('publish','Publié')
                 ->renderAsSwitch(false),
             DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
@@ -183,13 +190,7 @@ class FaqCrudController extends AbstractCrudController
         {
             $result = $this->publishService->unpublish($context);
             $url = $result['url'];
-            //$hasRelatedItems = $result['hasRelatedItems'];
-            //if ($hasRelatedItems) {
-            //    $this->addFlash('success', 'FAQ et événements liés dépubliés avec succès');
-            //} else {
-                $this->addFlash('success', 'FAQ dépublié avec succès');
-            //}
-            
+            $this->addFlash('success', 'FAQ dépublié avec succès');
             return $this->redirect($url);
         }
 }
