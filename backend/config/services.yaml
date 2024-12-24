@@ -33,7 +33,7 @@ services:
 
     App\Service\PositionService:
         arguments:
-            $em: '@doctrine.orm.entity_manager'
+            $entityManager: '@doctrine.orm.entity_manager'
     
     App\Service\ImageUploadSubscriber:
         arguments:

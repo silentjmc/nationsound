@@ -5,17 +5,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingState = submitButton.querySelector('.loading-state');
 
     form.addEventListener('submit', function(e) {
-        // Désactiver le bouton
+        // Disable the button
         submitButton.disabled = true;
         
-        // Cacher le texte normal et montrer l'animation
+        // Hide the normal text and show the animation
         normalState.classList.add('hidden');
         loadingState.classList.remove('hidden');
         loadingState.style.display = 'flex'; // Forcer l'affichage en flex
     });
 });
 
-// Fonction pour basculer la visibilité du mot de passe
+// Function to toggle the password visibility
 function togglePasswordVisibility(button, inputId) {
     const input = document.getElementById(inputId);
     const showEye = button.querySelectorAll('.show-eye');
