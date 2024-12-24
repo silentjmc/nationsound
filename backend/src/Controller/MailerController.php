@@ -7,24 +7,23 @@ use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Mailer\Transport\TransportInterface;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
+//use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class MailerController extends AbstractController
 {
+    // test d'envoi de mail
     #[Route('/email')]
     public function sendEmail(MailerInterface $mailer, TransportInterface $transport): Response
     {
         try {
             error_log('=== DÉBUT TEST EMAIL ===');
-            
-            // Afficher la configuration du transport
             $dsn = $_ENV['MAILER_DSN'] ?? 'DSN non défini';
             error_log('DSN configuré: ' . $dsn);
             
             // Créer et envoyer un email de test
             $email = (new Email())
                 ->from($_ENV['ADMIN_EMAIL'])
-                ->to('jmj.carre@gmail.com')
+                ->to('#adresse_mail#')
                 ->subject('Test Email ' . date('Y-m-d H:i:s'))
                 ->text('Ceci est un email de test envoyé le ' . date('Y-m-d H:i:s'));
 
@@ -48,7 +47,6 @@ class MailerController extends AbstractController
             error_log('Message: ' . $e->getMessage());
             error_log('Trace: ' . $e->getTraceAsString());
             
-            // Retourner plus de détails sur l'erreur
             return new Response(
                 'Erreur lors de l\'envoi:<br>' .
                 'Type: ' . get_class($e) . '<br>' .
