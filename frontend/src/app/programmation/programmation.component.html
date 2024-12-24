@@ -3,7 +3,17 @@
     <h1 class="font-title text-black text-2xl sm:text-3xl md:text-5xl uppercase font-extrabold text-center pb-2">Programmation</h1>
     <div class="border border-black w-full min-w-52">
       <!-- filter zone -->
-      <h2 class="font-title text-black text-center text-lg uppercase">filtres</h2> 
+      <h2 class="font-title text-black text-center text-lg uppercase">filtres</h2>
+      @if(loadingFilters) {
+        <div class="flex flex-col md:flex-row justify-around my-3 mx-5 animate-pulse">
+          <!-- Loading skeleton for location filter -->
+          <div class="w-full md:w-1/4 mb-4 md:mb-0">
+            <div class="font-title text-black text-3xl text-center place-content-center w-full font-semibold pb-2">
+              <p>Chargement...</p>
+            </div>
+          </div>
+        </div>
+      } @else { 
       <div class="flex flex-col md:flex-row justify-around my-3 mx-5"> 
         <!-- location filter -->
         <div>
@@ -41,7 +51,8 @@
                      [checked]="filter.isChecked"
                      (change)="onDateFilterChange(filter)" />
               <label class="mx-2 font-text" [for]="filter.name">
-                {{filter.name | date:'dd/MM/yyyy'}}
+                <!-- {{filter.name | date:'dd/MM/yyyy'}} -->
+                {{filter.name}}
               </label>
             </div>
           }
@@ -74,15 +85,16 @@
           }
         </div>
       </div>
+      }
     </div>
     <!-- artists grids -->
-    <div class="relative grid grid-cols-1 gap-5 m-1 mt-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 justify-items-center">
+    <div class="relative grid grid-cols-1 gap-2 m-1 mt-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 justify-items-center">
       @for(program of (filteredPrograms$ | async); track program.id) {
         @defer (on viewport) {
           <a [routerLink]="['/artist', program.artist.id]">
-            <div class="flex flex-col bg-white rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100 my-6 w-48">
-              <div class="overflow-hidden rounded-md h-48 flex justify-center items-center">
-                <img class="w-full h-full object-cover" src="{{ program.artist.thumbnail }}" alt="{{ program.artist.name }}" />
+            <div class=" flex flex-col bg-white rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
+              <div class="overflow flex justify-center items-center">
+                <img class="w-full h-full object-cover rounded-t-lg" src="{{ program.artist.thumbnail }}" alt="{{ program.artist.name }}" />
               </div>
               <div class="text-left px-2">
                 <h4 class="font-text font-semibold text-gray-700">{{ program.type.type }}</h4>

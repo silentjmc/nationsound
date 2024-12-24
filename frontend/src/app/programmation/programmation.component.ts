@@ -36,6 +36,7 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
   public timeFiltersStart!: string | null;
   public timeFiltersEnd!: string | null;
   errorMessage: string | null = null;
+  loadingFilters: boolean = true;
   // Information for SEO
   constructor(private meta: Meta, private title: Title, private eventService: EventService, private filterStatusService: FilterStatusService) {
     title.setTitle("Programmation du Nation Sound Festival 2024 - Horaires et Artistes");
@@ -137,7 +138,10 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
         console.error('Une erreur est survenue lors de la récupération des artistes :', error);
         return EMPTY;
       })
-    ).subscribe();
+    //).subscribe();
+    ).subscribe(() => {
+      this.loadingFilters = false;
+    });
   }
 
   applyFilters(): void {
