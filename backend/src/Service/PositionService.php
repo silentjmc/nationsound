@@ -15,7 +15,7 @@ enum Direction
 class PositionService
 {
     public function __construct(
-        private readonly EntityManagerInterface $em
+        private readonly EntityManagerInterface $entityManager
     ) {
     }
     public function move(AdminContext $context, Direction $direction)
@@ -29,6 +29,6 @@ class PositionService
         };
     
         $object->setPosition($newPosition);
-        $this->em->flush();
+        $this->entityManager->flush();
     }
 }

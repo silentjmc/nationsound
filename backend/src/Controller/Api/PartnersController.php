@@ -10,27 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class PartnersController extends AbstractController
-{
-    /*
-    #[Route('/api/partners', name: 'app_partners', methods: ['GET'])]
-    public function index(): Response
-    {
-        return $this->render('api/partners/index.html.twig', [
-            'controller_name' => 'PartnersController',
-        ]);
-    }
-        */
-    /*
-    #[Route('/api/partners', name: 'app_partners', methods: ['GET'])]
-    public function index(): Response
-    {
-        return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/Api/PartnersController.php',
-        ]);
-    }
-     */   
-        
+{  
     #[Route('/api/partners', name: 'app_partners', methods: ['GET'])]
     public function getPartnersList(PartnersRepository $partnersRepository, SerializerInterface $serializer): JsonResponse
     {
@@ -39,6 +19,4 @@ class PartnersController extends AbstractController
         return new JsonResponse(
             $jsonPartnersList, Response::HTTP_OK, [], true);
     }
-            
-
 }

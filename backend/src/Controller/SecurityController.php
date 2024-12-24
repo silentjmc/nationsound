@@ -15,7 +15,7 @@ class SecurityController extends AbstractController
         $error = $authenticationUtils->getLastAuthenticationError();
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        // Si l'erreur est liée à un compte non vérifié
+        // no verified user
         if ($error && str_contains($error->getMessage(), 'not verified')) {
             return $this->render('security/login_error.html.twig', [
                 'error_type' => 'not_verified',
@@ -23,7 +23,7 @@ class SecurityController extends AbstractController
             ]);
         }
         
-        // Si une autre erreur d'authentification s'est produite
+        // others errors
         if ($error) {
             return $this->render('security/login_error.html.twig', [
                 'error_type' => 'invalid_credentials',

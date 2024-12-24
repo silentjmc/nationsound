@@ -16,7 +16,7 @@
         </div>
 
         <div class="mt-8 space-y-6">
-            <!-- Informations de l'utilisateur -->
+            {# user information #}
             <div class="bg-gray-50 p-6 rounded-lg border border-gray-200">
                 <div class="space-y-4">
                     <div>
@@ -35,7 +35,7 @@
                         <label class="block text-sm font-medium text-gray-700">Date d'inscription</label>
                         <div class="mt-1 text-gray-900">{{ user.registrationDate|date('d/m/Y H:i') }}</div>
                     </div>
-                    <!-- Sélection du rôle -->
+                    {# role selection #}
                     <div class="mt-6">
                         <label for="role" class="block text-sm font-medium text-gray-700">Rôle à attribuer</label>
                         <select id="role" name="role" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <!-- Boutons d'action -->
+            {# action buttons #}
             <div class="mt-5 flex justify-center space-x-4">
                 <form method="post" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir valider cette inscription ?');">
                     <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ token) }}">
@@ -57,7 +57,6 @@
                         Valider l'inscription
                     </button>
                 </form>
-
                 <form method="post" class="inline" onsubmit="return confirm('Êtes-vous sûr de vouloir refuser cette inscription ? Cette action est irréversible.');">
                     <input type="hidden" name="_token" value="{{ csrf_token('validate' ~ token) }}">
                     <input type="hidden" name="action" value="reject">
@@ -67,8 +66,6 @@
                 </form>
             </div>
         </div>
-
-        <!-- Message d'aide -->
         <div class="mt-6">
             <p class="text-sm text-gray-600 text-center">
                 Un email sera automatiquement envoyé à l'utilisateur pour l'informer de l'inscription ou non.

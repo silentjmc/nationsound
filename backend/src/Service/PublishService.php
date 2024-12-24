@@ -47,21 +47,6 @@ class PublishService
         ->generateUrl();
         return ['url' => $url, 'hasRelatedItems' => $hasRelatedItems];
     }
-    /*
-    public function publish(AdminContext $context): string
-    {
-        $entity = $context->getEntity()->getInstance();
-        $entity->setPublish(true);
-        $this->entityManager->persist($entity);
-        $this->entityManager->flush();
-
-        $url = $this->adminUrlGenerator
-        ->setAction(Action::INDEX)
-        ->removeReferrer()
-        ->setController($context->getCrud()?->getControllerFqcn() ?? '')
-        ->generateUrl();
-        return $url;
-    }*/
 
     public function unpublish(AdminContext $context): array
     {

@@ -17,7 +17,6 @@ use App\Entity\Partners;
 use App\Entity\PartnerType;
 use App\Entity\Role;
 use App\Entity\User;
-use EasyCorp\Bundle\EasyAdminBundle\Config\Assets;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractDashboardController;
@@ -58,8 +57,6 @@ class DashboardController extends AbstractDashboardController
             return $this->redirect($adminUrlGenerator->setController(InformationCrudController::class)->generateUrl());
         }
         
-
-
         // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
         // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
         //
@@ -69,18 +66,11 @@ class DashboardController extends AbstractDashboardController
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
-            //->setTitle('Live Event Backend');
             ->setTitle('<img src="./assets/logo_ns_rect_txtw.png" class="img-fluid d-block mx-auto" style="max-width:100px; width:100%;">')
-            //->setTitle('<img src="/admin/images/logo_ns_rect_txtw.png" class="img-fluid d-block mx-auto" style="max-width:100px; width:100%;">')
             ->renderContentMaximized()
             ;
     }
-/*
-    public function configureAssets(): Assets
-    {
-        return Assets::new()->addCssFile('assets/styles/admin.css');
-    }
-*/
+
     public function configureMenuItems(): iterable
     {
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -130,7 +120,6 @@ class DashboardController extends AbstractDashboardController
             yield MenuItem::linkToCrud('FAQ','fa fa-question-circle', Faq::class);
             yield MenuItem::linkToCrud('Actualités','fa fa-bell', News::class);
         }
-
 
         if ($this->isGranted('ROLE_ADMIN')) {
             yield MenuItem::section('HISTORIQUE','fa fa-database');

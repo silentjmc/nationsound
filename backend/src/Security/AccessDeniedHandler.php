@@ -12,7 +12,6 @@ class AccessDeniedHandler extends AbstractController implements AccessDeniedHand
 {
     public function handle(Request $request, AccessDeniedException $accessDeniedException): Response
     {
-        // Rendre la page d'erreur 403
         return $this->render('security/access_denied.html.twig', [], new Response(null, Response::HTTP_FORBIDDEN));
     }
 }

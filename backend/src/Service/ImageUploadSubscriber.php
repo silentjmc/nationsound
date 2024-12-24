@@ -45,17 +45,15 @@ class ImageUploadSubscriber
         if ($entity instanceof Artist) {
             if (empty($entity->getThumbnail())) {
                 if (!empty($entity->getImage())) {
-                    // Détermine le chemin de base selon l'environnement
+                    // Determine the base path according to the environment
                     $basePath = str_contains($this->projectDir, 'public_html/symfony')
                         ? dirname($this->projectDir) . '/admin/uploads/artists'
                         : $this->projectDir . '/public/uploads/artists';
-                    // Récupérer le chemin de l'image originale
-                    //$originalImagePath = $this->projectDir . '/public/uploads/artists/' . $entity->getImage();
-                    //$thumbnailPath = $this->projectDir . '/public/uploads/artists/thumb_' . $entity->getImage();
+                    // Retrieve the path of the original image
                     $originalImagePath = $basePath . '/' . $entity->getImage();
                     $thumbnailPath = $basePath . '/thumb_' . $entity->getImage();
 
-                    // Copier l'image originale vers le chemin du thumbnail
+                    // Copy the original image to the thumbnail path
                     if (file_exists($originalImagePath)) {
                         if (copy($originalImagePath, $thumbnailPath)) {
                             $entity->setThumbnail('thumb_' . $entity->getImage());
@@ -79,13 +77,11 @@ class ImageUploadSubscriber
                     $this->logger->warning('Thumbnail cannot be set because image is empty', [
                         'entity' => $entity
                     ]);
-                    return; // Sortir si l'image est vide
+                    return;
                 }
             } 
-            
             $this->resizeAndSaveImage($entity, 'Image', 'artists', 'webp', 768);
             $this->resizeAndSaveImage($entity, 'Thumbnail', 'artists', 'webp', 248);
-
         }
 
         if ($entity instanceof Partners) {
@@ -95,7 +91,6 @@ class ImageUploadSubscriber
         if ($entity instanceof LocationType) {
             $this->resizeAndSaveImage($entity, 'Symbol', 'location', 'png', 24);
         }
-   
     }
 
     public function resizeAndSaveImage ($entity, string $field, string $folder, string $format, int $height): void
@@ -106,8 +101,7 @@ class ImageUploadSubscriber
         try {
             $this->entityManager->getConnection()->executeQuery('SET @TRIGGER_DISABLED = TRUE');
 
-            //$path = $this->projectDir . '/public/uploads/'. $folder . '/'. $image;
-            // En production, utiliser le chemin ../admin/uploads
+            // Determine the base path according to the environment
             $basePath = str_contains($this->projectDir, 'public_html/symfony') 
             ? dirname($this->projectDir) . '/admin/uploads'
             : $this->projectDir . '/public/uploads';
@@ -125,20 +119,17 @@ class ImageUploadSubscriber
             $image = $this->imagine->open($path);
             $newPath = preg_replace('/\.[^.]+$/', '.' . $format, $path);
             $newFileName = pathinfo($newPath, PATHINFO_BASENAME);
-
             $image->resize($image->getSize()->heighten($height))
                         ->save($newPath, [
                             'quality' => '75',
                             'format' => $format
                         ]);
 
-            
             if ($path !== $newPath) {
                 unlink($path);
             }
             
             $entity->$imageSetter($newFileName);
-
             $this->logger->info('Image resized successfully', [
                 'path' => $path,
                 'entity' => $entity,
@@ -146,10 +137,10 @@ class ImageUploadSubscriber
                 'quality' => '75'
             ]);
 
-        } catch (\Exception $e) {
+        } catch (\Exception $error) {
             $this->logger->error('Error resizing image', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'error' => $error->getMessage(),
+                'trace' => $error->getTraceAsString(),
                 'entity' => $entity
             ]);
         

@@ -1,11 +1,9 @@
 <?php
 namespace App\Service;
 
-//use App\Entity\Artist;
-
 use App\Entity\Artist;
-use App\Entity\Event;
-use App\Entity\EventLocation;
+//use App\Entity\Event;
+//use App\Entity\EventLocation;
 use App\Entity\LocationType;
 use App\Entity\Partners;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
@@ -13,47 +11,43 @@ use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Event\PostUpdateEventArgs;
+//use Doctrine\ORM\Event\PostUpdateEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
-use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+//use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
+//use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
+//use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
-use Symfony\Component\HttpFoundation\Session\SessionFactory;
-
-//use Symfony\Component\HttpFoundation\File\UploadedFile;
+//use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
+//use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
+//use Symfony\Component\HttpFoundation\Session\SessionInterface;
+//use Symfony\Component\HttpFoundation\RequestStack;
+//use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+//use Symfony\Component\HttpFoundation\Session\SessionFactory;
 
 #[AsDoctrineListener(event: Events::prePersist)]
 #[AsDoctrineListener(event: Events::preUpdate)]
-//#[AsDoctrineListener(event: Events::postUpdate)]
 #[AsDoctrineListener(event: Events::preRemove)]
 class EntityListener
 {
     private Security $security;
     private EntityManagerInterface $entityManager;
-    private array $changedEntities = [];
+    //private array $changedEntities = [];
     private LoggerInterface $logger;
     private Filesystem $filesystem;
-    private RequestStack $requestStack;
-    private MessageService $messageService;
+    //private RequestStack $requestStack;
+    //private MessageService $messageService;
 
-    public function __construct(#[Autowire('%kernel.project_dir%')] private string $projectDir, Security $security, EntityManagerInterface $entityManager, LoggerInterface $logger, Filesystem $filesystem, MessageService $messageService, RequestStack $requestStack)
+    public function __construct(#[Autowire('%kernel.project_dir%')] private string $projectDir, Security $security, EntityManagerInterface $entityManager, LoggerInterface $logger, Filesystem $filesystem)
     {
         $this->security = $security;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
         $this->filesystem = $filesystem;
-        $this->messageService = $messageService;
-        $this->requestStack = $requestStack;
-    
+        //$this->messageService = $messageService;
+        //$this->requestStack = $requestStack;
     }
 
     public function prePersist(LifecycleEventArgs $args): void
@@ -122,10 +116,10 @@ class EntityListener
         try {
             $path = $this->projectDir . '/public/uploads/'. $folder . '/'. $image;
             $this->filesystem->remove($path);
-        } catch (\Exception $e) {
+        } catch (\Exception $error) {
             $this->logger->error('Error resizing image', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
+                'error' => $error->getMessage(),
+                'trace' => $error->getTraceAsString(),
                 'entity' => $entity
             ]);
         }

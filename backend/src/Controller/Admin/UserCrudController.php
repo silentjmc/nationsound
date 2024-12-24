@@ -20,7 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 class UserCrudController extends AbstractCrudController
 {
 
-    private $entityManager;
+    private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -45,7 +45,6 @@ class UserCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {
-
         return $actions
         ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
             return $action->setLabel('Ajouter un utilisateur');
@@ -114,7 +113,6 @@ class UserCrudController extends AbstractCrudController
                 ->setFormTypeOption('choice_label', 'role'),
             BooleanField::new('isVerified','Utilisateur vérifié'),
         ];}
-
         return $fields;
     }
 
@@ -123,7 +121,7 @@ class UserCrudController extends AbstractCrudController
         /** @var User $user */
         $user = $entityInstance;
         
-        // Récupérer l'ancien rôle avant modification
+        // Retrieve the old role before modification
         $originalUser = $entityManager->getUnitOfWork()->getOriginalEntityData($user);
         $originalRole = $originalUser['role'];
         $originalIsVerified = $originalUser['isVerified'];
@@ -153,11 +151,8 @@ class UserCrudController extends AbstractCrudController
                 }
             }
         }
-    
         parent::updateEntity($entityManager, $entityInstance);
     }
-
-
 
     public function delete(AdminContext $context)
     {
@@ -178,7 +173,6 @@ class UserCrudController extends AbstractCrudController
 
             return $this->redirect($url);
         }
-
         return parent::delete($context);
     }
 }

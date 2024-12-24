@@ -10,7 +10,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
@@ -19,9 +18,9 @@ use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class EventDateCrudController extends AbstractCrudController
 {
-    private $entityManager;
-    private $adminUrlGenerator;
-    // injection du service EntityManagerInterface
+    private EntityManagerInterface $entityManager;
+    private AdminUrlGenerator $adminUrlGenerator;
+
     public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->entityManager = $entityManager;
@@ -35,9 +34,7 @@ class EventDateCrudController extends AbstractCrudController
 
     public function configureActions(Actions $actions): Actions
     {        
-        //rennomage des actions possibles dans le formulaire
         return parent::configureActions($actions)
-        //return $actions
            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Ajouter une date');
             })
@@ -67,7 +64,7 @@ class EventDateCrudController extends AbstractCrudController
                     ->displayAsLink()
                     ->addCssClass('btn btn-sm btn-light');
             });  
-        }
+    }
 
     public function configureCrud(Crud $crud): Crud
     {
@@ -92,25 +89,24 @@ class EventDateCrudController extends AbstractCrudController
 
     public function delete(AdminContext $context)
     {
-    /** @var EventDate $eventDate */
-    $eventDate = $context->getEntity()->getInstance();
+        /** @var EventDate $eventDate */
+        $eventDate = $context->getEntity()->getInstance();
 
-    // Vérifier s'il existe des éléments Suivant liés
-    $hasRelatedItems = $this->entityManager->getRepository(Event::class)
-        ->count(['date' => $eventDate]) > 0;
+        // Verify if there are related items
+        $hasRelatedItems = $this->entityManager->getRepository(Event::class)
+            ->count(['date' => $eventDate]) > 0;
 
-    if ($hasRelatedItems) {
-        $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléments Évènements concernés');
-        
-        $url = $this->container->get(AdminUrlGenerator::class)
-            ->setController(self::class)
-            ->setAction(Action::INDEX)
-            ->generateUrl();
+        if ($hasRelatedItems) {
+            $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléments Évènements concernés');
+            
+            $url = $this->container->get(AdminUrlGenerator::class)
+                ->setController(self::class)
+                ->setAction(Action::INDEX)
+                ->generateUrl();
 
-        return $this->redirect($url);
-    }
+            return $this->redirect($url);
+        }
 
-    return parent::delete($context);
-}
-    
+        return parent::delete($context);
+    } 
 }

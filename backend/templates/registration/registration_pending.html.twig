@@ -3,43 +3,44 @@
 {% block title %}Inscription en attente - Nation Sound{% endblock %}
 
 {% block body %}
-<div class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-    <div class="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <div class="max-w-md mx-auto">
-                <div class="divide-y divide-gray-200">
-                    <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                        <div class="text-center mb-8">
-                            <h2 class="text-2xl font-bold text-gray-900 mb-4">Inscription enregistrée !</h2>
-                            <div class="text-green-500 mb-4">
-                                <svg class="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                </svg>
+    {# email body for pending registration #}
+    <div class="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+        <div class="relative py-3 sm:max-w-xl sm:mx-auto">
+            <div class="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+                <div class="max-w-md mx-auto">
+                    <div class="divide-y divide-gray-200">
+                        <div class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+                            <div class="text-center mb-8">
+                                <h2 class="text-2xl font-bold text-gray-900 mb-4">Inscription enregistrée !</h2>
+                                <div class="text-green-500 mb-4">
+                                    <svg class="h-16 w-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
                             </div>
-                        </div>
-                        
-                        <p class="text-center mb-4">
-                            Votre demande d'inscription a été enregistrée avec succès.
-                        </p>
-                        
-                        <p class="text-center mb-4">
-                            Un administrateur va examiner votre demande dans les plus brefs délais.
-                            Vous recevrez un email dès que votre inscription aura été validée.
-                        </p>
-                        
-                        <p class="text-center text-sm text-gray-500">
-                            Un email de confirmation vous a été envoyé à l'adresse : {{ email }}
-                        </p>
-                        
-                        <div class="text-center mt-8">
-                            <a href="{{ path('app_login') }}" class="text-blue-500 hover:text-blue-700">
-                                Retour à la page de connexion
-                            </a>
+                            
+                            <p class="text-center mb-4">
+                                Votre demande d'inscription a été enregistrée avec succès.
+                            </p>
+                            
+                            <p class="text-center mb-4">
+                                Un administrateur va examiner votre demande dans les plus brefs délais.
+                                Vous recevrez un email dès que votre inscription aura été validée.
+                            </p>
+                            
+                            <p class="text-center text-sm text-gray-500">
+                                Un email de confirmation vous a été envoyé à l'adresse : {{ email }}
+                            </p>
+                            
+                            <div class="text-center mt-8">
+                                <a href="{{ path('app_login') }}" class="text-blue-500 hover:text-blue-700">
+                                    Retour à la page de connexion
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {% endblock %}

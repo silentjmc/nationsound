@@ -39,7 +39,7 @@ class LoginFormAuthenticator extends AbstractLoginFormAuthenticator
         $email = $request->request->get('email', '');
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
-        // Vérifier si l'utilisateur existe et est vérifié
+        // Verify if the user is "verified"
         $user = $this->entityManager->getRepository(User::class)->findOneBy(['email' => $email]);
         if ($user && !$user->isVerified()) {
             throw new CustomUserMessageAuthenticationException('not verified');
