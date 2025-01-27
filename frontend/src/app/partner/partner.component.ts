@@ -4,7 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { PartnerFilterPipe } from '../pipe/partner-filter.pipe';
 import { Meta, Title } from '@angular/platform-browser';
-import { environment } from '../../environments/environment';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { Partner } from '../services/class';
 
 @Component({
   selector: 'app-partner',
@@ -23,39 +24,41 @@ export class PartnerComponent implements OnDestroy{
   }
 
   http = inject(HttpClient);
-  partners: any = [];
+  partners$!: Observable<Partner[]>
   uniquePartnerTypes: string[] = [];
-  mappedPartners: any = [];
+  mappedPartners: Partner[] = [];
   private partnersService = inject(PartnerswpService);
+  loading$ = new BehaviorSubject<boolean>(true);
+  error$ = new BehaviorSubject<boolean>(false);
 
-  // function to load partners when the page is loaded
+  private retrievePartners(): void {
+    this.partnersService.getPartners().subscribe({
+      next: (partners: Partner[]) => {
+        if (partners && partners.length > 0) {
+          this.partners$ = of(partners);
+          this.mappedPartners = partners; // Directly assign the fetched partners
+          this.uniquePartnerTypes = [...new Set(this.mappedPartners.map((partner: Partner) => partner.type.type))] as string[];
+          this.loading$.next(false);
+        } else {
+          this.error$.next(true);
+          this.loading$.next(false);
+        }
+      },
+      error: () => {
+        this.error$.next(true);
+        this.loading$.next(false);
+      }
+    });
+  }
+      
   ngOnInit(): void {
-    this.loadPartners();
+    this.loading$.next(true);
+    this.error$.next(false);
+    this.retrievePartners();
   }
 
   ngOnDestroy(): void {
     // Remove the meta tag when the component is destroyed
     this.meta.removeTag("name='description'");
-  }
-
-  // function to load partners and map the data
-  loadPartners() {
-    this.partnersService.getPosts().subscribe({
-      next: (partners : any) => {
-        this.mappedPartners = partners.map((partner: any) => {
-          return {
-            id: partner.id,
-            title: partner.name,
-            urlPartenaire: partner.url,
-            logoPartenaire: `${environment.apiUrl}/uploads/partners/${partner.image}`,
-            typePartenaire:partner.type.type,
-          }
-        });
-        this.uniquePartnerTypes = [...new Set(this.mappedPartners.map((partner: any) => partner.typePartenaire))] as string[];
-        //console.log('Partners', this.mappedPartners);
-        //console.log('Partner Types', this.uniquePartnerTypes);  
-      },
-      error : (error) => console.log('Error fetching partners', error)
-    });
   }
 }
