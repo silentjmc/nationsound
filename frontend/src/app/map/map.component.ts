@@ -53,16 +53,8 @@ import { CommonModule } from '@angular/common';
       this.title.setTitle('Plan du Nation Sound Festival 2024 - Localisez vos Scènes et Points de Restauration');
     }
   }
-  
-  loadFilters() {
-    /*
-    if (!this.poiEa$) {
-      console.error("No data available in this.poiEa$");
-      return; 
-    } else {
-      console.log("Data available in this.poiEa$");
-    }*/
-    
+
+  loadFilters() { 
     this.subscription = this.poiEa$.pipe(
       filter(poiEa => !!poiEa),
          map(poiEa => {
