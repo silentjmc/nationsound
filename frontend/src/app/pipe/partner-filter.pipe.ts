@@ -8,7 +8,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class PartnerFilterPipe implements PipeTransform {
 
   transform(partners: any[], type: string): any[] {
-    const filteredPosts = partners.filter(partner => partner.typePartenaire === type);
+    const filteredPosts = partners.filter(partner => partner.type.type === type);
     return filteredPosts;
   }
 
