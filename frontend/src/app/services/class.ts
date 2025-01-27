@@ -101,3 +101,17 @@ export interface EventLocation {
     notificationDate: string;
     notificationEndDate: string;
   }
+
+  export interface Partner {
+    id: number;
+    name: string;
+    url: string;
+    image: string;
+    type: PartnerType;
+    publish:string;
+  }
+
+  export interface PartnerType {
+    id: number;
+    type: string;
+  }
