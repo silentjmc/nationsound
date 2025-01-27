@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
-import { Observable, map, shareReplay,} from 'rxjs';
+import { Observable, map, shareReplay} from 'rxjs';
 import { Program } from './class';
 import { environment } from '../../environments/environment';
 
@@ -37,7 +37,9 @@ export class EventService {
 
 
   getEvent(): Observable<Program[]> {
+    //console.log('Récupération des événements');
     return this.http.get<Program[]>(BASE_URL).pipe(
+      //tap(programs => console.log('Événements récupérés:', programs.length)),
       map((response: Program[]) => {
         return response.map(event => ({
           ...event,
