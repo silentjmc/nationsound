@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { News } from '../services/class';
-import { ActivatedRoute } from '@angular/router';
 import { NewsService } from '../services/news.service';
 import { CommonModule, Location } from '@angular/common';
 
@@ -13,7 +13,7 @@ import { CommonModule, Location } from '@angular/common';
   styleUrl: './news-detail.component.css'
 })
 export class NewsDetailComponent {
-  news$!: Observable<News>;
+  news$!: Observable<News | null>;
   loading$ = new BehaviorSubject<boolean>(true);
   error$ = new BehaviorSubject<boolean>(false);
 

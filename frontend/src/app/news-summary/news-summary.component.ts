@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterLink, RouterModule } from '@angular/router';
 import { Observable } from 'rxjs';
 import { News } from '../services/class';
 import { NewsService } from '../services/news.service';
@@ -8,7 +8,7 @@ import { NewsService } from '../services/news.service';
 @Component({
   selector: 'app-news-summary',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, RouterLink],
   templateUrl: './news-summary.component.html',
   styleUrl: './news-summary.component.css'
 })
