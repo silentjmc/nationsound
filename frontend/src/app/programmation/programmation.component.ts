@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../services/event.service';
 import { Program } from '../services/class';
-import { Observable, BehaviorSubject, combineLatest, EMPTY, Subscription } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, EMPTY, Subscription, of } from 'rxjs';
 import { catchError, filter, map, take } from 'rxjs/operators';
 import { SortPipe } from '../pipe/sort-by.pipe';
 import { CheckboxFilter } from '../models/checkbox-filter';
@@ -36,7 +36,8 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
   public timeFiltersStart!: string | null;
   public timeFiltersEnd!: string | null;
   errorMessage: string | null = null;
-  loadingFilters: boolean = true;
+  loading$ = new BehaviorSubject<boolean>(true);
+  error$ = new BehaviorSubject<boolean>(false);
   // Information for SEO
   constructor(private meta: Meta, private title: Title, private eventService: EventService, private filterStatusService: FilterStatusService) {
     title.setTitle("Programmation du Nation Sound Festival 2024 - Horaires et Artistes");
@@ -45,42 +46,49 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     ]);
   }
   // Initialization of artists, filters and application of filters  
-  ngOnInit(): void {
-    this.programs$ = this.eventService.programs$;
-    this.loadFilters();
-    // Restore saved filters
-    this.filterStatusService.getLocationFilters().pipe(take(1)).subscribe(filters => {
-      if (filters.length > 0) {
-        this.locationFilters = filters;
-        this.locationFiltersApplied$.next(filters.filter(f => f.isChecked).map(f => f.name));
-      }
-    });
-
-    this.filterStatusService.getEventFilters().pipe(take(1)).subscribe(filters => {
-      if (filters.length > 0) {
-        this.eventFilters = filters;
-        this.eventFiltersApplied$.next(filters.filter(f => f.isChecked).map(f => f.name));
-      }
-    });
-
-    this.filterStatusService.getDateFilters().pipe(take(1)).subscribe(filters => {
-      if (filters.length > 0) {
-        this.dateFilters = filters;
-        this.dateFiltersApplied$.next(filters.filter(f => f.isChecked).map(f => f.name));
-      }
-    });
-
-    this.filterStatusService.getTimeStart().pipe(take(1)).subscribe(time => {
-      this.timeFiltersStart = time;
-    });
-
-    this.filterStatusService.getTimeEnd().pipe(take(1)).subscribe(time => {
-      this.timeFiltersEnd = time;
-    });
-
-
+ /* ngOnInit(): void {
+    this.loadingFilters$.next(true);
+    //this.programs$ = this.eventService.programs$;
+    this.programs$ = this.eventService.programs$.pipe(
+      tap(() => {
+        this.loadingFilters$.next(false);
+        this.loadFilters();
+      }),
+      catchError(error => {
+        this.loadingFilters$.next(false); // Assurez-vous de mettre à false en cas d'erreur
+        console.error('Erreur de chargement', error);
+        return EMPTY;
+      })
+    );
+   
+    this.restoreFilters();
     this.applyFilters(); 
-  }
+  }*/
+   ngOnInit(): void {
+      this.loading$.next(true);
+      this.error$.next(false);
+  
+      this.eventService.getEvent().subscribe({
+        next: (programs) => {
+          if (programs && programs.length > 0) {
+            this.programs$ = of(programs);
+            this.loadFilters();
+            this.applyFilters();
+            this.loading$.next(false);
+          } else {
+            this.error$.next(true);
+            this.loading$.next(false);
+          }
+        },
+        error: () => {
+          this.error$.next(true);
+          this.loading$.next(false);
+        }
+      });
+  
+      this.restoreFilters();
+    }
+
   // Unsubscribe from the observable when the component is destroyed
   ngOnDestroy() {
     // Unsubscribe when the component is destroyed
@@ -90,8 +98,11 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
   }
 
   loadFilters(): void {
-    this.subscription = this.programs$.pipe(
-      filter(programs => !!programs),
+    //this.subscription = this.programs$.pipe(
+    this.programs$.pipe(
+    //filter(programs => !!programs),
+      filter(programs => !!programs && programs.length > 0),
+      take(1),
       map(programs => {
         // Get meeting places
         const locations = [...new Set(programs.map(program => program.eventLocation.locationName))];
@@ -138,9 +149,41 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
         console.error('Une erreur est survenue lors de la récupération des artistes :', error);
         return EMPTY;
       })
-    //).subscribe();
-    ).subscribe(() => {
-      this.loadingFilters = false;
+    ).subscribe();
+    /*).subscribe(() => {
+      //this.loadingFilters = false;
+      this.loadingFilters$.next(false);
+    });*/
+  }
+
+  restoreFilters(): void {
+    this.filterStatusService.getLocationFilters().pipe(take(1)).subscribe(filters => {
+      if (filters.length > 0) {
+        this.locationFilters = filters;
+        this.locationFiltersApplied$.next(filters.filter(f => f.isChecked).map(f => f.name));
+      }
+    });
+
+    this.filterStatusService.getEventFilters().pipe(take(1)).subscribe(filters => {
+      if (filters.length > 0) {
+        this.eventFilters = filters;
+        this.eventFiltersApplied$.next(filters.filter(f => f.isChecked).map(f => f.name));
+      }
+    });
+
+    this.filterStatusService.getDateFilters().pipe(take(1)).subscribe(filters => {
+      if (filters.length > 0) {
+        this.dateFilters = filters;
+        this.dateFiltersApplied$.next(filters.filter(f => f.isChecked).map(f => f.name));
+      }
+    });
+
+    this.filterStatusService.getTimeStart().pipe(take(1)).subscribe(time => {
+      this.timeFiltersStart = time;
+    });
+
+    this.filterStatusService.getTimeEnd().pipe(take(1)).subscribe(time => {
+      this.timeFiltersEnd = time;
     });
   }
 
