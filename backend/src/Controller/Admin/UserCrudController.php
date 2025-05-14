@@ -46,15 +46,6 @@ class UserCrudController extends AbstractCrudController
     public function configureActions(Actions $actions): Actions
     {
         return $actions
-        ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-            return $action->setLabel('Ajouter un utilisateur');
-        })
-        ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
-            return $action->setLabel('Créer l\'utilisateur');
-        })
-        ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
-            return $action->setLabel('Créer et ajouter un autre utilisateur');
-        })
         ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
             return $action
                 ->setIcon('fa fa-edit')
@@ -74,7 +65,8 @@ class UserCrudController extends AbstractCrudController
                 ])
                 ->displayAsLink()
                 ->addCssClass('btn btn-sm btn-light');
-        });   
+        })
+        ->remove(Crud::PAGE_INDEX, Action::NEW);   
     }
 
     public function configureFields(string $pageName): iterable
