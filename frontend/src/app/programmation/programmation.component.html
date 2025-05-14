@@ -100,7 +100,7 @@
   
     <!-- artists grids -->
     <div class="relative grid grid-cols-1 gap-2 m-1 mt-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 justify-items-center">
-      @for(program of (filteredPrograms$ | async); track program.id) {
+      @for(program of (filteredPrograms$ | async ); track program.id) {
         @defer (on viewport) {
           <a [routerLink]="['/artist', program.artist.id]">
             <div class=" flex flex-col bg-white rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
@@ -109,7 +109,7 @@
               </div>
               <div class="text-left px-2">
                 <h4 class="font-text font-semibold text-gray-700">{{ program.type.type }}</h4>
-                @if(program.artist.name.length>20){
+                @if (program.artist.name.length>20){
                   <h5 class="font-text text-lg leading-tight font-bold tracking-tight text-gray-900">{{ program.artist.name }}</h5>
                 } @else {
                   <h5 class="font-text text-xl font-bold tracking-tight text-gray-900">{{ program.artist.name }}</h5>
