@@ -25,8 +25,8 @@ export class EventService {
   }
 
   formatTime(timeString: string): string {
-    // On extrait directement les heures et minutes de la chaîne ISO
-    // Format attendu: "1970-01-01T11:11:00+01:00"
+    // The hours and minutes are extracted directly from the ISO string
+    // Expected format: "1970-01-01T11:11:00+01:00"
     const timeMatch = timeString.match(/T(\d{2}):(\d{2})/);
     if (timeMatch) {
       const [, hours, minutes] = timeMatch;
@@ -35,11 +35,8 @@ export class EventService {
     return '00:00';
   }
 
-
   getEvent(): Observable<Program[]> {
-    //console.log('Récupération des événements');
     return this.http.get<Program[]>(BASE_URL).pipe(
-      //tap(programs => console.log('Événements récupérés:', programs.length)),
       map((response: Program[]) => {
         return response.map(event => ({
           ...event,

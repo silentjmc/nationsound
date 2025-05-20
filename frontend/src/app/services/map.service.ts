@@ -37,5 +37,4 @@ export class MapService {
 
   public L: any;
   public leafletLoaded: Promise<any> = Promise.resolve();
-    
 }

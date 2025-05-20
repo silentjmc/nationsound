@@ -12,10 +12,6 @@ export class PartnerswpService {
   private http = inject(HttpClient)
   partners$!: Observable<Partner[]>; 
   constructor() { }
-  // Getting partners
-  /*getPosts() {
-    return this.http.get(BASE_URL);
-  }*/
 
   getPartners(): Observable<Partner[]> {
     return this.http.get<Partner[]>(BASE_URL).pipe(
