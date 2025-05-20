@@ -30,6 +30,7 @@
           <div>
             <h3 class="font-title">Lieux</h3>
             @for(filter of locationFilters | sortBy:'name' ; track filter.id) {
+            <!--@for(filter of locationFilters$ | async | sortBy:'name' ; track filter.id) {-->
               <div>
                 <input type="checkbox" 
                   [id]="filter.name" 

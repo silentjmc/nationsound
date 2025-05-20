@@ -5,7 +5,6 @@ import { BehaviorSubject, catchError, EMPTY, Observable } from 'rxjs';
 import { Artist } from '../services/class';
 import { RouterLink, RouterModule } from '@angular/router';
 
-
 @Component({
   selector: 'app-carousel',
   standalone: true,
@@ -26,7 +25,6 @@ export class CarouselComponent implements OnInit  {
     this.loading$.next(true);
     this.error$.next(false);
     //  Get artist data from the service
-    //this.artists$ = this.artistService.getAllArtists();
     this.artists$ = this.artistService.getAllArtists().pipe(
       catchError(() => {
         this.error$.next(true);

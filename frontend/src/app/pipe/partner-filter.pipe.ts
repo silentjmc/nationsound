@@ -11,5 +11,4 @@ export class PartnerFilterPipe implements PipeTransform {
     const filteredPosts = partners.filter(partner => partner.type.type === type);
     return filteredPosts;
   }
-
 }

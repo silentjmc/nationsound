@@ -22,15 +22,8 @@ export class ArtistComponent implements OnInit{
    {}
 
   ngOnInit(): void {
-    // Récupération de l'identifiant de l'artiste
     // Getting the artist's ID
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    /*
-    if (id) {
-      this.artist$ = this.artistService.getArtist(id);
-    } else {
-      this.artist$ = new Observable<null>();
-    }*/
 
     if (id) {
       this.loading$.next(true);

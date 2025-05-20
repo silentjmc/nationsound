@@ -4,7 +4,6 @@ import { Meta, Title } from '@angular/platform-browser';
 import { InformationService } from '../services/information.service';
 import { HttpClient } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-information',
   standalone: true,
@@ -39,8 +38,6 @@ export class InformationComponent implements OnDestroy {
   loadInformation() {
     this.informationService.getInformation().subscribe({
         next: (informationsSection: any) => {
-            //console.log('Raw Information Data:', informationsSection);
-
             this.mappedInformationsSection = informationsSection.map((informationSection: any) => {
                 const mappedSection = {
                     id: informationSection.id,
@@ -59,8 +56,6 @@ export class InformationComponent implements OnDestroy {
                 //console.log('Mapped Section:', mappedSection);
                 return mappedSection;
             });
-
-           //console.log('Mapped Information:', this.mappedInformationsSection);
         },
         error: (error) => console.log('Error fetching information', error)
     });

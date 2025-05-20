@@ -53,5 +53,3 @@ export class AlertNewsComponent {
     window.location.href = `/informations/actualite/${notification.id}`;
   }
 }
-  
-

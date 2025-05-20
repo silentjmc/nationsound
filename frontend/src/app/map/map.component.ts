@@ -141,5 +141,4 @@ import { CommonModule } from '@angular/common';
     // Remove the meta tag when the component is destroyed
     this.meta.removeTag("name='description'");
   }
-
 }

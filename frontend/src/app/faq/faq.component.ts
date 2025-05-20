@@ -11,12 +11,12 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './faq.component.html',
   styleUrl: './faq.component.css'
 })
+
 export class FaqComponent implements   OnDestroy  {
   private faqService = inject(FaqService);
   http = inject(HttpClient);
   faqs: any = [];
   mappedFaq: any = [];
-
 
   // Information for SEO
   constructor(private meta: Meta, private title: Title, @Inject(PLATFORM_ID) private platformId: Object) {
