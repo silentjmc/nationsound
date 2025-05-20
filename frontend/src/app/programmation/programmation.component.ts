@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { EventService } from '../services/event.service';
 import { Program } from '../services/class';
-import { Observable, BehaviorSubject, combineLatest, EMPTY, Subscription, of } from 'rxjs';
+import { Observable, BehaviorSubject, combineLatest, EMPTY, Subscription, of, switchMap,tap } from 'rxjs';
 import { catchError, filter, map, take } from 'rxjs/operators';
 import { SortPipe } from '../pipe/sort-by.pipe';
 import { CheckboxFilter } from '../models/checkbox-filter';
@@ -45,50 +45,38 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
       { name: 'description', content: 'Consultez la programmation complète du Nation Sound Festival 2024. Retrouvez les horaires et les artistes pour chaque scène : métal, rock, rap/urban, world et électro. Préparez votre agenda pour ne rien manquer !' }
     ]);
   }
-  // Initialization of artists, filters and application of filters  
- /* ngOnInit(): void {
-    this.loadingFilters$.next(true);
-    //this.programs$ = this.eventService.programs$;
-    this.programs$ = this.eventService.programs$.pipe(
-      tap(() => {
-        this.loadingFilters$.next(false);
-        this.loadFilters();
-      }),
-      catchError(error => {
-        this.loadingFilters$.next(false); // Assurez-vous de mettre à false en cas d'erreur
-        console.error('Erreur de chargement', error);
-        return EMPTY;
-      })
-    );
-   
-    this.restoreFilters();
-    this.applyFilters(); 
-  }*/
-   ngOnInit(): void {
-      this.loading$.next(true);
-      this.error$.next(false);
-  
-      this.eventService.getEvent().subscribe({
-        next: (programs) => {
-          if (programs && programs.length > 0) {
-            this.programs$ = of(programs);
-            this.loadFilters();
-            this.applyFilters();
-            this.loading$.next(false);
-          } else {
-            this.error$.next(true);
-            this.loading$.next(false);
-          }
-        },
-        error: () => {
-          this.error$.next(true);
-          this.loading$.next(false);
-        }
-      });
-  
-      this.restoreFilters();
-    }
 
+ngOnInit(): void {
+  this.loading$.next(true);
+  this.error$.next(false);
+
+  this.eventService.getEvent().pipe(
+    switchMap(programs => {
+      if (programs && programs.length > 0) {
+        this.programs$ = of(programs);
+        // D'abord charger les filtres
+        return this.loadFilters().pipe(
+          tap(() => {
+            // Puis restaurer les filtres sauvegardés
+            this.restoreFilters();
+            this.applyFilters();
+          })
+        );
+      } else {
+        this.error$.next(true);
+        return EMPTY;
+      }
+    })
+  ).subscribe({
+    next: () => {
+      this.loading$.next(false);
+    },
+    error: () => {
+      this.error$.next(true);
+      this.loading$.next(false);
+    }
+  });
+}
   // Unsubscribe from the observable when the component is destroyed
   ngOnDestroy() {
     // Unsubscribe when the component is destroyed
@@ -97,38 +85,40 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     this.meta.removeTag("name='description'");
   }
 
-  loadFilters(): void {
-    //this.subscription = this.programs$.pipe(
-    this.programs$.pipe(
-    //filter(programs => !!programs),
-      filter(programs => !!programs && programs.length > 0),
-      take(1),
-      map(programs => {
-        // Get meeting places
+  loadFilters(): Observable<void> {
+  return this.programs$.pipe(
+    filter(programs => !!programs && programs.length > 0),
+    take(1),
+    tap(programs => {
+      // Ne réinitialiser les filtres que s'ils n'existent pas déjà
+      if (!this.locationFilters || this.locationFilters.length === 0) {
         const locations = [...new Set(programs.map(program => program.eventLocation.locationName))];
         this.locationFilters = locations.map((location, index) => ({
           id: index,
           name: location,
           isChecked: false
         }));
+      }
 
-        // Get event types
+      if (!this.eventFilters || this.eventFilters.length === 0) {
         const events = [...new Set(programs.map(program => program.type.type))];
         this.eventFilters = events.map((event, index) => ({
           id: index,
           name: event,
           isChecked: false
         }));
+      }
 
-        // Get dates
+      if (!this.dateFilters || this.dateFilters.length === 0) {
         const dates = [...new Set(programs.map(program => program.date.date))];
         this.dateFilters = dates.map((date, index) => ({
           id: index,
           name: this.eventService.formatDate(date),
           isChecked: false
         }));
+      }
 
-        // Get start times
+      // Get start times
         const times = [...new Set(programs.map(program => program.heure_debut))];
         this.timeFilters = times.map((time, index) => ({
           id: index,
@@ -143,19 +133,16 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
           name: this.eventService.formatTime(time),
           isChecked: false
         }));
-      }),
-      catchError(error => {
-        // Return an empty observable in case of error
-        console.error('Une erreur est survenue lors de la récupération des artistes :', error);
-        return EMPTY;
-      })
-    ).subscribe();
-    /*).subscribe(() => {
-      //this.loadingFilters = false;
-      this.loadingFilters$.next(false);
-    });*/
-  }
+    }),
+    map(() => void 0), // Convertir en Observable<void>
+    catchError(error => {
+      console.error('Une erreur est survenue lors de la récupération des artistes :', error);
+      return EMPTY;
+    })
+  );
+}  
 
+  // Restore filters from the service
   restoreFilters(): void {
     this.filterStatusService.getLocationFilters().pipe(take(1)).subscribe(filters => {
       if (filters.length > 0) {
@@ -187,6 +174,7 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     });
   }
 
+  // Apply filters to the programs
   applyFilters(): void {
     this.filteredPrograms$ = combineLatest([
       this.programs$,
@@ -244,6 +232,7 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     );
   }
 
+  // Check if the artist's time is within the selected time range
   isTimeInRange(artistTimeStart: string, startTime: string, endTime: string): boolean {
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
@@ -261,6 +250,7 @@ export class ProgrammationComponent implements OnInit, OnDestroy  {
     return true;
   }
 
+  // Filters change handlers
   onLocationFilterChange(filter: CheckboxFilter): void {
     filter.isChecked = !filter.isChecked;
     const selectedLocations = this.locationFilters
