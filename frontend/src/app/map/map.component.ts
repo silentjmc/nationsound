@@ -19,14 +19,12 @@ import { CommonModule } from '@angular/common';
 
   export class MapComponent implements OnDestroy, OnInit{
   @Input() changeTitle: boolean;
-  public message: string ='';
   private map?: Map;
-  private marker?: Marker;
   private poiEa$!: Observable<Poi[]>;
   public filters!: CheckboxFilter[];
   private subscription: Subscription = new Subscription(); 
   private poiEa: Poi[] = [];  
-  private filter: { [key: string]: boolean } = { 'all': true };
+  private filter: { [key: string]: boolean } = { };
 
   // Information for SEO
   constructor(
@@ -44,8 +42,9 @@ import { CommonModule } from '@angular/common';
     this.poiEa$ = this.mapService.poiEa$;
     this.subscription = this.poiEa$.subscribe(poiEas => {
       this.poiEa = poiEas;
-      //console.log('POI Ea:', this.poiEa);
-      this.setupMap();
+      setTimeout(() => {
+        this.setupMap();
+      }, 100);
     });
     this.loadFilters();
     // Update the page title if necessary
@@ -59,14 +58,16 @@ import { CommonModule } from '@angular/common';
       filter(poiEa => !!poiEa),
          map(poiEa => {
           const uniqueTypes = [...new Set(poiEa.map(poi => poi.type))];
-          const filters = Array.from(uniqueTypes).map((type, index) => {    
-           return {
+          //const filters = Array.from(uniqueTypes).map((type, index) => { 
+          this.filters = uniqueTypes.map((type, index) => ({   
+            //return {
               id: index,
               name: type,
               isChecked: false
-           } as CheckboxFilter;
-        });
-        this.filters = filters;
+           //} as CheckboxFilter;
+        //});
+          }));
+        //this.filters = filters;
 
       }),
       catchError(error => {
@@ -117,14 +118,14 @@ import { CommonModule } from '@angular/common';
 
     // Check if any filter checkboxes are checked
     const isNoneChecked = Object.keys(this.filter)
-      .filter(key => key !== 'all')
+      //.filter(key => key !== 'all')
       .every(key => !this.filter[key]);
 
-    this.filter['all'] = isNoneChecked;
+    //this.filter['all'] = isNoneChecked;
 
     // Loop through all points and show or hide them based on the filter and if nothing is checked all points are shown
     for (const point of this.poiEa) {
-        if (typeof point.type === 'string' && this.map && point.marker) {
+      if (typeof point.type === 'string' && this.map && point.marker) {
         if (isNoneChecked) {
           this.map.addLayer(point.marker);
         } else {
