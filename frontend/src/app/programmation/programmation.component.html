@@ -99,7 +99,7 @@
         </div>
       </div>
   
-    <!-- artists grids -->
+    <!-- events grids -->
     <div class="relative grid grid-cols-1 gap-2 m-1 mt-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 justify-items-center">
       @for(program of (filteredPrograms$ | async ); track program.id) {
         @defer (on viewport) {

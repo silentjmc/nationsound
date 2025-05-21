@@ -90,7 +90,7 @@ ngOnInit(): void {
     filter(programs => !!programs && programs.length > 0),
     take(1),
     tap(programs => {
-      // Ne réinitialiser les filtres que s'ils n'existent pas déjà
+      // Only reset filters if they do not already exist
       if (!this.locationFilters || this.locationFilters.length === 0) {
         const locations = [...new Set(programs.map(program => program.eventLocation.locationName))];
         this.locationFilters = locations.map((location, index) => ({
@@ -184,26 +184,26 @@ ngOnInit(): void {
       this.timeFiltersApplied$
     ]).pipe(
       map(([programs, locations, events, dates, times]) => {
-        // Return all artists if no checkbox is checked
+        // Return all programs if no checkbox is checked
         if (!locations.length && !events.length && !dates.length && !this.timeFiltersStart && !this.timeFiltersEnd) {
           return programs; 
         }
-        // Filter artists based on location
+        // Filter programs based on location
         if (locations.length) {
           programs = programs.filter(program => {
             const sceneOrLocation = program.eventLocation.locationName;
             return sceneOrLocation && locations.includes(sceneOrLocation);
           });
         }
-        // Filter artists based on event type
+        // Filter programs based on event type
         if (events.length) {
           programs = programs.filter(program => program.type.type && events.includes(program.type.type));
         }
-        // Filter artists based on date
+        // Filter programs based on date
         if (dates.length) {
           programs = programs.filter(program => program.date.date && dates.includes(this.eventService.formatDate(program.date.date)));
         }
-        //  Filter artists based on start and end time
+        //  Filter programs based on start and end time
         if (this.timeFiltersStart || this.timeFiltersEnd) {
           programs = programs.filter(program => {
             const eventStartTime = this.eventService.formatTime(program.heure_debut);
@@ -232,7 +232,7 @@ ngOnInit(): void {
     );
   }
 
-  // Check if the artist's time is within the selected time range
+  // Check if the program's time is within the selected time range
   isTimeInRange(artistTimeStart: string, startTime: string, endTime: string): boolean {
     const [startHour, startMinute] = startTime.split(':').map(Number);
     const [endHour, endMinute] = endTime.split(':').map(Number);
