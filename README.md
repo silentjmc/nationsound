@@ -17,14 +17,13 @@ nationsound/
 - **Langage**: TypeScript
 - **Style**: 
   - Tailwind CSS
-  - Material Tailwind
+  - Flowbite
 - **Cartographie**: Leaflet
 - **Carrousel**: Swiper
 - **Icônes**: Font Awesome
 - **Service Worker**: Pour le support PWA
 - **Autres bibliothèques notables**:
   - RxJS pour la gestion des observables
-  - Pushy SDK pour les notifications push
 
 ### Structure du projet
 
@@ -50,6 +49,7 @@ src/
 ├── assets/                 # Ressources statiques
 ├── environments/           # Configurations d'environnement
 ├── index.html              # Point d'entrée HTML
+├── proxy.conf.json         # Proxy pour le developpement en local en lien avec le backend
 ├── styles.css              # Styles globaux
 └── tailwind.config.js      # Configuration Tailwind CSS
 ```
@@ -65,9 +65,35 @@ cd frontend
 npm install
 ```
 
-3. Démarrer le serveur de développement :
+3. Modifier le fichier `proxy.conf.json` pour définir l'url de base pour se connecter aux API du backend en developpement
+```json
+{
+  "/api": {
+    "target": "http://127.0.0.1:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/uploads": {
+    "target": "http://127.0.0.1:8000",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}
+````
+
+4. Créer un fichier `environnement.production.ts` dans le dossier `environnements` pour définir l'url de base pour se connecter aux API du backend
+```ts
+export const environment = {
+    production : true,
+    apiUrl: 'http://127.0.0.1:8000'   #indiquer l'url de votre backend (dans la sutructure de ce projet, le backend est dans le dossier admin sur votre hébérgement)
+}
+````
+
+5. Démarrer le serveur de développement :
 ```bash
-ng serve
+ng serve --proxy-config proxy.conf.json
 ```
 
 L'application sera disponible sur http://localhost:4200
@@ -76,7 +102,7 @@ L'application sera disponible sur http://localhost:4200
 
 #### Construction pour la production
 ```bash
-ng build
+ng build --configuration=production
 ```
 Les fichiers de production seront générés dans le dossier `dist/`.
 Il y aura deux dossiers.
@@ -105,7 +131,6 @@ Selon votre hébergement web, vous pourrez choisir de mettre en place le SSR ou 
 - **style**: Tailwind CSS
 - **Cartographie**: Leaflet
 - **Mail**: Symfony Mailer
-- **Notifications**: Pushy
 
 ### Structure du projet
 
@@ -146,50 +171,88 @@ composer install
 npm install
 ```
 
-3. Compiler les assets avec Webpack Encore :
+3. Ouvrir le fichier `config\packages\webpack_encore.yaml` et modifier après `when@prod:` les paramètres de `output_path` et `json_manifest_path` pour le chemin de sortie de votre hébergement de production
+```yaml
+when@prod:
+    webpack_encore:
+        output_path: '/[USER_HOME]/[WEB_ROOT]/public_html/admin/build'
+         
+    framework:
+        assets:
+            json_manifest_path: '/hom[USER_HOME]/[WEB_ROOT]/public_html/admin/build/manifest.json'
+```
+Où :
+- `[USER_HOME]` : représente le chemin vers votre répertoire utilisateur (exemple : /home/username)
+- `[WEB_ROOT]` : représente le dossier racine web (généralement public_html, www, ou htdocs)
+
+4. Verifier que dans le fichier `public\index.php`, c'est bien le chemin vers le fichier autoload.php en local en bien décommenter et que le chemin vers le fichier autoload.php de symfony sur le serveur est passé en comentaire
+```php
+## chemin vers le fichier autoload.php en local
+require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+
+## chemin vers le fichier autoload.php de symfony sur le serveur
+#require_once dirname(__DIR__).'/symfony/vendor/autoload_runtime.php';
+```
+
+5. Compiler les assets avec Webpack Encore :
 ```bash
 npm run build
 ```
 
-4. Configurer le fichier .env avec vos informations de connexion :
-# Configuration de la base de données
-```
+6. Configurer le fichier .env avec vos informations de connexion :
+- Configuration de la base de données
+```php
 DATABASE_URL="mysql://[DB_USER]:[DB_PASSWORD]@[DB_HOST]:[DB_PORT]/[DB_NAME]"
 ```
 
-# Configuration du mailer (exemple avec Gmail)
-```
+- Configuration du mailer (exemple avec Gmail)
+```php
 MAILER_DSN=gmail+smtp://VOTRE_EMAIL@gmail.com:VOTRE_MOT_DE_PASSE_APPLICATION@default
+ou 
+MAILER_DSN:smtp://[VOTRE-EMAIL@DOMAINE.COM]:[PASSWORD_MAIL]@[SERVEUR_SMTP]?encryption=ssl&auth_mode=login
+et 
+ADMIN_EMAIL=VOTRE-EMAIL@DOMAINE.COM
 ```
 
-Vous pouvez également configurer le mailer dans `config/packages/mailer.yaml` :
-```yaml
-framework:
-    mailer:
-        dsn: '%env(MAILER_DSN)%'
-        envelope:
-            sender: 'votre-email@domaine.com'
+- Configurer le dossier de base pour l'upload des documents de l'administration que le projet sera en production
+ ```
+UPLOAD_BASE_DIR='/[USER_HOME]/[WEB_ROOT]/public_html/admin'
+# `[USER_HOME]` : représente le chemin vers votre répertoire utilisateur (exemple : /home/username)
+# `[WEB_ROOT]` : représente le dossier racine web (généralement public_html, www, ou htdocs)
 ```
 
-5. Créer la base de données et effectuer les migrations :
+
+8. Créer la base de données :
 ```
 php bin/console doctrine:database:create
-php bin/console doctrine:migrations:migrate
 ```
 
-6. Trigger SQL
+9. Trigger SQL
 Quand la base de données est crée, il faut rajouter des triggers SQL qui permettent de sauvegarder et d'avoir un historique des différentes modifications
 Vous trouverez dans le dossier `trigger`
 
-6. Charger les données de test (fixtures) :
+10. Charger les données de test (fixtures) :
 ```bash
 php bin/console doctrine:fixtures:load
 ```
 Cette commande va pré-remplir la base de données avec des données de test, incluant un compte administrateur :
-- Email : admin@admin.com
-- Mot de passe : admin
+- Compte administrateur
+login : admin@email.com
+mot de passe : 2DL8pxQ32yxM
 
-7. Démarrer le serveur Symfony :
+- Compte commercial :
+login : commercial@email.com
+mot de passe : M2n9PZ2Rme3v
+
+- Compte marketing :
+login : marketing@email.com
+mot de passe : 7ELkTs78Yxy2
+
+- Compte redacteur :
+login : redacteur@email.com
+mot de passe : Hg37PX7dE6fn
+
+11. Démarrer le serveur Symfony :
 ```bash
 symfony serve
 ```
@@ -199,37 +262,46 @@ Le serveur sera accessible sur http://localhost:8000
 ### Construction et déploiement
 
 #### Construction pour la production
-Passer dans le fichier .env
+- Passer dans le fichier `.env`
 APP_ENV=prod
 APP_DEBUG=0
+et indiquer les parametres de connexion de votre base de données de production et  l'email de réceprtion si nécessaire.
 
-Installer/mettre a jour les vendors
+- Verifier que dans le fichier `public\index.php`, c'est bien le chemin vers le fichier autoload.php en local en bien en commentaire et que le chemin vers le fichier autoload.php de symfony sur le serveur n'est pas commenté
+```php
+## chemin vers le fichier autoload.php en local
+#require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+
+## chemin vers le fichier autoload.php de symfony sur le serveur
+require_once dirname(__DIR__).'/symfony/vendor/autoload_runtime.php';
 ```
+
+- Verifier que le fichier `config\packages\webpack_encore.yaml` possède bien les bons paramètres après `when@prod:` pour `output_path` et `json_manifest_path` comme le chemin de sortie de votre hébergement de production
+
+- Installer/mettre a jour les vendors
+```bash
 composer install --no-dev --optimize-autoloader
 ```
-Nettoyer le cache
-```
-php bin/console cache:clear --env=prod 
+
+- Compilez les assets pour la production :
+```bash
+npm run build
 ```
 
 #### Déploiement
-Copier dans le fichier racine du site
-- le dossier bundle
-- .htaccess
-- index.php
+Par rapport au frontend fourni, il faut créer un dossier `admin` à la racine du site dans lequel vousn copierez le contenu du dossier `public`
 
-Dans un dossier au même  niveau que la racine
+Ensuite vous créez à la racine du site un dossier `symfony` dans lequel vous copiez les dossiers et fichiers suivants :
 - assets
 - bin
 - config
-- migrations
 - src
 - templates
 - translations
 - var (a créer vide directement sur le serveur avec droit d’écriture)
 - vendor
 
-- .env
+- .env (n'oubliez pas de renseigner les paramètres de connexion de votre base de données et un email pour la réception des messages d'inscription)
 - composer.json
 - composer.lock
 - importmap.php
