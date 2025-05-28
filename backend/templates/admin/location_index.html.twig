@@ -36,19 +36,19 @@
             });
 
              var popupContent = `
-                <strong>{{ location.locationName|escape('js') }}</strong><br>
-                {{ location.typeLocation.type|escape('js') }}<br>
+                <strong>{{ location.nameEventLocation|escape('js') }}</strong><br>
+                {{ location.typeLocation.nameLocationType|escape('js') }}<br>
                 <div style="display: flex; justify-content: space-between; margin-top: 10px;">
                     <a href="{{ ea_url()
                     .setController('App\\Controller\\Admin\\EventLocationCrudController')
                     .setAction('edit')
-                    .setEntityId(location.id)
+                    .setEntityId(location.idEventLocation)
                     |escape('js') }}">Modifier</a>
                     <span style="margin: 0 5px;">-<br></span>
                     <form action="{{ ea_url()
                     .setController('App\\Controller\\Admin\\EventLocationCrudController')
                     .setAction('delete')
-                    .setEntityId(location.id)
+                    .setEntityId(location.idEventLocation)
                     |escape('js') }}"
                     method="post"">
                         <input type="hidden" name="token" value="{{ csrf_token('ea-delete') }}" />
@@ -58,16 +58,9 @@
                     </form>
                 </div>
                 `;
-
-
             L.marker([{{ location.latitude }}, {{ location.longitude }}], {icon: icon})
              .addTo(mymap)
             .bindPopup(popupContent);
-
-
-
         {% endfor %}
-
     </script>
-
 {% endblock %}
