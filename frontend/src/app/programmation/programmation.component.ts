@@ -92,7 +92,7 @@ ngOnInit(): void {
     tap(programs => {
       // Only reset filters if they do not already exist
       if (!this.locationFilters || this.locationFilters.length === 0) {
-        const locations = [...new Set(programs.map(program => program.eventLocation.locationName))];
+        const locations = [...new Set(programs.map(program => program.eventLocation.nameEventLocation))];
         this.locationFilters = locations.map((location, index) => ({
           id: index,
           name: location,
@@ -101,7 +101,7 @@ ngOnInit(): void {
       }
 
       if (!this.eventFilters || this.eventFilters.length === 0) {
-        const events = [...new Set(programs.map(program => program.type.type))];
+        const events = [...new Set(programs.map(program => program.type.nameType))];
         this.eventFilters = events.map((event, index) => ({
           id: index,
           name: event,
@@ -119,7 +119,7 @@ ngOnInit(): void {
       }
 
       // Get start times
-        const times = [...new Set(programs.map(program => program.heure_debut))];
+        const times = [...new Set(programs.map(program => program.heureDebut))];
         this.timeFilters = times.map((time, index) => ({
           id: index,
           name: this.eventService.formatTime(time),
@@ -127,7 +127,7 @@ ngOnInit(): void {
         }));
 
         // Get end times
-        const timesEnd = [...new Set(programs.map(program => program.heure_fin))];
+        const timesEnd = [...new Set(programs.map(program => program.heureFin))];
         this.timeFinalFilters = timesEnd.map((time, index) => ({
           id: index,
           name: this.eventService.formatTime(time),
@@ -191,13 +191,13 @@ ngOnInit(): void {
         // Filter programs based on location
         if (locations.length) {
           programs = programs.filter(program => {
-            const sceneOrLocation = program.eventLocation.locationName;
+            const sceneOrLocation = program.eventLocation.nameEventLocation;
             return sceneOrLocation && locations.includes(sceneOrLocation);
           });
         }
         // Filter programs based on event type
         if (events.length) {
-          programs = programs.filter(program => program.type.type && events.includes(program.type.type));
+          programs = programs.filter(program => program.type.nameType && events.includes(program.type.nameType));
         }
         // Filter programs based on date
         if (dates.length) {
@@ -206,8 +206,8 @@ ngOnInit(): void {
         //  Filter programs based on start and end time
         if (this.timeFiltersStart || this.timeFiltersEnd) {
           programs = programs.filter(program => {
-            const eventStartTime = this.eventService.formatTime(program.heure_debut);
-            const eventEndTime = this.eventService.formatTime(program.heure_fin);
+            const eventStartTime = this.eventService.formatTime(program.heureDebut);
+            const eventEndTime = this.eventService.formatTime(program.heureFin);
             
             // If only the start time is defined
             if (this.timeFiltersStart && !this.timeFiltersEnd) {

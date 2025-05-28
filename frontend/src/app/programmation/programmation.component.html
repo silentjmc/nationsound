@@ -29,7 +29,7 @@
           <!-- location filter -->
           <div>
             <h3 class="font-title">Lieux</h3>
-            @for(filter of locationFilters | sortBy:'name' ; track filter.id) {
+            @for(filter of locationFilters | sortBy:'name' ; track filter.idEventLocation) {
             <!--@for(filter of locationFilters$ | async | sortBy:'name' ; track filter.id) {-->
               <div>
                 <input type="checkbox" 
@@ -101,23 +101,23 @@
   
     <!-- events grids -->
     <div class="relative grid grid-cols-1 gap-2 m-1 mt-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 justify-items-center">
-      @for(program of (filteredPrograms$ | async ); track program.id) {
+      @for(program of (filteredPrograms$ | async ); track program.idEvent) {
         @defer (on viewport) {
-          <a [routerLink]="['/artist', program.artist.id]">
+          <a [routerLink]="['/artist', program.artist.idArtist]">
             <div class=" flex flex-col bg-white rounded-lg border border-gray-200 shadow transition-all duration-300 grayscale hover:grayscale-0 hover:bg-amber-100">
               <div class="overflow flex justify-center items-center">
-                <img class="w-full h-full object-cover rounded-t-lg" src="{{ program.artist.thumbnail }}" alt="{{ program.artist.name }}" />
+                <img class="w-full h-full object-cover rounded-t-lg" src="{{ program.artist.thumbnail }}" alt="{{ program.artist.nameArtist }}" />
               </div>
               <div class="text-left px-2">
-                <h4 class="font-text font-semibold text-gray-700">{{ program.type.type }}</h4>
-                @if (program.artist.name.length>20){
-                  <h5 class="font-text text-lg leading-tight font-bold tracking-tight text-gray-900">{{ program.artist.name }}</h5>
+                <h4 class="font-text font-semibold text-gray-700">{{ program.type.nameType }}</h4>
+                @if (program.artist.nameArtist.length>20){
+                  <h5 class="font-text text-lg leading-tight font-bold tracking-tight text-gray-900">{{ program.artist.nameArtist }}</h5>
                 } @else {
-                  <h5 class="font-text text-xl font-bold tracking-tight text-gray-900">{{ program.artist.name }}</h5>
+                  <h5 class="font-text text-xl font-bold tracking-tight text-gray-900">{{ program.artist.nameArtist }}</h5>
                 }
                 <p class="font-text text-base text-gray-700">{{program.date.date | date:'dd/MM/yyyy'}}</p>
-                <p class="font-text text-base text-gray-700">{{program.heure_debut | date:'HH:mm'}} - {{program.heure_fin | date:'HH:mm'}}</p>
-                <p class="font-text text-base text-gray-700">{{program.eventLocation.locationName}}</p>
+                <p class="font-text text-base text-gray-700">{{program.heureDebut | date:'HH:mm'}} - {{program.heureFin | date:'HH:mm'}}</p>
+                <p class="font-text text-base text-gray-700">{{program.eventLocation.nameEventLocation}}</p>
               </div>
             </div>
           </a>

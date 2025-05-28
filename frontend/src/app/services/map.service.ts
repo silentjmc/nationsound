@@ -22,10 +22,10 @@ export class MapService {
     return this.http.get<Poi[]>(BASE_URL).pipe(
       map((response: any[]) => {
         return response.map(event => ({
-          id: event.id,
-          name: event.locationName,
-          type: event.typeLocation.type,
-          text: event.description,
+          id: event.idEventLocation,
+          name: event.nameEventLocation,
+          type: event.typeLocation.nameLocationType,
+          text: event.contentEventLocation,
           lat: event.latitude,
           lon: event.longitude,
           iconUrl: `${environment.apiUrl}/uploads/locations/${event.typeLocation.symbol}`

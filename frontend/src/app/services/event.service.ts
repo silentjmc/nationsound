@@ -42,7 +42,7 @@ export class EventService {
           ...event,
           artist: {
             ...event.artist,
-            image: `${environment.apiUrl}/uploads/artists/${event.artist.image}`,
+            image: `${environment.apiUrl}/uploads/artists/${event.artist.imageArtist}`,
             thumbnail: `${environment.apiUrl}/uploads/artists/${event.artist.thumbnail}`
           }
         }));

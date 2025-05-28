@@ -21,7 +21,7 @@ export class ArtistService {
       map((artists: Artist[]) => {
         return artists.map(artist => ({
           ...artist,
-          image: `${environment.apiUrl}/uploads/artists/${artist.image}`,
+          imageArtist: `${environment.apiUrl}/uploads/artists/${artist.imageArtist}`,
           thumbnail: `${environment.apiUrl}/uploads/artists/${artist.thumbnail}`
         }));
       })
@@ -32,7 +32,7 @@ export class ArtistService {
     return this.http.get<Artist>(`${BASE_URL_ARTIST}/${id}`).pipe(
       map((artist: Artist) => ({
         ...artist,
-        image: `${environment.apiUrl}/uploads/artists/${artist.image}`,
+        imageArtist: `${environment.apiUrl}/uploads/artists/${artist.imageArtist}`,
         thumbnail: `${environment.apiUrl}/uploads/artists/${artist.thumbnail}`
       }))
     );
