@@ -19,25 +19,37 @@ class PublishService
         $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
+    private function getMethodNames(object $entity): array
+    {
+        $entityName = (new \ReflectionClass($entity))->getShortName();
+        
+        return [
+            'setPublish' => 'setPublish' . $entityName,
+            'getPublish' => 'getPublish' . $entityName,
+        ];
+    }
+
     public function publish(AdminContext $context): array
     {
-        $entity = $context->getEntity()->getInstance();
+        $object = $context->getEntity()->getInstance();
+        $methods = $this->getMethodNames($object);
+        $setter = $methods['setPublish'];
         $hasRelatedItems = false;
-        if ($entity instanceof Event) {
+        if ($object instanceof Event) {
             $hasRelatedItems = $this->entityManager->getRepository(EventLocation::class)
-                ->count(['id' => $entity->getEventLocation()->getId(), 'publish' => false]) > 0;
+                ->count(['idEventLocation' => $object->getEventLocation()->getIdEventLocation(), 'publishEventLocation' => false]) > 0;
         }
         if ($hasRelatedItems) {
             $eventLocations = $this->entityManager->getRepository(EventLocation::class)
-                ->findBy(['id' => $entity->getEventLocation()->getId(), 'publish' => false]);
+                ->findBy(['idEventLocation' => $object->getEventLocation()->getIdEventLocation(), 'publishEventLocation' => false]);
             foreach ($eventLocations as $eventLocation) {
-                $eventLocation->setPublish(true);
+                $eventLocation->$setter(true);
                 $this->entityManager->persist($eventLocation);
             }
         }
 
-        $entity->setPublish(true);
-        $this->entityManager->persist($entity);
+        $object->$setter(true);
+        $this->entityManager->persist($object);
         $this->entityManager->flush();
 
         $url = $this->adminUrlGenerator
@@ -50,23 +62,25 @@ class PublishService
 
     public function unpublish(AdminContext $context): array
     {
-        $entity = $context->getEntity()->getInstance();
+        $object = $context->getEntity()->getInstance();
+        $methods = $this->getMethodNames($object);
+        $setter = $methods['setPublish'];
         $hasRelatedItems = false;
 
-        if ($entity instanceof EventLocation) {
+        if ($object instanceof EventLocation) {
             $hasRelatedItems = $this->entityManager->getRepository(Event::class)
-                 ->count(['eventLocation' => $entity, 'publish' => true]) > 0;
+                 ->count(['eventLocation' => $object, 'publishEvent' => true]) > 0;
         }
         if ($hasRelatedItems) {
             $events = $this->entityManager->getRepository(Event::class)
-                ->findBy(['eventLocation' => $entity]);
+                ->findBy(['eventLocation' => $object]);
             foreach ($events as $event) {
-                $event->setPublish(false);
+                $event->$setter(false);
                 $this->entityManager->persist($event);
             }
         }
-        $entity->setPublish(false);
-        $this->entityManager->persist($entity);
+        $object->$setter(false);
+        $this->entityManager->persist($object);
         $this->entityManager->flush();
 
         $url = $this->adminUrlGenerator
