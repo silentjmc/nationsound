@@ -1,9 +1,11 @@
-import withMT from "@material-tailwind/html/utils/withMT";
+//import withMT from "@material-tailwind/html/utils/withMT";
 /** @type {import('tailwindcss').Config} */
 
-module.exports = withMT({
+//module.exports = withMT({
+module.exports = {
   content: [
-    "./src/**/*.{html,ts}"
+    "./src/**/*.{html,ts}",
+    "./node_modules/flowbite/**/*.js"
   ],
   safelist: [
     'text-blue-logo',
@@ -55,5 +57,4 @@ module.exports = withMT({
   plugins: [
     require('flowbite/plugin')
   ],
-});
-
+};

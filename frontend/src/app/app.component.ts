@@ -24,4 +24,10 @@ export class AppComponent {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      initFlowbite();
+    }
+  }
 }
