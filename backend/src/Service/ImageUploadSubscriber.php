@@ -3,7 +3,7 @@ namespace App\Service;
 
 use App\Entity\Artist;
 use App\Entity\LocationType;
-use App\Entity\Partners;
+use App\Entity\Partner;
 use Psr\Log\LoggerInterface;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
@@ -44,19 +44,19 @@ class ImageUploadSubscriber
 
         if ($entity instanceof Artist) {
             if (empty($entity->getThumbnail())) {
-                if (!empty($entity->getImage())) {
+                if (!empty($entity->getImageArtist())) {
                     // Determine the base path according to the environment
                     $basePath = str_contains($this->projectDir, 'public_html/symfony')
                         ? dirname($this->projectDir) . '/admin/uploads/artists'
                         : $this->projectDir . '/public/uploads/artists';
                     // Retrieve the path of the original image
-                    $originalImagePath = $basePath . '/' . $entity->getImage();
-                    $thumbnailPath = $basePath . '/thumb_' . $entity->getImage();
+                    $originalImagePath = $basePath . '/' . $entity->getImageArtist();
+                    $thumbnailPath = $basePath . '/thumb_' . $entity->getImageArtist();
 
                     // Copy the original image to the thumbnail path
                     if (file_exists($originalImagePath)) {
                         if (copy($originalImagePath, $thumbnailPath)) {
-                            $entity->setThumbnail('thumb_' . $entity->getImage());
+                            $entity->setThumbnail('thumb_' . $entity->getImageArtist());
                             $this->logger->info('Thumbnail created successfully', [
                                 'entity' => $entity,
                                 'path' => $thumbnailPath
@@ -80,16 +80,16 @@ class ImageUploadSubscriber
                     return;
                 }
             } 
-            $this->resizeAndSaveImage($entity, 'Image', 'artists', 'webp', 768);
+            $this->resizeAndSaveImage($entity, 'ImageArtist', 'artists', 'webp', 768);
             $this->resizeAndSaveImage($entity, 'Thumbnail', 'artists', 'webp', 248);
         }
 
-        if ($entity instanceof Partners) {
-            $this->resizeAndSaveImage($entity, 'Image', 'partners', 'webp', 128);
+        if ($entity instanceof Partner) {
+            $this->resizeAndSaveImage($entity, 'ImagePartner', 'partners', 'webp', 128);
         }
 
         if ($entity instanceof LocationType) {
-            $this->resizeAndSaveImage($entity, 'Symbol', 'location', 'png', 24);
+            $this->resizeAndSaveImage($entity, 'Symbol', 'locations', 'png', 24);
         }
     }
 
