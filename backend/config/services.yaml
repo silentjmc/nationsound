@@ -29,7 +29,6 @@ services:
             - { name: 'doctrine.event_listener', event: 'prePersist' }
             - { name: 'doctrine.event_listener', event: 'preUpdate' }
             - { name: 'doctrine.event_listener', event: 'preRemove' }
-            #- { name: doctrine.event_listener, event: postUpdate }
 
     App\Service\PositionService:
         arguments:
@@ -38,3 +37,6 @@ services:
     App\Service\ImageUploadSubscriber:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    App\Validator\PasswordComplexityValidator:
+        tags: [ 'validator.constraint_validator' ]
