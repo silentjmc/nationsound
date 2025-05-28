@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EventLocationRepository::class)]
 class EventLocation
@@ -16,11 +18,11 @@ class EventLocation
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getEventLocation"])]
-    private ?int $id = null;
+    private ?int $idEventLocation = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getEventLocation", "getEvent","getArtist"])]
-    private ?string $locationName = null;
+    private ?string $nameEventLocation = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 19, scale: 14)]
     #[Groups(["getEventLocation"])]
@@ -32,19 +34,19 @@ class EventLocation
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(["getEventLocation"])]
-    private ?string $description = null;
+    private ?string $contentEventLocation = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationEventLocation = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationEventLocation = null;
 
     #[ORM\Column]
-    private ?bool $publish = null;
+    private ?bool $publishEventLocation = null;
 
     #[ORM\ManyToOne(inversedBy: 'eventLocations')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_location_type')]
     #[Groups(["getEventLocation"])]
     private ?LocationType $typeLocation = null;
 
@@ -59,26 +61,30 @@ class EventLocation
         $this->events = new ArrayCollection();
     }
 
-    public function getId(): ?int
+    public function __toString(): string
     {
-        return $this->id;
+        return $this->nameEventLocation ?? '';
     }
 
-    public function setId(int $id): static
+    public function getIdEventLocation(): ?int
     {
-        $this->id = $id;
+        return $this->idEventLocation;
+    }
 
+    public function setIdEventLocation(int $idEventLocation): static
+    {
+        $this->idEventLocation = $idEventLocation;
         return $this;
     }
 
-    public function getLocationName(): ?string
+    public function getNameEventLocation(): ?string
     {
-        return $this->locationName;
+        return $this->nameEventLocation;
     }
 
-    public function setLocationName(string $locationName): static
+    public function setNameEventLocation(string $nameEventLocation): static
     {
-        $this->locationName = $locationName;
+        $this->nameEventLocation = $nameEventLocation;
 
         return $this;
     }
@@ -107,50 +113,50 @@ class EventLocation
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getContentEventLocation(): ?string
     {
-        return $this->description;
+        return $this->contentEventLocation;
     }
 
-    public function setDescription(string $description): static
+    public function setContentEventLocation(string $contentEventLocation): static
     {
-        $this->description = $description;
+        $this->contentEventLocation = $contentEventLocation;
 
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationEventLocation(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationEventLocation;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setDateModificationEventLocation(\DateTimeInterface $dateModificationEventLocation): static
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationEventLocation = $dateModificationEventLocation;
 
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationEventLocation(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationEventLocation;
     }
 
-    public function setUserModification(string $userModification): static
+    public function setUserModificationEventLocation(string $userModificationEventLocation): static
     {
-        $this->userModification = $userModification;
+        $this->userModificationEventLocation = $userModificationEventLocation;
 
         return $this;
     }
 
-    public function isPublish(): ?bool
+    public function isPublishEventLocation(): ?bool
     {
-        return $this->publish;
+        return $this->publishEventLocation;
     }
 
-    public function setPublish(bool $publish): static
+    public function setPublishEventLocation(bool $publishEventLocation): static
     {
-        $this->publish = $publish;
+        $this->publishEventLocation = $publishEventLocation;
 
         return $this;
     }
@@ -181,7 +187,6 @@ class EventLocation
             $this->events->add($event);
             $event->setEventLocation($this);
         }
-
         return $this;
     }
 
@@ -193,7 +198,31 @@ class EventLocation
                 $event->setEventLocation(null);
             }
         }
-
         return $this;
+    }
+
+
+    #[Assert\Callback]
+     public function validateUnpublish(ExecutionContextInterface $context, $payload): void
+    {
+
+        if (!$this->isPublishEventLocation()) { // Si l'état actuel (soumis) est "non publié"
+            $hasRelatedPublishedEvents = false;
+            foreach ($this->getEvents() as $event) {
+                if ($event->isPublishEvent()) { // Assurez-vous que Event a une méthode isPublishEvent()
+                    $hasRelatedPublishedEvents = true;
+                    break;
+                }
+            }
+
+            if ($hasRelatedPublishedEvents) {
+                $context->buildViolation(sprintf(
+                    'Le lieu "%s" ne peut pas être dépublié directement depuis ce formulaire car il a des événements publiés liés. Veuillez utiliser l\'action "Dépublier" depuis la liste des lieux, qui gérera la dépublication des événements associés.',
+                    $this->getNameEventLocation() ?? 'ce lieu' // Utilisez le nom du lieu si disponible
+                ))
+                ->atPath('publishEventLocation') // Lie l'erreur au champ "Publié"
+                ->addViolation();
+            }
+        }
     }
 }

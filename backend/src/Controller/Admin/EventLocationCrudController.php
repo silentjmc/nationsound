@@ -49,7 +49,7 @@ class EventLocationCrudController extends AbstractCrudController
         $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
             ->addCssClass('btn btn-sm btn-light text-success')
             ->setLabel(false)
-            ->displayIf(fn ($entity) => !$entity->isPublish())
+            ->displayIf(fn ($entity) => !$entity->isPublishEventLocation())
             ->linkToCrudAction('publish')
             ->setHtmlAttributes([
                 'title' => "Publier l'élément",
@@ -57,7 +57,7 @@ class EventLocationCrudController extends AbstractCrudController
         $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
             ->addCssClass('btn btn-ms btn-light text-danger')
             ->setLabel(false)
-            ->displayIf(fn ($entity) => $entity->isPublish() && !$this->shouldDisplayUnpublishAction($entity))
+            ->displayIf(fn ($entity) => $entity->isPublishEventLocation() && !$this->shouldDisplayUnpublishAction($entity))
             ->linkToCrudAction('unpublish')
             ->setHtmlAttributes([
                 'title' => "Dépublier l'élément",       
@@ -72,7 +72,7 @@ class EventLocationCrudController extends AbstractCrudController
                 'data-bs-toggle' => 'modal',
                'data-bs-target' => '#modal-unpublish',
             ]);
-
+        
         return parent::configureActions($actions)
            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
                 return $action->setLabel('Ajouter un lieu');
@@ -105,7 +105,7 @@ class EventLocationCrudController extends AbstractCrudController
             })
             ->add(Crud::PAGE_INDEX,$publishAction) 
             ->add(Crud::PAGE_INDEX,$unpublishAction)
-            ->add(Crud::PAGE_INDEX,$unpublishWithRelatedEventAction); 
+            ->add(Crud::PAGE_INDEX,$unpublishWithRelatedEventAction);
         }
 
         public function configureCrud(Crud $crud): Crud
@@ -123,18 +123,18 @@ class EventLocationCrudController extends AbstractCrudController
         {
             if ($pageName === Crud::PAGE_INDEX) {
                 $fields = [
-                    IntegerField::new('id', 'Identifiant'),
-                    TextField::new('locationName','Nom du lieu'),
-                    TextareaField::new('description','Description'),
+                    IntegerField::new('idEventLocation', 'Identifiant'),
+                    TextField::new('nameEventLocation','Nom du lieu'),
+                    TextareaField::new('contentEventLocation','Description'),
                     TextField::new('typeLocation', 'Type de lieu'),
                     NumberField::new('latitude','Latitude')
                         ->setNumDecimals(14),
                     NumberField::new('longitude','Longitude')
                         ->setNumDecimals(14),
-                    BooleanField::new('publish','Publié')
+                    BooleanField::new('publishEventLocation','Publié')
                         ->renderAsSwitch(false),
-                    DateTimeField::new('dateModification', 'Dernière modification'),
-                    TextField::new('userModification', 'Utilisateur'),
+                    DateTimeField::new('dateModificationEventLocation', 'Dernière modification'),
+                    TextField::new('userModificationEventLocation', 'Utilisateur'),
                     ];
                 } else {
                 $addTypeUrl = $this->adminUrlGenerator
@@ -142,17 +142,17 @@ class EventLocationCrudController extends AbstractCrudController
                     ->setAction(Action::NEW)
                     ->generateUrl();
                 $fields = [
-                    TextField::new('locationName','Nom du lieu')
+                    TextField::new('nameEventLocation','Nom du lieu')
                         ->setFormTypeOptions([
                             'attr' => ['placeholder' => 'Saisissez le nom du lieu'],
                         ]),
-                    TextareaField::new('description','Courte description du lieu pour afficher sur la carte interactive')
+                    TextareaField::new('contentEventLocation','Courte description du lieu pour afficher sur la carte interactive')
                         ->setFormTypeOptions([
                             'attr' => ['placeholder' => 'Saisissez la description du lieu'],
                         ]),
                     AssociationField::new('typeLocation', 'Type de lieu')
                         ->setFormTypeOptions([
-                            'choice_label' => 'type',
+                            'choice_label' => 'nameLocationType',
                             'placeholder' => 'Sélectionnez le type du lieu'
                         ])
                         ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeUrl)),
@@ -167,7 +167,7 @@ class EventLocationCrudController extends AbstractCrudController
                         ->setNumDecimals(14)
                         ->setFormTypeOption('attr', ['readonly' => true])
                         ->setColumns(3),
-                    BooleanField::new('publish','Publié'),
+                    BooleanField::new('publishEventLocation','Publié'),
                 ];
             }
                 return $fields;
@@ -219,12 +219,12 @@ class EventLocationCrudController extends AbstractCrudController
 
         private function shouldDisplayUnpublishAction(EventLocation $eventLocation): bool
         {
-            if (!$eventLocation->isPublish()) {
+            if (!$eventLocation->isPublishEventLocation()) {
                 return false;
             }
 
             $hasRelatedPublishedEvents = $this->entityManager->getRepository(Event::class)
-                ->count(['eventLocation' => $eventLocation, 'publish' => true]) > 0;
+                ->count(['eventLocation' => $eventLocation, 'publishEvent' => true]) > 0;
 
             return $hasRelatedPublishedEvents;
         }

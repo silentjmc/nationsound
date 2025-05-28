@@ -77,19 +77,32 @@ class EventLocationFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($locations as $locationData) {
             $eventLocation = new EventLocation();
-            $eventLocation->setLocationName($locationData['locationName']);
+            $eventLocation->setNameEventLocation($locationData['locationName']);
             $eventLocation->setLatitude($locationData['latitude']);
             $eventLocation->setLongitude($locationData['longitude']);
-            $eventLocation->setDescription($locationData['description']);
-            $eventLocation->setDateModification(new \DateTime($locationData['dateModification']));
-            $eventLocation->setUserModification($locationData['userModification']);
-            $eventLocation->setPublish($locationData['publish']);
+            $eventLocation->setContentEventLocation($locationData['description']);
+            $eventLocation->setDateModificationEventLocation(new \DateTime($locationData['dateModification']));
+            $eventLocation->setUserModificationEventLocation($locationData['userModification']);
+            $eventLocation->setPublishEventLocation($locationData['publish']);
             
-            // Récupérer le type de localisation correspondant
-            $type = $manager->getRepository(LocationType::class)->find($locationData['typeLocationId']);
-            if ($type) {
-                $eventLocation->setTypeLocation($type);
+            $type = $manager->getRepository(LocationType::class)->findOneBy(['idLocationType' => $locationData['typeLocationId']]);
+            
+            // If the above doesn't work, try this alternative approach:
+            if (!$type) {
+                // Try to get by standard id field
+                $type = $manager->getRepository(LocationType::class)->find($locationData['typeLocationId']);
             }
+            
+            // If still no type found, throw an exception to identify the issue
+            if (!$type) {
+                throw new \Exception(sprintf(
+                    'LocationType with ID %d not found. Make sure LocationTypeFixtures has been loaded first.',
+                    $locationData['typeLocationId']
+                ));
+            }
+            
+            $eventLocation->setTypeLocation($type);
+    
             
             $manager->persist($eventLocation);
         }
