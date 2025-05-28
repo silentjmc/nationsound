@@ -14,8 +14,6 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
 class UserCrudController extends AbstractCrudController
 {
@@ -77,7 +75,7 @@ class UserCrudController extends AbstractCrudController
                 TextField::new('email','Email'),
                 TextField::new('lastname','Nom'),
                 TextField::new('firstname','Prénom'),
-                TextField::new('role','Rôle'),
+                TextField::new('roleUser','Rôle'),
                 BooleanField::new('isVerified','Utilisateur vérifié')->renderAsSwitch(false)];
 
         } else {    
@@ -124,8 +122,8 @@ class UserCrudController extends AbstractCrudController
             if ($adminCount <= 1) {
                 $hasChanged = false;
 
-                if ($user->getRole()->getRole() !== 'Administrateur') {
-                    $user->setRole($originalRole);
+                if ($user->getRoleUser()->getRole() !== 'Administrateur') {
+                    $user->setRoleUser($originalRole);
                     $hasChanged = true;
                 }
 

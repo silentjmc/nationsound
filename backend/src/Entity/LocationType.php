@@ -15,30 +15,27 @@ class LocationType
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getEventLocation"])]
-    private ?int $id = null;
+    private ?int $idLocationType = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getEventLocation"])]
-    private ?string $type = null;
+    private ?string $nameLocationType = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getEventLocation"])]
     private ?string $symbol = null;
-    // test
+    
     #[ORM\Column(type: 'datetime', nullable: true)]
-    private ?\DateTimeInterface $dateModification = null;
-    // test
+    private ?\DateTimeInterface $dateModificationLocationType = null;
+
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private ?string $userModification = null;
+    private ?string $userModificationLocationType = null;
 
     /**
      * @var Collection<int, EventLocation>
      */
     #[ORM\OneToMany(targetEntity: EventLocation::class, mappedBy: 'typeLocation')]
     private Collection $eventLocations;
-
-    #[ORM\Column]
-    private ?bool $eventHostable = null;
 
     public function __construct()
     {
@@ -48,29 +45,29 @@ class LocationType
     // Méthode pour convertir l'objet en chaîne
     public function __toString(): string
     {
-        return $this->type ?? '';
+        return $this->nameLocationType ?? '';
     }
 
-    public function getId(): ?int
+    public function getIdLocationType(): ?int
     {
-        return $this->id;
+        return $this->idLocationType;
     }
 
-    public function setId(int $id): static
+    public function setIdLocationType(int $idLocationType): static
     {
-        $this->id = $id;
+        $this->idLocationType = $idLocationType;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getNameLocationType(): ?string
     {
-        return $this->type;
+        return $this->nameLocationType;
     }
 
-    public function setType(string $type): static
+    public function setNameLocationType(string $nameLocationType): static
     {
-        $this->type = $type;
+        $this->nameLocationType = $nameLocationType;
 
         return $this;
     }
@@ -87,25 +84,25 @@ class LocationType
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationLocationType(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationLocationType;
     }
 
-    public function setDateModification(?\DateTimeInterface $dateModification): self
+    public function setDateModificationLocationType(?\DateTimeInterface $dateModificationLocationType): self
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationLocationType = $dateModificationLocationType;
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationLocationType(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationLocationType;
     }
 
-    public function setUserModification(?string $userModification): self
+    public function setUserModificationLocationType(?string $userModificationLocationType): self
     {
-        $this->userModification = $userModification;
+        $this->userModificationLocationType = $userModificationLocationType;
         return $this;
     }
 
@@ -123,7 +120,6 @@ class LocationType
             $this->eventLocations->add($eventLocation);
             $eventLocation->setTypeLocation($this);
         }
-
         return $this;
     }
 
@@ -135,20 +131,6 @@ class LocationType
                 $eventLocation->setTypeLocation(null);
             }
         }
-
-        return $this;
-    }
-
-    public function isEventHostable(): ?bool
-    {
-        return $this->eventHostable;
-    }
-
-    public function setEventHostable(bool $eventHostable): static
-    {
-        $this->eventHostable = $eventHostable;
-
         return $this;
     }
 }
-

@@ -76,13 +76,13 @@ class EventTypeCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            TextField::new('type','Type d\'évènement')
+            IntegerField::new('idEventType', 'Identifiant')->onlyOnIndex(),
+            TextField::new('nameType','Type d\'évènement')
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez le type d\'évènement'],
                 ]),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
+            DateTimeField::new('dateModificationEventType', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModificationEventType', 'Utilisateur')->onlyOnIndex(),
         ];
     }
 

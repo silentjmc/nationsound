@@ -23,7 +23,7 @@ class ArtistController extends AbstractController
         });
 
         usort($artistsWithPublishedEvents, function(Artist $a, Artist $b) {
-            return strcmp($a->getName(), $b->getName());
+            return strcmp($a->getNameArtist(), $b->getNameArtist());
         });
 
         $jsonArtistList = $serializer->serialize(array_values($artistsWithPublishedEvents), 'json', ['groups' => 'getArtist']);

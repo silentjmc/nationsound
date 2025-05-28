@@ -80,10 +80,10 @@ class EventDateCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
+            IntegerField::new('idEventDate', 'Identifiant')->onlyOnIndex(),
             DateField::new('date'),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Faite par')->onlyOnIndex(),
+            DateTimeField::new('dateModificationEventDate', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModificationEventDate', 'Faite par')->onlyOnIndex(),
         ];
     }
 

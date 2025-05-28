@@ -15,17 +15,17 @@ class EventType
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idEventType = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getEvent", "getArtist"])]
-    private ?string $type = null;
+    private ?string $nameType = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationEventType = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationEventType = null;
 
     /**
      * @var Collection<int, Event>
@@ -41,29 +41,29 @@ class EventType
     // Méthode pour convertir l'objet en chaîne
     public function __toString(): string
     {
-        return $this->type ?? '';
+        return $this->nameType ?? '';
     }
 
-    public function getId(): ?int
+    public function getIdEventType(): ?int
     {
-        return $this->id;
+        return $this->idEventType;
     }
 
-    public function setId(int $id): static
+    public function setIdEventType(int $idEventType): static
     {
-        $this->id = $id;
+        $this->idEventType = $idEventType;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getNameType(): ?string
     {
-        return $this->type;
+        return $this->nameType;
     }
 
-    public function setType(string $type): static
+    public function setNameType(string $nameType): static
     {
-        $this->type = $type;
+        $this->nameType = $nameType;
 
         return $this;
     }
@@ -98,26 +98,26 @@ class EventType
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationEventType(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationEventType;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setDateModificationEventType(\DateTimeInterface $dateModificationEventType): static
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationEventType = $dateModificationEventType;
 
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationEventType(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationEventType;
     }
 
-    public function setUserModification(string $userModification): static
+    public function setUserModificationEventType(string $userModificationEventType): static
     {
-        $this->userModification = $userModification;
+        $this->userModificationEventType = $userModificationEventType;
 
         return $this;
     }

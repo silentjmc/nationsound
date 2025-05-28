@@ -87,16 +87,16 @@ class ArtistCrudController extends AbstractCrudController
         $isProduction = str_contains($this->projectDir, 'public_html/symfony');
         $uploadPath = $isProduction ? '../admin/uploads/artists' : 'public/uploads/artists';
         $fields = [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            TextField::new('name', 'Nom de l\'artiste ou du groupe')
+            IntegerField::new('idArtist', 'Identifiant')->onlyOnIndex(),
+            TextField::new('nameArtist', 'Nom de l\'artiste ou du groupe')
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez le nom de l\'artiste'],
                 ]),
-            TextareaField::new('description', 'Description' . ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
+            TextareaField::new('contentArtist', 'Description' . ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez la description de l\'artiste'],
                 ]),
-            ImageField::new('image','Image'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
+            ImageField::new('image_artist','Image'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
                 ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
@@ -114,12 +114,12 @@ class ArtistCrudController extends AbstractCrudController
                     'required' => false,
                     'allow_delete'=> false
                 ]),
-            TextField::new('type_music', 'Type de musique')
+            TextField::new('typeMusic', 'Type de musique')
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez le type de musique de l\'artiste'],
                 ]),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
+            DateTimeField::new('dateModificationArtist', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModificationArtist', 'Utilisateur')->onlyOnIndex(),
         ];
 
         return $fields;

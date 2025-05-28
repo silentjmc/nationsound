@@ -17,7 +17,7 @@ class EventDate
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idEventDate = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     #[Groups(["getEvent", "getArtist"])]
@@ -30,10 +30,10 @@ class EventDate
     private Collection $events;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationEventDate = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationEventDate = null;
 
     public function __construct()
     {
@@ -50,9 +50,9 @@ class EventDate
         return $this->__toString();
     }
     
-    public function getId(): ?int
+    public function getIdEventDate(): ?int
     {
-        return $this->id;
+        return $this->idEventDate;
     }
 
     public function getDate(): ?\DateTimeInterface
@@ -97,26 +97,26 @@ class EventDate
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationEventDate(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationEventDate;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setDateModificationEventDate(\DateTimeInterface $dateModificationEventDate): static
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationEventDate = $dateModificationEventDate;
 
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationEventDate(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationEventDate;
     }
 
-    public function setUserModification(string $userModification): static
+    public function setUserModificationEventDate(string $userModificationEventDate): static
     {
-        $this->userModification = $userModification;
+        $this->userModificationEventDate = $userModificationEventDate;
 
         return $this;
     }

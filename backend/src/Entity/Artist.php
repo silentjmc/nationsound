@@ -16,19 +16,19 @@ class Artist
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getEvent","getArtist"])]
-    private ?int $id = null;
+    private ?int $idArtist = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getEvent","getArtist"])]
-    private ?string $name = null;
+    private ?string $nameArtist = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(["getEvent","getArtist"])]
-    private ?string $description = null;
+    private ?string $contentArtist = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getEvent","getArtist"])]
-    private ?string $image = null;
+    private ?string $imageArtist = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getEvent","getArtist"])]
@@ -36,7 +36,7 @@ class Artist
 
     #[ORM\Column(length: 255)]
     #[Groups(["getEvent","getArtist"])]
-    private ?string $type_music = null;
+    private ?string $typeMusic = null;
 
     /**
      * @var Collection<int, Event>
@@ -46,10 +46,10 @@ class Artist
     private Collection $events;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationArtist = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationArtist = null;
 
     public function __construct()
     {
@@ -58,65 +58,65 @@ class Artist
 
     public function __toString(): string
     {
-        return $this->name ?? '';
+        return $this->nameArtist ?? '';
     }
 
-    public function getId(): ?int
+    public function getIdArtist(): ?int
     {
-        return $this->id;
+        return $this->idArtist;
     }
 
-    public function setId(int $id): static
+    public function setIdArtist(int $idArtist): static
     {
-        $this->id = $id;
+        $this->idArtist = $idArtist;
 
         return $this;
     }
 
-    public function getName(): ?string
+    public function getNameArtist(): ?string
     {
-        return $this->name;
+        return $this->nameArtist;
     }
 
-    public function setName(string $name): static
+    public function setNameArtist(string $nameArtist): static
     {
-        $this->name = $name;
+        $this->nameArtist = $nameArtist;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getContentArtist(): ?string
     {
-        return $this->description;
+        return $this->contentArtist;
     }
 
-    public function setDescription(string $description): static
+    public function setContentArtist(string $contentArtist): static
     {
-        $this->description = $description;
+        $this->contentArtist = $contentArtist;
 
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getImageArtist(): ?string
     {
-        return $this->image;
+        return $this->imageArtist;
     }
 
-    public function setImage(?string $image): static
+    public function setImageArtist(?string $imageArtist): static
     {
-        $this->image = $image;
+        $this->imageArtist = $imageArtist;
 
         return $this;
     }
 
     public function getTypeMusic(): ?string
     {
-        return $this->type_music;
+        return $this->typeMusic;
     }
 
-    public function setTypeMusic(string $type_music): static
+    public function setTypeMusic(string $typeMusic): static
     {
-        $this->type_music = $type_music;
+        $this->typeMusic = $typeMusic;
 
         return $this;
     }
@@ -151,26 +151,26 @@ class Artist
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationArtist(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationArtist;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setDateModificationArtist(\DateTimeInterface $dateModificationArtist): static
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationArtist = $dateModificationArtist;
 
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationArtist(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationArtist;
     }
 
-    public function setUserModification(string $userModification): static
+    public function setUserModificationArtist(string $userModificationArtist): static
     {
-        $this->userModification = $userModification;
+        $this->userModificationArtist = $userModificationArtist;
 
         return $this;
     }
@@ -190,7 +190,7 @@ class Artist
     public function publishedEventsLinked(): void
     {
         $this->events = $this->events->filter(function(Event $event) {
-            return $event->isPublish();
+            return $event->isPublishEvent();
         });
     }
 }

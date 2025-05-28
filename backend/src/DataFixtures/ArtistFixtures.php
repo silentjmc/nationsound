@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class ArtistFixtures extends Fixture implements DependentFixtureInterface
+class ArtistFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -25,24 +25,24 @@ class ArtistFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($artists as $artistData) {
             $artist = new Artist();
-            $artist->setName($artistData['name']);
-            $artist->setDescription($artistData['description']);
-            $artist->setImage($artistData['image']);
+            $artist->setNameArtist($artistData['name']);
+            $artist->setContentArtist($artistData['description']);
+            $artist->setImageArtist($artistData['image']);
             $artist->setThumbnail($artistData['thumbnail']);
             $artist->setTypeMusic($artistData['typeMusic']);
-            $artist->setDateModification(new \DateTime($artistData['dateModification']));
-            $artist->setUserModification($artistData['userModification']);
+            $artist->setDateModificationArtist(new \DateTime($artistData['dateModification']));
+            $artist->setUserModificationArtist($artistData['userModification']);
             
             $manager->persist($artist);
         }
 
         $manager->flush();
     }
-
+/*
     public function getDependencies()
     {
         return [
             UserFixtures::class,
         ];
-    }
+    }*/
 }

@@ -62,7 +62,7 @@ class UserFixtures extends Fixture implements DependentFixtureInterface
             // Récupérer le rôle correspondant
             $role = $manager->getRepository(Role::class)->find($userData['roleId']);
             if ($role) {
-                $user->setRole($role);
+                $user->setRoleUser($role);
             }
 
             // Gérer la date d'inscription

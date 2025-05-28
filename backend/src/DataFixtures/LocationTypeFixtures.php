@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class LocationTypeFixtures extends Fixture implements DependentFixtureInterface
+class LocationTypeFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -46,21 +46,21 @@ class LocationTypeFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($types as $typeData) {
             $locationType = new LocationType();
-            $locationType->setType($typeData['type']);
+            $locationType->setNameLocationType($typeData['type']);
             $locationType->setSymbol($typeData['symbol']);
-            $locationType->setDateModification(new \DateTime($typeData['dateModification']));
-            $locationType->setUserModification($typeData['userModification']);
+            $locationType->setDateModificationLocationType(new \DateTime($typeData['dateModification']));
+            $locationType->setUserModificationLocationType($typeData['userModification']);
             
             $manager->persist($locationType);
         }
 
         $manager->flush();
     }
-
+/*
     public function getDependencies()
     {
         return [
             UserFixtures::class,
         ];
-    }
+    }*/
 }

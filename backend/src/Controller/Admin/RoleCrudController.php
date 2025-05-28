@@ -3,18 +3,13 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Role;
-//use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Mapping\Id;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
-
-//use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-//use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
 class RoleCrudController extends AbstractCrudController
 {
@@ -52,13 +47,9 @@ class RoleCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [   
-            IdField::new('id'),  
+            IdField::new('idRole', 'Identifiant'),  
             TextField::new('role')
                 ->setLabel('Rôle')
-                //->setRequired(true)
-                //->setFormTypeOptions([
-                //    'attr' => ['placeholder' => 'Saississez le rôle'],
-                //    ])
         ];
     }
 }

@@ -11,12 +11,10 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use phpDocumentor\Reflection\Types\Boolean;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class LocationTypeCrudController extends AbstractCrudController
@@ -87,8 +85,8 @@ class LocationTypeCrudController extends AbstractCrudController
         $isProduction = str_contains($this->projectDir, 'public_html/symfony');
         $uploadPath = $isProduction ? '../admin/uploads/locations' : 'public/uploads/locations';
         $fields = [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            TextField::new('type','Type de lieu')
+            IntegerField::new('idLocationType', 'Identifiant')->onlyOnIndex(),
+            TextField::new('nameLocationType','Type de lieu')
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saississez le type de lieu'],
                 ]),
@@ -98,11 +96,8 @@ class LocationTypeCrudController extends AbstractCrudController
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
                 ->setHelp(sprintf('<span style="font-weight: 600; color: blue;"><i class="fa fa-circle-info"></i>&nbsp;L\'image sera automatiquement converti en format png avec une hauteur de 24 pixels. Privilégiez une image plutôt carré avec un fond transparent si posdible.'))
                 ->setFormTypeOption('required' , ($pageName === Crud::PAGE_NEW ? true : false)),
-            BooleanField::new('eventHostable', 'Lieu d\'événement')->renderAsSwitch(false)->onlyOnIndex(),
-            BooleanField::new('eventHostable', 'Lieu d\'événement')
-                ->setHelp('Ce type de lieu peut-il accueillir des événements ?'),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex()
+            DateTimeField::new('dateModificationLocationType', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModificationLocationType', 'Utilisateur')->onlyOnIndex()
         ];       
         return $fields;
     }

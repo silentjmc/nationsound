@@ -40,7 +40,7 @@ class RegistrationController extends AbstractController
                 if (!$roleEnAttente) {
                     throw new \Exception('Le rôle "En attente" n\'existe pas dans la base de données');
                 }
-                $user->setRole($roleEnAttente);
+                $user->setRoleUSer($roleEnAttente);
                 $user->setIsVerified(false);
                 
                 // Generate registration token
@@ -105,7 +105,7 @@ class RegistrationController extends AbstractController
                         throw new \Exception('Ce rôle ne peut pas être attribué');
                     }
 
-                    $user->setRole($selectedRole);
+                    $user->setRoleUser($selectedRole);
                     $user->setIsVerified(true);
                     $user->setRegistrationToken(null);
                     $entityManager->persist($user);

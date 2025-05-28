@@ -34,15 +34,15 @@
                 "1280": {"slidesPerView": 6, "spaceBetween": 5}
             }'
             >
-            @for(artist of artists$ | async ; track artist.id) {
+            @for(artist of artists$ | async ; track artist.idArtist) {
             <swiper-slide>
-                <a [routerLink]="['/artist', artist.id]">
+                <a [routerLink]="['/artist', artist.idArtist]">
                     <div class="w-full bg-transparent hover:bg-amber-100 hover:shadow rounded-3xl transition-all duration-300 grayscale hover:grayscale-0  my-6">
                         <div class="flex flex-col overflow-hidden justify-center items-center">
                             <div class="swiper-lazy-preloader"></div>
-                            <img class="swiper-lazy object-cover h-32 w-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-full" src="{{ artist.thumbnail }}" alt="{{ artist.name }}" loading="lazy" lazyPreloadPrevNext="1"/>
-                            <h5 class="font-text mb-1 text-xl font-medium text-gray-900">{{artist.name}}</h5>
-                            <p class="font-text text-sm text-gray-500">{{  artist.type_music }}</p>
+                            <img class="swiper-lazy object-cover h-32 w-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 rounded-full" src="{{ artist.thumbnail }}" alt="{{ artist.nameArtist }}" loading="lazy" lazyPreloadPrevNext="1"/>
+                            <h5 class="font-text mb-1 text-xl font-medium text-gray-900">{{artist.nameArtist}}</h5>
+                            <p class="font-text text-sm text-gray-500">{{  artist.typeMusic }}</p>
                         </div>
                     </div>
                 </a>

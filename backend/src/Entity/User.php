@@ -16,7 +16,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     public function getRoles(): array
     {
-        $roleName = $this->role ? $this->role->getRole() : 'Utilisateur';
+        $roleName = $this->roleUser ? $this->roleUser->getRole() : 'Utilisateur';
         
         // Mappez les noms de rôles à des rôles Symfony
         $roleMap = [
@@ -48,7 +48,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idUser = null;
 
     #[ORM\Column(length: 180, unique: true)]
     private ?string $email = null;
@@ -62,9 +62,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\ManyToOne(inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Role $role = null;
+    #[ORM\ManyToOne(inversedBy: 'user')]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName:'id_role')]
+    private ?Role $roleUser = null;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $registrationToken = null;
@@ -83,18 +83,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->registrationDate = new \DateTime();
     }
 
-    public function getId(): ?int
+    public function getIdUser(): ?int
     {
-        return $this->id;
+        return $this->idUser;
     }
 
-    public function setId(int $id): static
+    public function setIdUser(int $idUser): static
     {
-        $this->id = $id;
+        $this->idUser = $idUser;
 
         return $this;
     }
-
 
     public function getEmail(): ?string
     {
@@ -140,14 +139,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?Role
+    public function getRoleUSer(): ?Role
     {
-        return $this->role;
+        return $this->roleUser;
     }
 
-    public function setRole(?Role $role): static
+    public function setRoleUser(?Role $roleUser): static
     {
-        $this->role = $role;
+        $this->roleUser = $roleUser;
         return $this;
     }
 

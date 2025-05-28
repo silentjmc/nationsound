@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class EventTypeFixtures extends Fixture implements DependentFixtureInterface
+class EventTypeFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -26,20 +26,20 @@ class EventTypeFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($types as $typeData) {
             $eventType = new EventType();
-            $eventType->setType($typeData['type']);
-            $eventType->setDateModification(new \DateTime($typeData['dateModification']));
-            $eventType->setUserModification($typeData['userModification']);
+            $eventType->setNameType($typeData['type']);
+            $eventType->setDateModificationEventType(new \DateTime($typeData['dateModification']));
+            $eventType->setUserModificationEventType($typeData['userModification']);
             
             $manager->persist($eventType);
         }
 
         $manager->flush();
     }
-
+/*
     public function getDependencies()
     {
         return [
             UserFixtures::class,
         ];
-    }
+    }*/
 }

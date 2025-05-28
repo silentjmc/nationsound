@@ -12,7 +12,7 @@ class EntityHistory
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id = null;
+    private ?int $idEntityHistory = null;
 
     #[ORM\Column(length: 255)]
     private ?string $entityName = null;
@@ -35,14 +35,14 @@ class EntityHistory
     #[ORM\Column(length: 255)]
     private ?string $user = null;
 
-    public function getId(): ?int
+    public function getIdEntityHistory(): ?int
     {
-        return $this->id;
+        return $this->idEntityHistory;
     }
 
-    public function setId(int $id): static
+    public function setIdEntityHistory(int $idEntityHistory): static
     {
-        $this->id = $id;
+        $this->idEntityHistory = $idEntityHistory;
 
         return $this;
     }
