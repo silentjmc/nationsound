@@ -51,9 +51,9 @@ private checkForNotification() {
       })
   ).subscribe(notification => {
       if (notification && 
-          (!this.lastNotificationId || notification.id !== this.lastNotificationId) &&
-          !this.isNotificationDismissed(notification.id)) {
-          this.lastNotificationId = notification.id;
+          (!this.lastNotificationId || notification.idNews !== this.lastNotificationId) &&
+          !this.isNotificationDismissed(notification.idNews)) {
+          this.lastNotificationId = notification.idNews;
           this.currentNotification.next(notification);
       }
   });

@@ -7,6 +7,8 @@ use DateTime;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: NewsRepository::class)]
 class News
@@ -15,33 +17,33 @@ class News
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getNews"])]
-    private ?int $id = null;
+    private ?int $idNews = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getNews"])]
-    private ?string $title = null;
+    private ?string $titleNews = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(["getNews"])]
-    private ?string $content = null;
+    private ?string $contentNews = null;
 
     #[ORM\Column]
     #[Groups(["getNews"])]
-    private ?bool $publish = null;
+    private ?bool $publishNews = null;
 
     #[ORM\Column(options: ["default" => false])]
     #[Groups(["getNews"])]
     private ?bool $push = false;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-     private ?\DateTimeInterface $dateModification = null;
+     private ?\DateTimeInterface $dateModificationNews = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationNews = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getNews"])]
-    private ?string $type = null;
+    private ?string $typeNews = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     #[Groups(["getNews"])]
@@ -62,44 +64,47 @@ class News
         return $this->__toString();
     }
 
-    public function getId(): ?int
+    public function getIdNews(): ?int
     {
-        return $this->id;
+        return $this->idNews;
     }
 
-    public function getTitle(): ?string
+    public function getTitleNews(): ?string
     {
-        return $this->title;
+        return $this->titleNews;
     }
 
-    public function setTitle(string $title): static
+    public function setTitleNews(string $titleNews): static
     {
-        $this->title = $title;
+        $this->titleNews = $titleNews;
 
         return $this;
     }
 
-    public function getContent(): ?string
+    public function getContentNews(): ?string
     {
-        return $this->content;
+        return $this->contentNews;
     }
 
-    public function setContent(string $content): static
+    public function setContentNews(string $contentNews): static
     {
-        $this->content = $content;
+        $this->contentNews = $contentNews;
 
         return $this;
     }
 
-    public function isPublish(): ?bool
+    public function isPublishNews(): ?bool
     {
-        return $this->publish;
+        return $this->publishNews;
     }
 
-    public function setPublish(bool $publish): static
+    public function setPublishNews(bool $publishNews): static
     {
-        $this->publish = $publish;
-
+        $this->publishNews = $publishNews;
+        // If the news is unpublished, we also disable the push notification
+        if (!$publishNews) {
+            $this->setPush(false);
+        }
         return $this;
     }
 
@@ -107,13 +112,7 @@ class News
     {
         return $this->push;
     }
-/*
-    public function setPush(bool $push): static
-    {
-        $this->push = $push;
 
-        return $this;
-    }*/
     public function setPush(bool $push): self
     {
         // Si on active la notification, on met à jour la date
@@ -128,38 +127,37 @@ class News
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationNews(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationNews;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setDateModificationNews(\DateTimeInterface $dateModificationNews): static
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationNews = $dateModificationNews;
 
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationNews(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationNews;
     }
 
-    public function setUserModification(string $userModification): static
+    public function setUserModificationNews(string $userModificationNews): static
     {
-        $this->userModification = $userModification;
+        $this->userModificationNews = $userModificationNews;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getTypeNews(): ?string
     {
-        return $this->type;
+        return $this->typeNews;
     }
-
-    public function setType(string $type): static
+    public function setTypeNews(string $typeNews): static
     {
-        $this->type = $type;
+        $this->typeNews = $typeNews;
 
         return $this;
     }
@@ -186,5 +184,16 @@ class News
         $this->notificationDate = $notificationDate;
 
         return $this;
+    }
+    
+    #[Assert\Callback]
+    public function validatePushNotification(ExecutionContextInterface $context, $payload)
+    {
+        if ($this->isPush() && !$this->isPublishNews()) {
+            // link the error to the 'push' field in the form
+            $context->buildViolation('Une actualité ne peut pas être notifiée si elle n\'est pas publiée.')
+                ->atPath('push') 
+                ->addViolation();
+        }
     }
 }

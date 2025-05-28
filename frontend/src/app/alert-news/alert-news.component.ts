@@ -17,11 +17,11 @@ export class AlertNewsComponent {
 
   constructor(private notificationService: NotificationService) {}
       getNotificationClass(notification: News): string {
-        return `alert-${notification.type}`; 
+        return `alert-${notification.typeNews}`; 
     }
 
     dismissNotification(notification: News) {
-      this.notificationService.dismissNotification(notification.id);
+      this.notificationService.dismissNotification(notification.idNews);
     }
 
     getAlertClass(type: string): string {
@@ -37,19 +37,19 @@ export class AlertNewsComponent {
     }
 
   isContentTruncated(notification: News): boolean {
-    return notification?.content?.length > this.MAX_CONTENT_LENGTH;
+    return notification?.contentNews?.length > this.MAX_CONTENT_LENGTH;
   }
 
   getTruncatedContent(notification: News): string {
-    if (!notification?.content) return '';
-    if (notification.content.length <= this.MAX_CONTENT_LENGTH) {
-      return notification.content;
+    if (!notification?.contentNews) return '';
+    if (notification.contentNews.length <= this.MAX_CONTENT_LENGTH) {
+      return notification.contentNews;
     }
-    return `${notification.content.slice(0, this.MAX_CONTENT_LENGTH)}...`;
+    return `${notification.contentNews.slice(0, this.MAX_CONTENT_LENGTH)}...`;
   }
 
   goToNewsDetail(notification: News) {
     this.dismissNotification(notification);
-    window.location.href = `/informations/actualite/${notification.id}`;
+    window.location.href = `/informations/actualite/${notification.idNews}`;
   }
 }

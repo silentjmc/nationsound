@@ -24,19 +24,19 @@
             <article class="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div class="p-8">
                     <div class="flex items-center mb-6">
-                        @if (news.type == "warning") {
+                        @if (news.typeNews == "warning") {
                             <div class="bg-yellow-100 text-yellow-700 rounded-lg p-2">
                                 <p class="text-sm font-medium">⚠️ Information importante</p>
                             </div>
-                        } @else if (news.type == "danger") {
+                        } @else if (news.typeNews == "danger") {
                             <div class="bg-red-100 text-red-700 rounded-lg p-2">
                                 <p class="text-sm font-medium">⚠️ Information urgente</p>
                             </div>
                         }
                     </div>
-                    <h1 class="text-4xl font-title text-gray-900 mb-6">{{ news.title }}</h1>
+                    <h1 class="text-4xl font-title text-gray-900 mb-6">{{ news.titleNews }}</h1>
                     <div class="prose prose-lg max-w-none text-gray-700">
-                    {{ news.content }}
+                    {{ news.contentNews }}
                     </div>
                 </div>
             </article>

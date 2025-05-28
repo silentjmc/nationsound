@@ -1,11 +1,11 @@
 @if (notification$ | async; as notification) {
-  <div [class]="getAlertClass(notification.type)" class="fixed top-0 left-0 right-0 z-50 px-4 py-3 border-t-4 shadow-md">
+  <div [class]="getAlertClass(notification.typeNews)" class="fixed top-0 left-0 right-0 z-50 px-4 py-3 border-t-4 shadow-md">
       <div class="flex justify-between container mx-auto">
         <div class="flex-grow">
           <!-- Header with icon and title --> 
           <div class="flex items-center mb-1">
           <!-- icon according to type of news-->
-          @switch (notification.type) {
+          @switch (notification.typeNews) {
             @case ('primary') {
               <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/>
@@ -22,10 +22,10 @@
               </svg>
             }
           }
-          <h3 class="font-medium text-lg">{{ notification.title }}</h3>
+          <h3 class="font-medium text-lg">{{ notification.titleNews }}</h3>
         </div>
         <!-- Content truncated and link "Read more" --> 
-        @if (notification.content) {
+        @if (notification.contentNews) {
           <div class="ml-7">
             <p class="text-sm">{{ getTruncatedContent(notification) }}</p>
             @if (isContentTruncated(notification)) {

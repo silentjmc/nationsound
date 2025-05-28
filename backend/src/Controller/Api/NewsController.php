@@ -15,7 +15,7 @@ class NewsController extends AbstractController
     #[Route('/api/news', name: 'app_api_news', methods: ['GET'])]
     public function getNewsList(NewsRepository $newsRepository, SerializerInterface $serializer): JsonResponse
     {
-        $news = $newsRepository->findBy(['publish' => true], ['id' => 'DESC']);
+        $news = $newsRepository->findBy(['publishNews' => true], ['idNews' => 'DESC']);
         $jsonNews = $serializer->serialize($news, 'json', ['groups' => ['getNews']]);
         return new JsonResponse($jsonNews, 200, [], true);
     }

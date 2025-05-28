@@ -19,10 +19,10 @@ class NewsRepository extends ServiceEntityRepository
     public function findLatestActiveNotification(): ?News
     {
         return $this->createQueryBuilder('n')
-            ->where('n.publish = :publish')
+            ->where('n.publishNews = :publishNews')
             ->andWhere('n.push = :push')
             ->andWhere('n.notificationEndDate IS NULL OR n.notificationEndDate > :now')
-            ->setParameter('publish', true)
+            ->setParameter('publishNews', true)
             ->setParameter('push', true)
             ->setParameter('now', new \DateTime())
             ->orderBy('n.notificationDate', 'DESC')
