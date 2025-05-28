@@ -2,3 +2,5 @@ backend/php.ini
 backend/cacert.pem
 backend/config/packages/mailer_dev-prod.yaml
 frontend/src/environments/environment.production.ts
+backend/config/packages/webpack_encore_prod.yaml
+structure.md
