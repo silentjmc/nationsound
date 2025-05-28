@@ -40,17 +40,17 @@ export class InformationComponent implements OnDestroy {
         next: (informationsSection: any) => {
             this.mappedInformationsSection = informationsSection.map((informationSection: any) => {
                 const mappedSection = {
-                    id: informationSection.id,
-                    section: informationSection.section,
-                    titre: informationSection.title,
-                    description: informationSection.description,
-                    position: informationSection.position,
+                    id: informationSection.idInformationSection,
+                    section: informationSection.sectionLabel,
+                    titre: informationSection.titleInformationSection,
+                    description: informationSection.contentInformationSection,
+                    position: informationSection.positionInformationSection,
                     information: informationSection.information.map((info: any) => ({
-                        id: info.id,
-                        titre: info.titre,
-                        description: info.description,
-                        publish: info.publish,
-                        position: info.position
+                        id: info.idInformation,
+                        titre: info.titleInformation,
+                        description: info.contentInformation,
+                        publish: info.publishInformation,
+                        position: info.positionInformation
                     }))
                 };
                 //console.log('Mapped Section:', mappedSection);

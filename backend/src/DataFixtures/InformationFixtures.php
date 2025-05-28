@@ -35,17 +35,17 @@ class InformationFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($informations as $infoData) {
             $information = new Information();
-            $information->setTitre($infoData['titre']);
-            $information->setDescription($infoData['description']);
-            $information->setDateModification(new \DateTime($infoData['dateModification']));
-            $information->setUserModification($infoData['userModification']);
-            $information->setPublish($infoData['publish']);
-            $information->setPosition($infoData['position']);
+            $information->setTitleInformation($infoData['titre']);
+            $information->setContentInformation($infoData['description']);
+            $information->setDateModificationInformation(new \DateTime($infoData['dateModification']));
+            $information->setUserModificationInformation($infoData['userModification']);
+            $information->setPublishInformation($infoData['publish']);
+            $information->setPositionInformation($infoData['position']);
             
             // Récupérer la section d'information correspondante
             $section = $manager->getRepository(InformationSection::class)->find($infoData['typeSectionId']);
             if ($section) {
-                $information->setTypeSection($section);
+                $information->setSectionInformation($section);
             }
             
             $manager->persist($information);

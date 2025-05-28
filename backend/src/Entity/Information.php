@@ -9,134 +9,139 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: InformationRepository::class)]
-#[ORM\Index(name: 'position_idx', columns: ['position'])]
+#[ORM\Index(name: 'position_idx', columns: ['position_information'])]
 class Information
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getInformation"])]
-    private ?int $id = null;
+    private ?int $idInformation = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getInformation"])]
-    private ?string $titre = null;
+    private ?string $titleInformation = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(["getInformation"])]
-    private ?string $description = null;
+    private ?string $contentInformation = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationInformation = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationInformation = null;
 
     #[ORM\Column]
     #[Groups(["getInformation"])]
-    private ?bool $publish = null;
+    private ?bool $publishInformation = null;
 
     #[ORM\ManyToOne(inversedBy: 'information')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?InformationSection $typeSection = null;
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_information_section')]
+    private ?InformationSection $sectionInformation = null;
 
     #[Gedmo\SortablePosition]
     #[ORM\Column]
     #[Groups(["getInformation"])]
-    private ?int $position = null;
+    private ?int $positionInformation = null;
 
-    public function getId(): ?int
+    public function __toString(): string
     {
-        return $this->id;
+        return $this->sectionInformation ?? '';
     }
 
-    public function setId(int $id): static
+    public function getIdInformation(): ?int
     {
-        $this->id = $id;
+        return $this->idInformation;
+    }
+
+    public function setIdInformation(int $idInformation): static
+    {
+        $this->idInformation = $idInformation;
 
         return $this;
     }
 
-    public function getTitre(): ?string
+    public function getTitleInformation(): ?string
     {
-        return $this->titre;
+        return $this->titleInformation;
     }
 
-    public function setTitre(string $titre): static
+    public function setTitleInformation(string $titleInformation): static
     {
-        $this->titre = $titre;
+        $this->titleInformation = $titleInformation;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getContentInformation(): ?string
     {
-        return $this->description;
+        return $this->contentInformation;
     }
 
-    public function setDescription(string $description): static
+    public function setContentInformation(string $contentInformation): static
     {
-        $this->description = $description;
+        $this->contentInformation = $contentInformation;
 
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationInformation(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationInformation;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setDateModificationInformation(\DateTimeInterface $dateModificationInformation): static
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationInformation = $dateModificationInformation;
 
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationInformation(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationInformation;
     }
 
-    public function setUserModification(string $userModification): static
+    public function setUserModificationInformation(string $userModificationInformation): static
     {
-        $this->userModification = $userModification;
+        $this->userModificationInformation = $userModificationInformation;
 
         return $this;
     }
 
-    public function isPublish(): ?bool
+    public function isPublishInformation(): ?bool
     {
-        return $this->publish;
+        return $this->publishInformation;
     }
 
-    public function setPublish(bool $publish): static
+    public function setPublishInformation(bool $publishInformation): static
     {
-        $this->publish = $publish;
+        $this->publishInformation = $publishInformation;
 
         return $this;
     }
 
-    public function getTypeSection(): ?InformationSection
+    public function getSectionInformation(): ?InformationSection
     {
-        return $this->typeSection;
+        return $this->sectionInformation;
     }
 
-    public function setTypeSection(?InformationSection $typeSection): static
+    public function setSectionInformation(?InformationSection $sectionInformation): static
     {
-        $this->typeSection = $typeSection;
+        $this->sectionInformation = $sectionInformation;
 
         return $this;
     }
 
-    public function getPosition(): ?int
+    public function getPositionInformation(): ?int
     {
-        return $this->position;
+        return $this->positionInformation;
     }
 
-    public function setPosition(int $position): static
+    public function setPositionInformation(int $positionInformation): static
     {
-        $this->position = $position;
+        $this->positionInformation = $positionInformation;
 
         return $this;
     }

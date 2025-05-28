@@ -46,27 +46,27 @@ class InformationCrudController extends AbstractCrudController
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Mettre en haut de page'])
             ->linkToCrudAction('moveTop')
-            ->displayIf(fn ($entity) => $entity->getPosition() > 0);
+            ->displayIf(fn ($entity) => $entity->getPositionInformation() > 0);
     
         $moveUp = Action::new('moveUp', false, 'fa fa-sort-up')
             ->setHtmlAttributes(['title' => 'Monter d\'un cran'])
             ->linkToCrudAction('moveUp')
-            ->displayIf(fn ($entity) => $entity->getPosition() > 0);
+            ->displayIf(fn ($entity) => $entity->getPositionInformation() > 0);
     
         $moveDown = Action::new('moveDown', false, 'fa fa-sort-down')
             ->setHtmlAttributes(['title' => 'Descendre d\'un cran'])
             ->linkToCrudAction('moveDown')
-            ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
+            ->displayIf(fn ($entity) => $entity->getPositionInformation() < $entityCount - 1);
     
         $moveBottom = Action::new('moveBottom', false, 'fa fa-arrow-down')
             ->setHtmlAttributes(['title' => 'Mettre en bas de page'])
             ->linkToCrudAction('moveBottom')
-            ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
+            ->displayIf(fn ($entity) => $entity->getPositionInformation() < $entityCount - 1);
 
         $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
             ->addCssClass('btn btn-sm btn-light text-success')
             ->setLabel(false)
-            ->displayIf(fn ($entity) => !$entity->isPublish())
+            ->displayIf(fn ($entity) => !$entity->isPublishInformation())
             ->linkToCrudAction('publish')
             ->setHtmlAttributes([
                 'title' => "Publier l'élément",
@@ -75,7 +75,7 @@ class InformationCrudController extends AbstractCrudController
         $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
             ->addCssClass('btn btn-ms btn-light text-danger')
             ->setLabel(false)
-            ->displayIf(fn ($entity) => $entity->isPublish())
+            ->displayIf(fn ($entity) => $entity->isPublishInformation())
             ->linkToCrudAction('unpublish')
             ->setHtmlAttributes([
                 'title' => "Dépublier l'élément",       
@@ -127,74 +127,75 @@ class InformationCrudController extends AbstractCrudController
         ->setEntityLabelInSingular('Information')
         ->setEntityLabelInPlural('Informations')
         ->setPageTitle('new', 'Ajouter une nouvelle information')
-        ->setDefaultSort(['position' => 'ASC'])
+        ->setDefaultSort(['positionInformation' => 'ASC'])
         ->showEntityActionsInlined();
     }
     
     public function configureFields(string $pageName): iterable
     {
         $fields = [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            IntegerField::new('position', 'Position')->onlyOnIndex(),
-            TextField::new('typeSection', 'Section')->hideOnForm(),
-            AssociationField::new('typeSection', 'Section')->onlyOnForms()
+            IntegerField::new('idInformation', 'Identifiant')->onlyOnIndex(),
+            IntegerField::new('positionInformation', 'Position')->onlyOnIndex(),
+            TextField::new('sectionInformation', 'Section')->hideOnForm(),
+            AssociationField::new('sectionInformation', 'Section')->onlyOnForms()
                 ->setFormTypeOptions([
-                    'choice_label' => 'section',
+                    'choice_label' => 'sectionLabel',
                     'placeholder' => 'Sélectionnez une section',
                 ])
             ->setQueryBuilder(function ($queryBuilder) {
-                return $queryBuilder->orderBy('entity.section', 'ASC');
+                return $queryBuilder->orderBy('entity.sectionLabel', 'ASC');
             }),
-            TextField::new('titre',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre de l\information (faire un titre court)'))
+            TextField::new('titleInformation',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre de l\'information (faire un titre court)'))
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez le titre de l\'information'],
                 ]),
-            TextField::new('description', 'Texte')
+            TextField::new('contentInformation', 'Texte')
                 ->hideOnForm()
                 ->stripTags(),
-            TextEditorField::new('description','Contenu de l\'information')
+            TextEditorField::new('contentInformation','Contenu de l\'information')
                 ->onlyOnForms()
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez le contenu de l\'information'],
                     ])
                 ->setTrixEditorConfig(['blockAttributes' => [
                     'default' => ['tagName' => 'p'],],]),
-            BooleanField::new('publish','Publié')
+            BooleanField::new('publishInformation','Publié')->onlyOnIndex()
                 ->renderAsSwitch(false),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
+            BooleanField::new('publishInformation','Publié')->hideOnIndex()
+                ->renderAsSwitch(true),
+            DateTimeField::new('dateModificationInformation', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModificationInformation', 'Utilisateur')->onlyOnIndex(),
         ];    
         return $fields;
     }
 
-    public function moveTop(AdminContext $context)
+public function moveTop(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Top);
-        $this->addFlash('success', 'l\'élément a bien été déplacé en haut de page.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Top);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveUp(AdminContext $context)
+    public function moveUp(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Up);
-        $this->addFlash('success', 'l\'élément a bien été déplacé d\'un cran en haut.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Up);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveDown(AdminContext $context)
+    public function moveDown(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Down);
-        $this->addFlash('success', 'l\'élément a bien été déplacé d\'un cran en bas.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Down);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveBottom(AdminContext $context)
+    public function moveBottom(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Bottom);
-        $this->addFlash('success', 'l\'élément a bien été déplacé en bas de page.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Bottom);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
-
     public function publish(AdminContext $context): Response
     {
         $result = $this->publishService->publish($context);
