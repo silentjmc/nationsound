@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, PLATFORM_ID, OnDestroy, inject  } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { FaqService } from '../services/faq.service';
@@ -40,7 +40,7 @@ export class FaqComponent implements   OnDestroy  {
       next: (faqs : any) => {
         this.mappedFaq = faqs.map((faq: any) => {
           return {
-            id: faq.id,
+            id: faq.idFaq,
             question: faq.question,
             reponse: faq.reponse,
           }
@@ -52,6 +52,10 @@ export class FaqComponent implements   OnDestroy  {
   } 
   
   toggleAccordion(index: number): void {
+     if (!isPlatformBrowser(this.platformId)) {
+      // do nothing on server side
+      return;
+    }
     const content = document.getElementById(`content-${index}`);
     const icon = document.getElementById(`icon-${index}`);
 
