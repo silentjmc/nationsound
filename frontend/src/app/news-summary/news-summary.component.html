@@ -19,7 +19,6 @@
                     <h3 class="text-xl font-semibold mb-2 text-gray-800">{{ news.titleNews }}</h3>
                     <p class="text-gray-600 mb-4">{{ news.contentNews.length > maxLength ? (news.contentNews | slice:0:maxLength) + '...' : news.contentNews }}</p>
                     @if (news.contentNews.length > maxLength) {
-                        <!--<a href="/informations/actualite/{{ news.id }}" class="text-blue-logo hover:text-blue-800 font-medium hover:underline">Lire la suite →</a>-->
                         <a [routerLink]="['/informations/actualite', news.idNews]" class="text-blue-logo hover:text-blue-800 font-medium hover:underline">Lire la suite →</a>
                     }
                 </div>
