@@ -37,7 +37,7 @@ export class PartnerComponent implements OnDestroy{
         if (partners && partners.length > 0) {
           this.partners$ = of(partners);
           this.mappedPartners = partners; // Directly assign the fetched partners
-          this.uniquePartnerTypes = [...new Set(this.mappedPartners.map((partner: Partner) => partner.type.type))] as string[];
+          this.uniquePartnerTypes = [...new Set(this.mappedPartners.map((partner: Partner) => partner.typePartner.titlePartnerType))] as string[];
           this.loading$.next(false);
         } else {
           this.error$.next(true);

@@ -18,7 +18,7 @@ export class PartnerswpService {
       map((partners: Partner[]) => {
         return partners.map(partner => ({
           ...partner,
-          image: `${environment.apiUrl}/uploads/partners/${partner.image}`
+          image: `${environment.apiUrl}/uploads/partners/${partner.imagePartner}`
         }));
       })
     );
