@@ -11,42 +11,42 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: InformationSectionRepository::class)]
-#[ORM\Index(name: 'position_idx', columns: ['position'])]
+#[ORM\Index(name: 'position_idx', columns: ['position_information_section'])]
 class InformationSection
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getInformation"])]
-    private ?int $id = null;
+    private ?int $idInformationSection = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getInformation"])]
-    private ?string $section = null;
+    private ?string $sectionLabel = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getInformation"])]
-    private ?string $title = null;
+    private ?string $titleInformationSection = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Groups(["getInformation"])]
-    private ?string $description = null;
+    private ?string $contentInformationSection = null;
 
     #[Gedmo\SortablePosition]
     #[ORM\Column]
     #[Groups(["getInformation"])]
-    private ?int $position = null;
+    private ?int $positionInformationSection = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationInformationSection = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationInformationSection = null;
 
     /**
      * @var Collection<int, Information>
      */
-    #[ORM\OneToMany(targetEntity: Information::class, mappedBy: 'typeSection')]
+    #[ORM\OneToMany(targetEntity: Information::class, mappedBy: 'sectionInformation')]
     #[Groups(["getInformation"])]
     private Collection $information;
 
@@ -57,90 +57,83 @@ class InformationSection
 
     public function __toString(): string
     {
-        return $this->section ?? '';
+        return $this->sectionLabel ?? '';
     }
 
 
-    public function getId(): ?int
+    public function getIdInformationSection(): ?int
     {
-        return $this->id;
+        return $this->idInformationSection;
     }
 
-    public function setId(int $id): static
+    public function getSectionLabel(): ?string
     {
-        $this->id = $id;
+        return $this->sectionLabel;
+    }
+
+    public function setSectionLabel(string $sectionLabel): static
+    {
+        $this->sectionLabel = $sectionLabel;
 
         return $this;
     }
 
-    public function getSection(): ?string
+    public function getTitleInformationSection(): ?string
     {
-        return $this->section;
+        return $this->titleInformationSection;
     }
 
-    public function setSection(string $section): static
+    public function setTitleInformationSection(string $titleInformationSection): static
     {
-        $this->section = $section;
+        $this->titleInformationSection = $titleInformationSection;
 
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getcontentInformationSection(): ?string
     {
-        return $this->title;
+        return $this->contentInformationSection;
     }
 
-    public function setTitle(string $title): static
+    public function setContentInformationSection(string $contentInformationSection): static
     {
-        $this->title = $title;
+        $this->contentInformationSection = $contentInformationSection;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getPositionInformationSection(): ?int
     {
-        return $this->description;
+        return $this->positionInformationSection;
     }
 
-    public function setDescription(string $description): static
+    public function setPositionInformationSection(int $positionInformationSection): static
     {
-        $this->description = $description;
+        $this->positionInformationSection = $positionInformationSection;
 
         return $this;
     }
 
-    public function getPosition(): ?int
+    public function getDateModificationInformationSection(): ?\DateTimeInterface
     {
-        return $this->position;
+        return $this->dateModificationInformationSection;
     }
 
-    public function setPosition(int $position): static
+    public function setDateModificationInformationSection(\DateTimeInterface $dateModificationInformationSection): static
     {
-        $this->position = $position;
+        $this->dateModificationInformationSection = $dateModificationInformationSection;
 
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getUserModificationInformationSection(): ?string
     {
-        return $this->dateModification;
+        return $this->userModificationInformationSection;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setUserModificationInformationSection(string $userModificationInformationSection): static
     {
-        $this->dateModification = $dateModification;
-
-        return $this;
-    }
-
-    public function getUserModification(): ?string
-    {
-        return $this->userModification;
-    }
-
-    public function setUserModification(string $userModification): static
-    {
-        $this->userModification = $userModification;
+        $this->userModificationInformationSection = $userModificationInformationSection;
 
         return $this;
     }
@@ -157,7 +150,7 @@ class InformationSection
     {
         if (!$this->information->contains($information)) {
             $this->information->add($information);
-            $information->setTypeSection($this);
+            $information->setSectionInformation($this);
         }
 
         return $this;
@@ -167,8 +160,8 @@ class InformationSection
     {
         if ($this->information->removeElement($information)) {
             // set the owning side to null (unless already changed)
-            if ($information->getTypeSection() === $this) {
-                $information->setTypeSection(null);
+            if ($information->getSectionInformation() === $this) {
+                $information->setSectionInformation(null);
             }
         }
 

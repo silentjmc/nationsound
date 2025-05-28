@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class FaqFixtures extends Fixture implements DependentFixtureInterface
+class FaqFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -26,21 +26,21 @@ class FaqFixtures extends Fixture implements DependentFixtureInterface
             $faq = new Faq();
             $faq->setQuestion($faqData['question']);
             $faq->setReponse($faqData['reponse']);
-            $faq->setPublish($faqData['publish']);
-            $faq->setDateModification(new \DateTime($faqData['dateModification']));
-            $faq->setUserModification($faqData['userModification']);
-            $faq->setPosition($faqData['position']);
+            $faq->setPublishFaq($faqData['publish']);
+            $faq->setDateModificationFaq(new \DateTime($faqData['dateModification']));
+            $faq->setUserModificationFaq($faqData['userModification']);
+            $faq->setPositionFaq($faqData['position']);
             
             $manager->persist($faq);
         }
 
         $manager->flush();
     }
-
+/*
     public function getDependencies()
     {
         return [
             UserFixtures::class,
         ];
-    }
+    }*/
 }

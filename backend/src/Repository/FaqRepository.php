@@ -22,8 +22,8 @@ class FaqRepository extends ServiceEntityRepository
     public function findAllSortedByPosition(): array
     {
         return $this->createQueryBuilder('f')
-            ->where('f.publish = true')
-            ->orderBy('f.position', 'ASC')
+            ->where('f.publishFaq = true')
+            ->orderBy('f.positionFaq', 'ASC')
             ->getQuery()
             ->getResult();
     }

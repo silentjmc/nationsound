@@ -18,6 +18,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\HttpFoundation\Response;
 
 class InformationSectionCrudController extends AbstractCrudController
 {
@@ -43,22 +44,22 @@ class InformationSectionCrudController extends AbstractCrudController
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Mettre en haut de page'])
             ->linkToCrudAction('moveTop')
-            ->displayIf(fn ($entity) => $entity->getPosition() > 0);
+            ->displayIf(fn ($entity) => $entity->getPositionInformationSection() > 0);
     
         $moveUp = Action::new('moveUp', false, 'fa fa-sort-up')
             ->setHtmlAttributes(['title' => 'Monter d\'un cran'])
             ->linkToCrudAction('moveUp')
-            ->displayIf(fn ($entity) => $entity->getPosition() > 0);
+            ->displayIf(fn ($entity) => $entity->getPositionInformationSection() > 0);
     
         $moveDown = Action::new('moveDown', false, 'fa fa-sort-down')
             ->setHtmlAttributes(['title' => 'Descendre d\'un cran'])
             ->linkToCrudAction('moveDown')
-            ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
+            ->displayIf(fn ($entity) => $entity->getPositionInformationSection() < $entityCount - 1);
     
         $moveBottom = Action::new('moveBottom', false, 'fa fa-arrow-down')
             ->setHtmlAttributes(['title' => 'Mettre en bas de page'])
             ->linkToCrudAction('moveBottom')
-            ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
+            ->displayIf(fn ($entity) => $entity->getPositionInformationSection() < $entityCount - 1);
         return $actions
             ->add(Crud::PAGE_INDEX, $moveBottom)
             ->add(Crud::PAGE_INDEX, $moveDown)
@@ -103,7 +104,7 @@ class InformationSectionCrudController extends AbstractCrudController
         ->setEntityLabelInSingular('Section d\'information')
         ->setEntityLabelInPlural('Section d\'information')
         ->setPageTitle('new', 'Ajouter une nouvelle section')
-        ->setDefaultSort(['position' => 'ASC'])
+        ->setDefaultSort(['positionInformationSection' => 'ASC'])
         ->showEntityActionsInlined();
     }
 
@@ -111,50 +112,50 @@ class InformationSectionCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            IntegerField::new('position', 'Position')->onlyOnIndex(),
-            TextField::new('section',($pageName === Crud::PAGE_INDEX ? 'Section' : 'Section (partie dans la page informations)'))
+            IntegerField::new('idInformationSection', 'Identifiant')->onlyOnIndex(),
+            IntegerField::new('positionInformationSection', 'Position')->onlyOnIndex(),
+            TextField::new('sectionLabel',($pageName === Crud::PAGE_INDEX ? 'Section' : 'Section (partie dans la page informations)'))
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saississez le nom de la section dans l\'administration'],
                 ]),
-            TextField::new('title',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre dans la page informations'))
+            TextField::new('TitleInformationSection',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre dans la page informations'))
                 ->setFormTypeOptions(['attr' => ['placeholder' => 'Saississez le titre de l\'information dans le site'],
             ]),
-            TextareaField::new('description',($pageName === Crud::PAGE_INDEX ? 'Sous-texte' : 'Sous-texte de la section dans la page Informations'))
+            TextareaField::new('contentInformationSection',($pageName === Crud::PAGE_INDEX ? 'Sous-texte' : 'Sous-texte de la section dans la page Informations'))
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saississez le contenu de l\'information'],
                 ]),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
+            DateTimeField::new('dateModificationInformationSection', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModificationInformationSection', 'Utilisateur')->onlyOnIndex(),
         ];
     }
-    
-    public function moveTop(AdminContext $context)
+
+    public function moveTop(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Top);
-        $this->addFlash('success', 'l\'élément a bien été déplacé en haut de page.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Top);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveUp(AdminContext $context)
+    public function moveUp(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Up);
-        $this->addFlash('success', 'l\'élément a bien été déplacé d\'un cran en haut.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Up);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveDown(AdminContext $context)
+    public function moveDown(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Down);
-        $this->addFlash('success', 'l\'élément a bien été déplacé d\'un cran en bas.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Down);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveBottom(AdminContext $context)
+    public function moveBottom(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Bottom);
-        $this->addFlash('success', 'l\'élément a bien été déplacé en bas de page.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Bottom);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
 
     public function delete(AdminContext $context)
@@ -164,7 +165,7 @@ class InformationSectionCrudController extends AbstractCrudController
 
         // Verify if there are related items
         $hasRelatedItems = $this->entityManager->getRepository(Information::class)
-            ->count(['typeSection' => $section]) > 0;
+            ->count(['sectionInformation' => $section]) > 0;
 
         if ($hasRelatedItems) {
             $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Informations. il faut d\'abord supprimer ou reaffecter les éléménts Informations concernés');

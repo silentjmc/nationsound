@@ -9,14 +9,14 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 #[ORM\Entity(repositoryClass: FaqRepository::class)]
-#[ORM\Index(name: 'position_idx', columns: ['position'])]
+#[ORM\Index(name: 'position_idx', columns: ['position_faq'])]
 class Faq
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getFaq"])]
-    private ?int $id = null;
+    private ?int $idFaq = null;
 
     //#[Gedmo\SortableGroup]
     #[ORM\Column(length: 255)]
@@ -29,27 +29,32 @@ class Faq
 
     #[ORM\Column]
     #[Groups(["getFaq"])]
-    private ?bool $publish = null;
+    private ?bool $publishFaq = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationFaq = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationFaq = null;
 
     #[Gedmo\SortablePosition]
     #[ORM\Column]
     #[Groups(["getFaq"])]
-    private ?int $position = null;
+    private ?int $positionFaq = null;
 
-    public function getId(): ?int
+    public function __toString(): string
     {
-        return $this->id;
+        return $this->idFaq ?? '';
     }
 
-    public function setId(int $id): static
+    public function getIdFaq(): ?int
     {
-        $this->id = $id;
+        return $this->idFaq;
+    }
+
+    public function setIdFaq(int $idFaq): static
+    {
+        $this->idFaq = $idFaq;
 
         return $this;
     }
@@ -78,50 +83,50 @@ class Faq
         return $this;
     }
 
-    public function isPublish(): ?bool
+    public function isPublishFaq(): ?bool
     {
-        return $this->publish;
+        return $this->publishFaq;
     }
 
-    public function setPublish(bool $publish): static
+    public function setPublishFaq(bool $publishFaq): static
     {
-        $this->publish = $publish;
+        $this->publishFaq = $publishFaq;
 
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationFaq(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationFaq;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setDateModificationFaq(\DateTimeInterface $dateModificationFaq): static
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationFaq = $dateModificationFaq;
 
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationFaq(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationFaq;
     }
 
-    public function setUserModification(string $userModification): static
+    public function setUserModificationFaq(string $userModificationFaq): static
     {
-        $this->userModification = $userModification;
+        $this->userModificationFaq = $userModificationFaq;
 
         return $this;
     }
 
-    public function getPosition(): ?int
+    public function getPositionFaq(): ?int
     {
-        return $this->position;
+        return $this->positionFaq;
     }
 
-    public function setPosition(int $position): static
+    public function setPositionFaq(int $positionFaq): static
     {
-        $this->position = $position;
+        $this->positionFaq = $positionFaq;
 
         return $this;
     }

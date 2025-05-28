@@ -46,27 +46,27 @@ class FaqCrudController extends AbstractCrudController
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Move to top'])
             ->linkToCrudAction('moveTop')
-            ->displayIf(fn ($entity) => $entity->getPosition() > 0);
+            ->displayIf(fn ($entity) => $entity->getPositionFaq() > 0);
     
         $moveUp = Action::new('moveUp', false, 'fa fa-sort-up')
             ->setHtmlAttributes(['title' => 'Move up'])
             ->linkToCrudAction('moveUp')
-            ->displayIf(fn ($entity) => $entity->getPosition() > 0);
+            ->displayIf(fn ($entity) => $entity->getPositionFaq() > 0);
     
         $moveDown = Action::new('moveDown', false, 'fa fa-sort-down')
             ->setHtmlAttributes(['title' => 'Move down'])
             ->linkToCrudAction('moveDown')
-            ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
+            ->displayIf(fn ($entity) => $entity->getPositionFaq() < $entityCount - 1);
     
         $moveBottom = Action::new('moveBottom', false, 'fa fa-arrow-down')
             ->setHtmlAttributes(['title' => 'Move to bottom'])
             ->linkToCrudAction('moveBottom')
-            ->displayIf(fn ($entity) => $entity->getPosition() < $entityCount - 1);
+            ->displayIf(fn ($entity) => $entity->getPositionFaq() < $entityCount - 1);
 
         $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
             ->addCssClass('btn btn-sm btn-light text-success')
             ->setLabel(false)
-            ->displayIf(fn ($entity) => !$entity->isPublish())
+            ->displayIf(fn ($entity) => !$entity->isPublishFaq())
             ->linkToCrudAction('publish')
             ->setHtmlAttributes([
                 'title' => "Publier l'élément",
@@ -75,7 +75,7 @@ class FaqCrudController extends AbstractCrudController
         $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
             ->addCssClass('btn btn-ms btn-light text-danger')
             ->setLabel(false)
-            ->displayIf(fn ($entity) => $entity->isPublish())
+            ->displayIf(fn ($entity) => $entity->isPublishFaq())
             ->linkToCrudAction('unpublish')
             ->setHtmlAttributes([
                 'title' => "Dépublier l'élément",       
@@ -127,15 +127,15 @@ class FaqCrudController extends AbstractCrudController
         ->setEntityLabelInSingular('Question/Réponse')
         ->setEntityLabelInPlural('Questions/Réponses')
         ->setPageTitle('new', 'Ajouter une nouvelle question/réponse')
-        ->setDefaultSort(['position' => 'ASC'])
+        ->setDefaultSort(['positionFaq' => 'ASC'])
         ->showEntityActionsInlined();
     }
 
     public function configureFields(string $pageName): iterable
     {
         return [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            IntegerField::new('position', 'position')->onlyOnIndex(),
+            IntegerField::new('idFaq', 'Identifiant')->onlyOnIndex(),
+            IntegerField::new('positionFaq', 'position')->onlyOnIndex(),
             TextField::new('question')
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez une question'],
@@ -144,53 +144,56 @@ class FaqCrudController extends AbstractCrudController
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez la réponse à la question'],
                 ]),
-            BooleanField::new('publish','Publié')
+            BooleanField::new('publishFaq','Publié')->onlyOnIndex()
                 ->renderAsSwitch(false),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
+            BooleanField::new('publishFaq','Publié')->hideOnIndex()
+                ->renderAsSwitch(true),
+            DateTimeField::new('dateModificationFaq', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModificationFaq', 'Utilisateur')->onlyOnIndex(),
         ];
     }
 
-    public function moveTop(AdminContext $context)
+    public function moveTop(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Top);
-        $this->addFlash('success', 'l\'élément a bien été déplacé en haut de page.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Top);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveUp(AdminContext $context)
+    public function moveUp(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Up);
-        $this->addFlash('success', 'l\'élément a bien été déplacé d\'un cran en haut.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Up);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveDown(AdminContext $context)
+    public function moveDown(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Down);
-        $this->addFlash('success', 'l\'élément a bien été déplacé d\'un cran en bas.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
+        $result = $this->positionService->move($context, Direction::Down);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
     }
     
-    public function moveBottom(AdminContext $context)
+    public function moveBottom(AdminContext $context): Response
     {
-        $this->positionService->move($context, Direction::Bottom);
-        $this->addFlash('success', 'l\'élément a bien été déplacé en bas de page.');
-        return $this->redirect($context->getRequest()->headers->get('referer'));
-    }    
-    public function publish(AdminContext $context): Response
-            {
-                $result = $this->publishService->publish($context);
-                $url = $result['url'];
-                $this->addFlash('success', 'FAQ publié avec succès');
-                return $this->redirect($url);
-            }
+        $result = $this->positionService->move($context, Direction::Bottom);
+        $this->addFlash('success', $result['message']);
+        return $this->redirect($result['redirect_url']);
+    }
 
-        public function unpublish(AdminContext $context): Response
-        {
-            $result = $this->publishService->unpublish($context);
-            $url = $result['url'];
-            $this->addFlash('success', 'FAQ dépublié avec succès');
-            return $this->redirect($url);
-        }
+    public function publish(AdminContext $context): Response
+    {
+        $result = $this->publishService->publish($context);
+        $url = $result['url'];
+        $this->addFlash('success', 'FAQ publié avec succès');
+        return $this->redirect($url);
+    }
+
+    public function unpublish(AdminContext $context): Response
+    {
+        $result = $this->publishService->unpublish($context);
+        $url = $result['url'];
+        $this->addFlash('success', 'FAQ dépublié avec succès');
+        return $this->redirect($url);
+    }
 }

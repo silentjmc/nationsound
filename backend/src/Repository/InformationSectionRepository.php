@@ -21,9 +21,9 @@ class InformationSectionRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('section')
             ->leftJoin('section.information', 'information')
             ->addSelect('information')
-            ->where('information.publish = true')
-            ->orderBy('section.position', 'ASC')
-            ->addOrderBy('information.position', 'ASC')
+            ->where('information.publishInformation = true')
+            ->orderBy('section.positionInformationSection', 'ASC')
+            ->addOrderBy('information.positionInformation', 'ASC')
             ->getQuery()
             ->getResult();
     }

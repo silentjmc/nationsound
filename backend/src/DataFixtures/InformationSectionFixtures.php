@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class InformationSectionFixtures extends Fixture implements DependentFixtureInterface
+class InformationSectionFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -32,23 +32,23 @@ class InformationSectionFixtures extends Fixture implements DependentFixtureInte
 
         foreach ($sections as $sectionData) {
             $informationSection = new InformationSection();
-            $informationSection->setSection($sectionData['section']);
-            $informationSection->setTitle($sectionData['title']);
-            $informationSection->setDescription($sectionData['description']);
-            $informationSection->setPosition($sectionData['position']);
-            $informationSection->setDateModification(new \DateTime($sectionData['dateModification']));
-            $informationSection->setUserModification($sectionData['userModification']);
+            $informationSection->setSectionLabel($sectionData['section']);
+            $informationSection->setTitleInformationSection($sectionData['title']);
+            $informationSection->setContentInformationSection($sectionData['description']);
+            $informationSection->setPositionInformationSection($sectionData['position']);
+            $informationSection->setDateModificationInformationSection(new \DateTime($sectionData['dateModification']));
+            $informationSection->setUserModificationInformationSection($sectionData['userModification']);
             
             $manager->persist($informationSection);
         }
 
         $manager->flush();
     }
-
+/*
     public function getDependencies()
     {
         return [
             UserFixtures::class,
         ];
-    }
+    }*/
 }
