@@ -6,13 +6,9 @@ if (!Encore.isRuntimeEnvironmentConfigured()) {
 
 const isProduction = Encore.isProduction();
 const publicPath = isProduction ? '/admin/build' : '/build';
-//const publicPath = isProduction ? '.' : '/build';
-//
 
 Encore
     .setOutputPath('public/build/')
-    //.setPublicPath('/build')
-    //.setManifestKeyPrefix('build/')
     .setPublicPath(publicPath)
     .setManifestKeyPrefix('')
     .addEntry('app', './assets/app.js')

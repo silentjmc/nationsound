@@ -14,9 +14,13 @@ framework:
 
 when@prod:
     webpack_encore:
-        output_path: '/home/gxefrysq/public_html/admin/build'
+    #`[USER_HOME]` : représente le chemin vers votre répertoire utilisateur (exemple : /home/username)
+    #`[WEB_ROOT]` : représente le dossier racine web (généralement public_html, www, ou htdocs)
+        output_path: '/[USER_HOME]/[WEB_ROOT]/public_html/admin/build'
+        
     
     framework:
         assets:
-            #base_path: '/admin'
-            json_manifest_path: '/home/gxefrysq/public_html/admin/build/manifest.json'
+            #`[USER_HOME]` : représente le chemin vers votre répertoire utilisateur (exemple : /home/username)
+            #`[WEB_ROOT]` : représente le dossier racine web (généralement public_html, www, ou htdocs)
+            json_manifest_path: '/[USER_HOME]/[WEB_ROOT]/public_html/admin/build/manifest.json'
