@@ -13,7 +13,7 @@ use App\Entity\Information;
 use App\Entity\InformationSection;
 use App\Entity\LocationType;
 use App\Entity\News;
-use App\Entity\Partners;
+use App\Entity\Partner;
 use App\Entity\PartnerType;
 use App\Entity\Role;
 use App\Entity\User;
@@ -52,7 +52,7 @@ class DashboardController extends AbstractDashboardController
         } elseif ($this->isGranted('ROLE_MARKETING')) {
             return $this->redirect($adminUrlGenerator->setController(NewsCrudController::class)->generateUrl());
         } elseif ($this->isGranted('ROLE_COMMERCIAL')) {
-            return $this->redirect($adminUrlGenerator->setController(PartnersCrudController::class)->generateUrl());
+            return $this->redirect($adminUrlGenerator->setController(PartnerCrudController::class)->generateUrl());
         } elseif ($this->isGranted('ROLE_REDACTEUR')) {
             return $this->redirect($adminUrlGenerator->setController(InformationCrudController::class)->generateUrl());
         }
@@ -61,6 +61,7 @@ class DashboardController extends AbstractDashboardController
         // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
         //
         // return $this->render('some/path/my-dashboard.html.twig');
+        return $this->redirectToRoute('app_login');
     }
 
     public function configureDashboard(): Dashboard
@@ -87,7 +88,7 @@ class DashboardController extends AbstractDashboardController
         if ($this->isGranted('ROLE_COMMERCIAL')) {
             yield MenuItem::section('Partenaires','fa fa-handshake');
             yield MenuItem::linkToCrud('Type de partenaires', 'fas fa-tags', PartnerType::class);
-            yield MenuItem::linkToCrud('Partenaires', 'fas fa-building', Partners::class);
+            yield MenuItem::linkToCrud('Partenaires', 'fas fa-building', Partner::class);
         }
 
         if ($this->isGranted('ROLE_MARKETING') || $this->isGranted('ROLE_REDACTEUR')) {
