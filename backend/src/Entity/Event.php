@@ -14,54 +14,59 @@ class Event
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getEvent"])]
-    private ?int $id = null;
+    private ?int $idEvent = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     #[Groups(["getEvent", "getArtist"])]
-    private ?\DateTimeInterface $heure_debut = null;
+    private ?\DateTimeInterface $heureDebut = null;
 
     #[ORM\Column(type: Types::TIME_MUTABLE)]
     #[Groups(["getEvent", "getArtist"])]
-    private ?\DateTimeInterface $heure_fin = null;
+    private ?\DateTimeInterface $heureFin = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_event_type')]
     #[Groups(["getEvent", "getArtist"])]
     private ?EventType $type = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_artist')]
     #[Groups(["getEvent"])]
     private ?Artist $artist = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_event_date')]
     #[Groups(["getEvent", "getArtist"])]
     private ?EventDate $date = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationEvent = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationEvent = null;
 
     #[ORM\Column]
     #[Groups(["getEvent", "getArtist"])]
-    private ?bool $publish = null;
+    private ?bool $publishEvent = null;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, referencedColumnName: 'id_event_location')]
     #[Groups(["getEvent", "getArtist"])]
     private ?EventLocation $eventLocation = null;
 
-    public function getId(): ?int
+    public function __toString(): string
     {
-        return $this->id;
+        return $this->date ?? '';
     }
 
-    public function setId(int $id): static
+    public function getIdEvent(): ?int
     {
-        $this->id = $id;
+        return $this->idEvent;
+    }
+
+    public function setIdEvent(int $idEvent): static
+    {
+        $this->idEvent = $idEvent;
 
         return $this;
     }
@@ -69,24 +74,24 @@ class Event
 
     public function getHeureDebut(): ?\DateTimeInterface
     {
-        return $this->heure_debut;
+        return $this->heureDebut;
     }
 
-    public function setHeureDebut(\DateTimeInterface $heure_debut): static
+    public function setHeureDebut(\DateTimeInterface $heureDebut): static
     {
-        $this->heure_debut = $heure_debut;
+        $this->heureDebut = $heureDebut;
 
         return $this;
     }
 
     public function getHeureFin(): ?\DateTimeInterface
     {
-        return $this->heure_fin;
+        return $this->heureFin;
     }
 
-    public function setHeureFin(\DateTimeInterface $heure_fin): static
+    public function setHeureFin(\DateTimeInterface $heureFin): static
     {
-        $this->heure_fin = $heure_fin;
+        $this->heureFin = $heureFin;
 
         return $this;
     }
@@ -127,38 +132,38 @@ class Event
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getDateModificationEvent(): ?\DateTimeInterface
     {
-        return $this->dateModification;
+        return $this->dateModificationEvent;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setDateModificationEvent(\DateTimeInterface $dateModificationEvent): static
     {
-        $this->dateModification = $dateModification;
+        $this->dateModificationEvent = $dateModificationEvent;
 
         return $this;
     }
 
-    public function getUserModification(): ?string
+    public function getUserModificationEvent(): ?string
     {
-        return $this->userModification;
+        return $this->userModificationEvent;
     }
 
-    public function setUserModification(string $userModification): static
+    public function setUserModificationEvent(string $userModificationEvent): static
     {
-        $this->userModification = $userModification;
+        $this->userModificationEvent = $userModificationEvent;
 
         return $this;
     }
 
-    public function isPublish(): ?bool
+    public function isPublishEvent(): ?bool
     {
-        return $this->publish;
+        return $this->publishEvent;
     }
 
-    public function setPublish(bool $publish): static
+    public function setPublishEvent(bool $publishEvent): static
     {
-        $this->publish = $publish;
+        $this->publishEvent = $publishEvent;
 
         return $this;
     }

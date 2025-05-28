@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 class EventCrudController extends AbstractCrudController
@@ -34,8 +35,9 @@ class EventCrudController extends AbstractCrudController
     private EntityManagerInterface $entityManager;
     private AdminUrlGenerator $adminUrlGenerator;
     private PublishService $publishService;
+     private LoggerInterface $logger;
 
-    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator, PublishService $publishService)
+    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator, PublishService $publishService, LoggerInterface $logger)
     {
         $this->entityManager = $entityManager;
         $this->adminUrlGenerator = $adminUrlGenerator;
@@ -53,7 +55,7 @@ class EventCrudController extends AbstractCrudController
         $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
             ->addCssClass('btn btn-sm btn-light text-success')
             ->setLabel(false)
-            ->displayIf(fn ($entity) => !$entity->isPublish() && !$this->hasrelatedPublishEventLocation($entity))
+            ->displayIf(fn ($entity) => !$entity->isPublishEvent() && !$this->hasrelatedPublishEventLocation($entity))
             ->linkToCrudAction('publish')
             ->setHtmlAttributes([
                 'title' => "Publier l'élément",
@@ -62,7 +64,7 @@ class EventCrudController extends AbstractCrudController
         $publishWithRelationAction = Action::new('publishWithRelatedEventLocation', 'Publier', 'fa fa-eye')
         ->addCssClass('btn btn-sm btn-light text-success confirm-action')
         ->setLabel(false)
-        ->displayIf(fn ($entity) => !$entity->isPublish() && $this->hasrelatedPublishEventLocation($entity))
+        ->displayIf(fn ($entity) => !$entity->isPublishEvent() && $this->hasrelatedPublishEventLocation($entity))
         ->linkToCrudAction('publish')
         ->setHtmlAttributes([
             'title' => "Publier l'élément et les lieux en relation",
@@ -73,7 +75,7 @@ class EventCrudController extends AbstractCrudController
         $unpublishAction = Action::new('unpublish', 'Dépublier', 'fa fa-eye-slash')
             ->addCssClass('btn btn-ms btn-light text-danger')
             ->setLabel(false)
-            ->displayIf(fn ($entity) => $entity->isPublish())
+            ->displayIf(fn ($entity) => $entity->isPublishEvent())
             ->linkToCrudAction('unpublish')
             ->setHtmlAttributes([
                 'title' => "Dépublier l'élément",       
@@ -132,16 +134,16 @@ class EventCrudController extends AbstractCrudController
             $artistRepository = $this->entityManager->getRepository(Artist::class);
 
             if ($pageName === Crud::PAGE_INDEX) { 
-                $fields=[IntegerField::new('id', 'Identifiant'),
-                TextField::new('type.type', 'Type d\'évènement' ),
-                TextField::new('artist.name','Artiste'),
-                TextField::new('eventLocation.location_name','Lieu'),
-                TextField::new('date','Date de l\'évènement'),
-                TimeField::new('heure_debut','Heure de début'),
-                TimeField::new('heure_fin','Heure de fin'),
-                BooleanField::new('publish','Publié')->renderAsSwitch(false),
-                DateTimeField::new('dateModification', 'Dernière modification'),
-                TextField::new('userModification', 'Utilisateur')];
+                $fields=[IntegerField::new('idEvent', 'Identifiant'),
+                TextField::new('type.nameType', 'Type d\'évènement' ),
+                TextField::new('artist.nameArtist','Artiste'),
+                TextField::new('eventLocation.nameEventLocation','Lieu'),
+                TextField::new('date.dateToString','Date de l\'évènement'),
+                TimeField::new('heureDebut','Heure de début'),
+                TimeField::new('heureFin','Heure de fin'),
+                BooleanField::new('publishEvent','Publié')->renderAsSwitch(false),
+                DateTimeField::new('dateModificationEvent', 'Dernière modification'),
+                TextField::new('userModificationEvent', 'Utilisateur')];
             } else {
                 $addTypeEventUrl = $this->addUrl(EventTypeCrudController::class);
                 $addArtistUrl = $this->addUrl(ArtistCrudController::class);
@@ -150,40 +152,40 @@ class EventCrudController extends AbstractCrudController
                 $fields=[
                     AssociationField::new('type', 'Type d\'évènement')
                         ->setQueryBuilder(
-                            fn (QueryBuilder $queryBuilder) => $queryBuilder->orderBy('entity.type', 'ASC')
+                            fn (QueryBuilder $queryBuilder) => $queryBuilder->orderBy('entity.nameType', 'ASC')
                             )
                         ->setFormTypeOptions([
-                                'choice_label' => 'type',
+                                'choice_label' => 'nameType',
                                 'placeholder' => 'Choisissez le type d\'évènement'
                         ])
                         ->setHelp(sprintf('Pas de type adapté ? <a href="%s">Créer un nouveau type</a>', $addTypeEventUrl)),
                     AssociationField::new('artist','Artiste')
                         ->setQueryBuilder(
-                            fn (QueryBuilder $queryBuilder) => $queryBuilder->orderBy('entity.name', 'ASC')
+                            fn (QueryBuilder $queryBuilder) => $queryBuilder->orderBy('entity.nameArtist', 'ASC')
                             )
                         ->setFormTypeOptions([
-                            'choice_label' => 'name',
+                            'choice_label' => 'nameArtist',
                             'placeholder' => 'Choisissez l\'artiste'
                     ])
                         ->setHelp(sprintf('Pas d\'artiste adapté ? <a href="%s">Créer un nouvel artiste</a>', $addArtistUrl)),
                     AssociationField::new('eventLocation','Lieu')
                         ->setFormTypeOptions([
-                            'choice_label' => 'locationName',
+                            'choice_label' => 'nameEventLocation',
                             'placeholder' => 'Choisissez le lieu de l\'évènement'
                     ])
                         ->setQueryBuilder(function ($queryBuilder) {
-                            return $queryBuilder->andWhere('entity.publish = :active')
+                            return $queryBuilder->andWhere('entity.publishEventLocation = :active')
                                                 ->setParameter('active', true)
-                                                ->orderBy('entity.locationName', 'ASC');
+                                                ->orderBy('entity.nameEventLocation', 'ASC');
                             })
                             ->setHelp(sprintf('Pas de lieu adapté ? <a href="%s">Créer un nouveau lieu</a>', $addLocationUrl)),
                     AssociationField::new('date','Date de l\'évènement')
                         ->setFormTypeOption('choice_label', 'datetostring'),
-                    TimeField::new('heure_debut','Heure de début')
+                    TimeField::new('heureDebut','Heure de début')
                         ->setColumns(2),        
-                    TimeField::new('heure_fin','Heure de fin')
+                    TimeField::new('heureFin','Heure de fin')
                         ->setColumns(2),
-                    BooleanField::new('publish','Publié')
+                    BooleanField::new('publishEvent','Publié')
                 ];
             }
             return $fields;
@@ -213,7 +215,7 @@ class EventCrudController extends AbstractCrudController
         private function hasrelatedPublishEventLocation(Event $event): bool
         {
             $hasRelatedPublishedEvents = $this->entityManager->getRepository(EventLocation::class)
-            ->count(['id' => $event->getEventLocation()->getId(), 'publish' => false]) > 0;
+            ->count(['idEventLocation' => $event->getEventLocation()->getIdEventLocation(), 'publishEventLocation' => false]) > 0;
 
             return $hasRelatedPublishedEvents;
         }

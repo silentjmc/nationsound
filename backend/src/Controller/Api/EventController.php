@@ -15,7 +15,7 @@ class EventController extends AbstractController
     public function getEventList(EventRepository $eventRepository, SerializerInterface $serializer): JsonResponse
     {
         $eventList = $eventRepository->findBy(
-            ['publish' => true]);
+            ['publishEvent' => true]);
         $jsonEventList = $serializer->serialize($eventList, 'json',['groups' => 'getEvent']);
         return new JsonResponse(
             $jsonEventList, Response::HTTP_OK, [], true);

@@ -33,9 +33,9 @@ class EventFixtures extends Fixture implements DependentFixtureInterface
             $event = new Event();
             $event->setHeureDebut(new \DateTime($eventData['heureDebut']));
             $event->setHeureFin(new \DateTime($eventData['heureFin']));
-            $event->setDateModification(new \DateTime($eventData['dateModification']));
-            $event->setUserModification($eventData['userModification']);
-            $event->setPublish($eventData['publish']);
+            $event->setDateModificationEvent(new \DateTime($eventData['dateModification']));
+            $event->setUserModificationEvent($eventData['userModification']);
+            $event->setPublishEvent($eventData['publish']);
             
             // Récupérer le type d'événement
             $type = $manager->getRepository(EventType::class)->find($eventData['typeId']);
