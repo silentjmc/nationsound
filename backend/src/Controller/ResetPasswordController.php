@@ -39,7 +39,7 @@ class ResetPasswordController extends AbstractController
                     ]);
                 $mailer->send($email);
             }
-            return $this->render('reset_password/check_email.html.twig');
+            return $this->redirectToRoute('app_reset_password_email_sent');
         }
         return $this->render('reset_password/request.html.twig', [
             'requestForm' => $form->createView(),
@@ -65,11 +65,23 @@ class ResetPasswordController extends AbstractController
                 )
             );
             $entityManager->flush();
-            return $this->redirectToRoute('app_login');
+            return $this->redirectToRoute('app_reset_password_confirmation');
         }
 
         return $this->render('reset_password/reset.html.twig', [
             'resetForm' => $form->createView(),
         ]);
     }
+
+    #[Route('/reset-password/email-sent', name: 'app_reset_password_email_sent')]
+        public function emailSent(): Response
+        {
+            return $this->render('reset_password/email_sent.html.twig');
+        }
+
+    #[Route('/reset-password/reset_confirmation', name: 'app_reset_password_confirmation')]
+        public function resetConfirmation(): Response
+        {
+            return $this->render('reset_password/reset_confirmation.html.twig');
+        }
 }
