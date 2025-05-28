@@ -2,7 +2,7 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Partners;
+use App\Entity\Partner;
 use App\Entity\PartnerType;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
@@ -76,13 +76,13 @@ class PartnerTypeCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IntegerField::new('id', 'Identifiant')->onlyOnIndex(),
-            TextField::new('type')
+            IntegerField::new('idPartnerType', 'Identifiant')->onlyOnIndex(),
+            TextField::new('titlePartnerType', 'Type de partenaire')
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saississez le type du partenaire'],
                 ]),
-            DateTimeField::new('dateModification', 'Dernière modification')->onlyOnIndex(),
-            TextField::new('userModification', 'Utilisateur')->onlyOnIndex(),
+            DateTimeField::new('dateModificationPartnerType', 'Dernière modification')->onlyOnIndex(),
+            TextField::new('userModificationPartnerType', 'Utilisateur')->onlyOnIndex(),
         ];
     }
 
@@ -92,8 +92,8 @@ class PartnerTypeCrudController extends AbstractCrudController
         $partnerType = $context->getEntity()->getInstance();
 
         // Verify if there are related items
-        $hasRelatedItems = $this->entityManager->getRepository(Partners::class)
-            ->count(['type' => $partnerType]) > 0;
+        $hasRelatedItems = $this->entityManager->getRepository(Partner::class)
+            ->count(['typePartner' => $partnerType]) > 0;
 
         if ($hasRelatedItems) {
             $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Partenaires. il faut d\'abord supprimer ou reaffecter les éléméents Partenaires concernés'); 

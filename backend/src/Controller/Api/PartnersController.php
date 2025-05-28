@@ -2,7 +2,7 @@
 
 namespace App\Controller\Api;
 
-use App\Repository\PartnersRepository;
+use App\Repository\PartnerRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class PartnersController extends AbstractController
 {  
     #[Route('/api/partners', name: 'app_partners', methods: ['GET'])]
-    public function getPartnersList(PartnersRepository $partnersRepository, SerializerInterface $serializer): JsonResponse
+    public function getPartnersList(PartnerRepository $partnersRepository, SerializerInterface $serializer): JsonResponse
     {
         $partnersList = $partnersRepository->findAll();
         $jsonPartnersList = $serializer->serialize($partnersList, 'json',['groups' => 'getPartners']);

@@ -7,7 +7,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
-class PartnerTypeFixtures extends Fixture implements DependentFixtureInterface
+class PartnerTypeFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
@@ -31,20 +31,20 @@ class PartnerTypeFixtures extends Fixture implements DependentFixtureInterface
 
         foreach ($types as $typeData) {
             $partnerType = new PartnerType();
-            $partnerType->setType($typeData['type']);
-            $partnerType->setDateModification(new \DateTime($typeData['dateModification']));
-            $partnerType->setUserModification($typeData['userModification']);
+            $partnerType->setTitlePartnerType($typeData['type']);
+            $partnerType->setDateModificationPartnerType(new \DateTime($typeData['dateModification']));
+            $partnerType->setUserModificationPartnerType($typeData['userModification']);
             
             $manager->persist($partnerType);
         }
 
         $manager->flush();
     }
-
+/*
     public function getDependencies()
     {
         return [
             UserFixtures::class,
         ];
-    }
+    }*/
 }

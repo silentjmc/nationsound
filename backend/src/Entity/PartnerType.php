@@ -16,109 +16,108 @@ class PartnerType
     #[ORM\GeneratedValue]
     #[ORM\Column]
     #[Groups(["getPartners"])]
-    private ?int $id = null;
+    private ?int $idPartnerType = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(["getPartners"])]
-    private ?string $type = null;
+    private ?string $titlePartnerType = null;
 
     /**
-     * @var Collection<int, Partners>
+     * @var Collection<int, Partner>
      */
-    #[ORM\OneToMany(targetEntity: Partners::class, mappedBy: 'type')]
-    private Collection $partners;
+    #[ORM\OneToMany(targetEntity: Partner::class, mappedBy: 'typePartner')]
+    private Collection $partner;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateModification = null;
+    private ?\DateTimeInterface $dateModificationPartnerType = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $userModification = null;
+    private ?string $userModificationPartnerType = null;
 
     public function __construct()
     {
-        $this->partners = new ArrayCollection();
+        $this->partner = new ArrayCollection();
     }
     
     // Méthode pour convertir l'objet en chaîne
     public function __toString(): string
     {
-        return $this->type ?? '';
+        return $this->titlePartnerType ?? '';
     }
 
-    public function getId(): ?int
+    public function getIdPartnerType(): ?int
     {
-        return $this->id;
+        return $this->idPartnerType;
     }
 
-    public function setId(int $id): static
+    public function setIdPartnerType(int $idPartnerType): static
     {
-        $this->id = $id;
+        $this->idPartnerType = $idPartnerType;
 
         return $this;
     }
 
-    public function getType(): ?string
+    public function getTitlePartnerType(): ?string
     {
-        return $this->type;
+        return $this->titlePartnerType;
     }
 
-    public function setType(string $type): static
+    public function setTitlePartnerType(string $titlePartnerType): static
     {
-        $this->type = $type;
+        $this->titlePartnerType = $titlePartnerType;
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Partners>
+     * @return Collection<int, Partner>
      */
-    public function getPartners(): Collection
+    public function getPartner(): Collection
     {
-        return $this->partners;
+        return $this->partner;
     }
 
-    public function addPartner(Partners $partner): static
+    public function addPartner(Partner $partner): static
     {
-        if (!$this->partners->contains($partner)) {
-            $this->partners->add($partner);
-            $partner->setType($this);
+        if (!$this->partner->contains($partner)) {
+            $this->partner->add($partner);
+            $partner->setTypePartner($this);
         }
 
         return $this;
     }
 
-    public function removePartner(Partners $partner): static
+    public function removePartner(Partner $partner): static
     {
-        if ($this->partners->removeElement($partner)) {
+        if ($this->partner->removeElement($partner)) {
             // set the owning side to null (unless already changed)
-            if ($partner->getType() === $this) {
-                $partner->setType(null);
+            if ($partner->getTypePartner() === $this) {
+                $partner->setTypePartner(null);
             }
         }
+        return $this;
+    }
+
+    public function getDateModificationPartnerType(): ?\DateTimeInterface
+    {
+        return $this->dateModificationPartnerType;
+    }
+
+    public function setDateModificationPartnerType(\DateTimeInterface $dateModificationPartnerType): static
+    {
+        $this->dateModificationPartnerType = $dateModificationPartnerType;
 
         return $this;
     }
 
-    public function getDateModification(): ?\DateTimeInterface
+    public function getUserModificationPartnerType(): ?string
     {
-        return $this->dateModification;
+        return $this->userModificationPartnerType;
     }
 
-    public function setDateModification(\DateTimeInterface $dateModification): static
+    public function setUserModificationPartnerType(string $userModificationPartnerType): static
     {
-        $this->dateModification = $dateModification;
-
-        return $this;
-    }
-
-    public function getUserModification(): ?string
-    {
-        return $this->userModification;
-    }
-
-    public function setUserModification(string $userModification): static
-    {
-        $this->userModification = $userModification;
+        $this->userModificationPartnerType = $userModificationPartnerType;
 
         return $this;
     }

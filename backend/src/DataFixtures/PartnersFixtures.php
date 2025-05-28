@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Partners;
+use App\Entity\Partner;
 use App\Entity\PartnerType;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -43,18 +43,18 @@ class PartnersFixtures extends Fixture implements DependentFixtureInterface
         ];
 
         foreach ($partners as $partnerData) {
-            $partner = new Partners();
-            $partner->setName($partnerData['name']);
-            $partner->setImage($partnerData['image']);
+            $partner = new Partner();
+            $partner->setNamePartner($partnerData['name']);
+            $partner->setImagePartner($partnerData['image']);
             $partner->setUrl($partnerData['url']);
-            $partner->setDateModification(new \DateTime($partnerData['dateModification']));
-            $partner->setUserModification($partnerData['userModification']);
-            $partner->setPublish($partnerData['publish']);
+            $partner->setDateModificationPartner(new \DateTime($partnerData['dateModification']));
+            $partner->setUserModificationPartner($partnerData['userModification']);
+            $partner->setPublishPartner($partnerData['publish']);
             
             // Récupérer le type de partenaire correspondant
             $type = $manager->getRepository(PartnerType::class)->find($partnerData['typeId']);
             if ($type) {
-                $partner->setType($type);
+                $partner->setTypePartner($type);
             }
             
             $manager->persist($partner);
