@@ -125,6 +125,15 @@ class NewsCrudController extends AbstractCrudController
                     ->displayAsLink()
                     ->addCssClass('btn btn-sm btn-light');
             })
+            ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
+            return $action->setLabel('Ajouter une actualité');
+            })
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
+                return $action->setLabel('Créer l\'actualité');
+            })
+            ->update(Crud::PAGE_NEW, Action::SAVE_AND_ADD_ANOTHER, function (Action $action) {
+                return $action->setLabel('Créer et ajouter une autre actualité');
+            })
             ->add(Crud::PAGE_INDEX,$publishAction) 
             ->add(Crud::PAGE_INDEX,$unpublishAction)
             ->add(Crud::PAGE_INDEX, $sendNotification)
