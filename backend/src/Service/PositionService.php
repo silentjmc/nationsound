@@ -1,10 +1,16 @@
 <?php
 namespace App\Service;
 
+use App\Controller\Admin\DashboardController;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
-use Symfony\Component\HttpFoundation\RequestStack; //rajout
+use Symfony\Component\HttpFoundation\RequestStack;
+use App\Service\EntityListener;
+use App\Service\Direction;
+use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
+use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
+/*
 enum Direction
 {
     case Top;
@@ -12,33 +18,24 @@ enum Direction
     case Down;
     case Bottom;
 }
-
+*/
 class PositionService
 {
     public function __construct(
         private readonly EntityManagerInterface $entityManager,
-        private readonly RequestStack $requestStack //rajout
-    ) {
-    }
-
-    // Generates method names based on the entity's class name.
-    private function getMethodNames(object $entity): array
-    {
-        $entityName = (new \ReflectionClass($entity))->getShortName();
-        
-        return [
-            'setPosition' => 'setPosition' . $entityName,
-            'getPosition' => 'getPosition' . $entityName,
-        ];
+        private readonly RequestStack $requestStack, 
+        private readonly EntityListener $entityListener, 
+        private readonly AdminUrlGenerator $adminUrlGenerator
+    ) {   
     }
    
     // Moves the entity to a new position based on the specified direction.
     public function move(AdminContext $context, Direction $direction): array
     {
         $object = $context->getEntity()->getInstance();
-        $methods = $this->getMethodNames($object);
-        $getter = $methods['getPosition'];
-        $setter = $methods['setPosition'];
+        $positionMethods = $this->entityListener->getMethodNames($object, 'position');
+        $getter = $positionMethods['get'];
+        $setter = $positionMethods['set'];
 
         $currentPosition = $object->$getter();
         $message = '';
@@ -72,10 +69,27 @@ class PositionService
         $this->entityManager->persist($object);
         $this->entityManager->flush();
         
-        return [
+        /*return [
             'success' => true,
             'message' => $message,
             'redirect_url' => $this->requestStack->getCurrentRequest()->headers->get('referer')
+        ];*/
+        $redirectUrl = $this->adminUrlGenerator
+            ->setDashboard(DashboardController::class) // <--- CRITICAL LINE TO CHECK
+            ->setController($context->getCrud()->getControllerFqcn()) // This should be FaqCrudController::class
+            ->setAction(Action::INDEX) // Redirect to the index page of the current CRUD
+            ->generateUrl(); // <--- THIS is returning null!
+
+        // Ensure that even if the sorting logic didn't result in an actual move,
+        // you still generate a valid URL to redirect back to the list.
+        if (null === $redirectUrl) {
+            error_log('AdminUrlGenerator::generateUrl returned null in PositionService!');
+        }
+
+        return [
+            'success' => true, // Or based on your actual logic outcome
+            'message' => $message, // Or dynamically generated
+            'redirect_url' => $redirectUrl
         ];
     }
 }
