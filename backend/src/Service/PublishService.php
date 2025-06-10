@@ -7,33 +7,26 @@ use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use App\Service\EntityListener;
 
 class PublishService
 {
     private EntityManagerInterface $entityManager;
     private AdminUrlGenerator $adminUrlGenerator;
+    private EntityListener $entityListener;
     
-    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator) 
+    public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator, EntityListener $entityListener) 
     {
         $this->entityManager = $entityManager;
         $this->adminUrlGenerator = $adminUrlGenerator;
-    }
-
-    private function getMethodNames(object $entity): array
-    {
-        $entityName = (new \ReflectionClass($entity))->getShortName();
-        
-        return [
-            'setPublish' => 'setPublish' . $entityName,
-            'getPublish' => 'getPublish' . $entityName,
-        ];
+        $this->entityListener = $entityListener;
     }
 
     public function publish(AdminContext $context): array
     {
         $object = $context->getEntity()->getInstance();
-        $methods = $this->getMethodNames($object);
-        $setter = $methods['setPublish'];
+        $publishMethods = $this->entityListener->getMethodNames($object, 'publish');
+        $setter = $publishMethods['set'];
         $hasRelatedItems = false;
         if ($object instanceof Event) {
             $hasRelatedItems = $this->entityManager->getRepository(EventLocation::class)
@@ -43,7 +36,7 @@ class PublishService
             $eventLocations = $this->entityManager->getRepository(EventLocation::class)
                 ->findBy(['idEventLocation' => $object->getEventLocation()->getIdEventLocation(), 'publishEventLocation' => false]);
             foreach ($eventLocations as $eventLocation) {
-                $eventLocation->$setter(true);
+                $eventLocation->setPublishEventLocation(true);
                 $this->entityManager->persist($eventLocation);
             }
         }
@@ -63,8 +56,8 @@ class PublishService
     public function unpublish(AdminContext $context): array
     {
         $object = $context->getEntity()->getInstance();
-        $methods = $this->getMethodNames($object);
-        $setter = $methods['setPublish'];
+        $unpublishMethods = $this->entityListener->getMethodNames($object, 'publish');
+        $setter = $unpublishMethods['set'];
         $hasRelatedItems = false;
 
         if ($object instanceof EventLocation) {
@@ -75,7 +68,7 @@ class PublishService
             $events = $this->entityManager->getRepository(Event::class)
                 ->findBy(['eventLocation' => $object]);
             foreach ($events as $event) {
-                $event->$setter(false);
+                $event->setPublishEvent(false);
                 $this->entityManager->persist($event);
             }
         }
