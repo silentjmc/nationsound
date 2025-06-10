@@ -126,11 +126,14 @@ Selon votre hébergement web, vous pourrez choisir de mettre en place le SSR ou 
 - **Framework**: Symfony 6.4
 - **Base de données**: MySQL/MariaDB
 - **Interface d'administration**: EasyAdmin
+- **Sécurité**: SecurityBundle
 - **Gestion des assets**: Webpack Encore
 - **Doctrine ORM** - Gestion des données
 - **style**: Tailwind CSS
 - **Cartographie**: Leaflet
 - **Mail**: Symfony Mailer
+- **Traitement d'images**: LiipImagineBundle 
+- **Positionnement**: StofDoctrineExtensionsBundle
 
 ### Structure du projet
 
