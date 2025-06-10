@@ -185,7 +185,7 @@ class FaqCrudController extends AbstractCrudController
     {
         $result = $this->publishService->publish($context);
         $url = $result['url'];
-        $this->addFlash('success', 'FAQ publié avec succès');
+        $this->addFlash('success', 'FAQ publiée avec succès');
         return $this->redirect($url);
     }
 
@@ -193,7 +193,7 @@ class FaqCrudController extends AbstractCrudController
     {
         $result = $this->publishService->unpublish($context);
         $url = $result['url'];
-        $this->addFlash('success', 'FAQ dépublié avec succès');
+        $this->addFlash('success', 'FAQ dépubliée avec succès');
         return $this->redirect($url);
     }
 }

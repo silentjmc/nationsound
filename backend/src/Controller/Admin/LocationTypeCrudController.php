@@ -37,7 +37,7 @@ class LocationTypeCrudController extends AbstractCrudController
     {
     return $actions
         ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
-            return $action->setLabel('Ajouter un typer de lieu');
+            return $action->setLabel('Ajouter un type de lieu');
         })
         ->update(Crud::PAGE_NEW, Action::SAVE_AND_RETURN, function (Action $action) {
             return $action->setLabel('Créer le type de lieu');
@@ -121,13 +121,3 @@ class LocationTypeCrudController extends AbstractCrudController
         return parent::delete($context);
     }
 }
-
-
-
-
-
-
-
-
-
-

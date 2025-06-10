@@ -118,7 +118,7 @@ class InformationSectionCrudController extends AbstractCrudController
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saississez le nom de la section dans l\'administration'],
                 ]),
-            TextField::new('TitleInformationSection',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre dans la page informations'))
+            TextField::new('titleInformationSection',($pageName === Crud::PAGE_INDEX ? 'Titre' : 'Titre dans la page informations'))
                 ->setFormTypeOptions(['attr' => ['placeholder' => 'Saississez le titre de l\'information dans le site'],
             ]),
             TextareaField::new('contentInformationSection',($pageName === Crud::PAGE_INDEX ? 'Sous-texte' : 'Sous-texte de la section dans la page Informations'))
