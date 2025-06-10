@@ -33,30 +33,34 @@ class EntityListener
         $this->filesystem = $filesystem;
     }
 
-    // Generates method names based on the entity's class name.
-     private function getMethodNames(object $entity): array
+// Generates method names based on the entity's class name and proprety's name.
+    public function getMethodNames(object $entity, string $propertyName): array
     {
         $entityName = (new \ReflectionClass($entity))->getShortName();
+        $formattedPropertyName = ucfirst($propertyName);
         
-        return [
-            'dateModification' => 'setDateModification' . $entityName,
-            'userModification' => 'setUserModification' . $entityName
+       return [
+            'set' => 'set' . $formattedPropertyName . $entityName,
+            'get' => 'get' . $formattedPropertyName . $entityName
         ];
     }
 
     public function prePersist(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
-        $methods = $this->getMethodNames($entity);
+        $dateModificationMethods = $this->getMethodNames($entity, 'dateModification');
+        $userModificationMethods = $this->getMethodNames($entity, 'userModification');
 
         $this->logger->info('prePersist called for entity: ' . get_class($entity));
 
-        if (method_exists($entity, $methods['dateModification']) && method_exists($entity, $methods['userModification'])) {
-            $entity->{$methods['dateModification']}(new \DateTime());
+        if (method_exists($entity, $dateModificationMethods['set']) && method_exists($entity, $userModificationMethods['set'])) {
+            $entity->{$dateModificationMethods['set']}(new \DateTime());
             
             $user = $this->security->getUser();
             if ($user instanceof User) {
-                $entity->{$methods['userModification']}($user->getFullName());
+                $entity->{$userModificationMethods['set']}($user->getFullName());
+            } elseif ($_ENV['APP_ENV'] === 'test') { // Spécifique à l'environnement de test
+            $entity->{$userModificationMethods['set']}('test_fixture_loader');
             }
         }
     }
@@ -64,15 +68,16 @@ class EntityListener
         public function preUpdate(PreUpdateEventArgs $args): void
     {
         $entity = $args->getObject();
-        $methods = $this->getMethodNames($entity);
+        $dateModificationMethods = $this->getMethodNames($entity, 'dateModification');
+        $userModificationMethods = $this->getMethodNames($entity, 'userModification');
         $this->logger->info('preUpdate called for entity: ' . get_class($entity));
 
-        if (method_exists($entity, $methods['dateModification']) && method_exists($entity, $methods['userModification'])) {
-            $entity->{$methods['dateModification']}(new \DateTime());
+        if (method_exists($entity, $dateModificationMethods['set']) && method_exists($entity, $userModificationMethods['set'])) {
+            $entity->{$dateModificationMethods['set']}(new \DateTime());
             
             $user = $this->security->getUser();
             if ($user instanceof User) {
-                $entity->{$methods['userModification']}($user->getFullName());
+                $entity->{$userModificationMethods['set']}($user->getFullName());
             }
         }
     }
@@ -80,11 +85,11 @@ class EntityListener
     public function preRemove(LifecycleEventArgs $args): void
     {
         $entity = $args->getObject();
-        $methods = $this->getMethodNames($entity);
-        if (method_exists($entity, $methods['userModification'])) {
+        $userModificationMethods = $this->getMethodNames($entity, 'userModification');
+        if (method_exists($entity, $userModificationMethods['set'])) {
             $user = $this->security->getUser();
             if ($user instanceof User) {
-                $currentUserName =  $entity->{$methods['userModification']}($user->getFullName());
+                $currentUserName =  $entity->{$userModificationMethods['set']}($user->getFullName());
             } else {
                 $currentUserName = 'unknown';
             }
