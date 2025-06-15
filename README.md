@@ -53,6 +53,55 @@ src/
 ├── styles.css              # Styles globaux
 └── tailwind.config.js      # Configuration Tailwind CSS
 ```
+### Routing
+L'application utilise le Angular Router pour la navigation entre les différentes sections du site. 
+Voici la structure des routes principales :
+
+```ts
+export const routes: Routes = [
+  { path: 'accueil', component: HomeComponent },
+  { path: 'partenaires', component: PartnerComponent },
+  { path: 'carte', component: MapComponent },
+  {
+    path: 'informations',
+    component: NavBarInformationsComponent,
+    children: [
+      { path: 'actualites', component: NewsSummaryComponent },
+      { path: 'actualite/:id', component: NewsDetailComponent },
+      { path: 'infos', component: InformationComponent },
+      { path: 'faq', component: FaqComponent },
+      { path: '', redirectTo: 'infos', pathMatch: 'full' }
+    ]
+  },
+  { path: 'programmation', component: ProgrammationComponent },
+  { path: 'artist/:id', component: ArtistComponent },
+  { path: '', redirectTo: 'accueil', pathMatch: 'full' }
+];
+```
+Les routes enfant sous informations permettent une navigation imbriquée avec affichage dans une zone dédiée (comme un <router-outlet> secondaire).
+
+### Services
+Les services Angular sont utilisés pour :
+- appeler les API backend via HttpClient,
+- partager les données entre composants via des BehaviorSubject ou ReplaySubject,
+- centraliser la logique métier et la gestion de l'état local.
+
+### Structure de donnéesd
+Les interfaces TypeScript dans src/app/services/class.ts définissent les structures de données (Artiste, News, etc.).
+
+### Pipes
+Des pipes personnalisés sont utilisés pour :
+- Trier des données dans l'ordre alpahbetique
+- Trier des données par type
+
+### Tests
+Le projet inclut des tests unitaires de base, qui vérifient :
+- L’instanciation correcte des composants,
+- La présence et le contenu des balises <title> et <meta> (important pour le SEO).
+
+```bash
+ng test
+```
 
 ### Installation et Configuration
 1. Après avoir cloner le projet, naviguer vers le répertoire frontend :
