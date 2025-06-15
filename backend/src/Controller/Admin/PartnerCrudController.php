@@ -3,7 +3,6 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Partner;
-use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
@@ -117,7 +116,7 @@ class PartnerCrudController extends AbstractCrudController
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saississez le nom du partenaire'],
                 ]),
-            ImageField::new('imagepartner',($pageName === Crud::PAGE_INDEX ? 'logo' :'Télécharger le logo du partenaire'))
+            ImageField::new('imagePartner',($pageName === Crud::PAGE_INDEX ? 'logo' :'Télécharger le logo du partenaire'))
                 ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/partners')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
@@ -157,7 +156,7 @@ class PartnerCrudController extends AbstractCrudController
     {
         $result = $this->publishService->publish($context);
         $url = $result['url'];
-        $this->addFlash('success', 'Actualité publié avec succès');
+        $this->addFlash('success', 'Partenaire publié avec succès');
         return $this->redirect($url);
     }
 
@@ -165,7 +164,7 @@ class PartnerCrudController extends AbstractCrudController
     {
         $result = $this->publishService->unpublish($context);
         $url = $result['url'];
-        $this->addFlash('success', 'Actualité dépublié avec succès');        
+        $this->addFlash('success', 'Partenaire dépublié avec succès');        
         return $this->redirect($url);
     }
 }

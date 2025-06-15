@@ -1,0 +1,12 @@
+# config/services_test.yaml
+services:
+  _defaults:
+      # Appliquer ces défauts uniquement aux services définis dans ce fichier
+      # ou les hériter des défauts globaux si c'est ce que vous voulez.
+      autowire: true
+      autoconfigure: true
+      public: false # Les services de test n'ont pas besoin d'être publics en général
+  # Auto-configuration des fixtures de test
+  App\Tests\Fixtures\:
+      resource: '../tests/Fixtures'
+      tags: ['doctrine.fixture.orm']
