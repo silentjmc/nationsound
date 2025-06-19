@@ -96,7 +96,7 @@ class ArtistCrudController extends AbstractCrudController
                 ->setFormTypeOptions([
                     'attr' => ['placeholder' => 'Saisissez la description de l\'artiste'],
                 ]),
-            ImageField::new('image_artist','Image'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
+            ImageField::new('imageArtist','Image'. ($pageName === Crud::PAGE_INDEX ? '' : ' de l\'artiste ou du groupe'))
                 ->setUploadDir($uploadPath)
                 ->setBasePath('uploads/artists')
                 ->setUploadedFileNamePattern('[name][randomhash].[extension]')
