@@ -12,7 +12,6 @@ use App\Tests\Fixtures\TestRoleFixtures;
 use App\Tests\Fixtures\TestUserFixtures;
 use App\Tests\Trait\PublishActionTestTrait;
 use Doctrine\ORM\EntityManagerInterface;
-use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use EasyCorp\Bundle\EasyAdminBundle\Test\AbstractCrudTestCase;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 use Liip\TestFixturesBundle\Services\DatabaseTools\AbstractDatabaseTool;
@@ -270,7 +269,6 @@ class PartnerCrudControllerTest extends AbstractCrudTestCase
             fixtureReference: TestPartnerFixtures::PARTNER_PUBLISHED_1_REF, 
             action : 'unpublish');
     }
-
 
     protected function tearDown(): void
     {

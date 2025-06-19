@@ -15,8 +15,8 @@ class TestArtistFixtures extends Fixture
         $artist1 = new Artist();
         $artist1->setNameArtist('Artiste Alpha (pour événements)');
         $artist1->setContentArtist('Description Alpha pour tests événements.');
-        $artist1->setImageArtist('alpha_event.jpg');
-        $artist1->setThumbnail('thumb_alpha_event.jpg');
+        $artist1->setImageArtist('alpha_event.webp');
+        $artist1->setThumbnail('thumb_alpha_event.webp');
         $artist1->setTypeMusic('Rock Test');
         $manager->persist($artist1);
         $this->addReference(self::ARTIST_ALPHA_EVENTS_REF, $artist1);
@@ -24,8 +24,8 @@ class TestArtistFixtures extends Fixture
         $artist2 = new Artist();
         $artist2->setNameArtist('Artiste Beta (pour événements)');
         $artist2->setContentArtist('Description Beta pour tests événements.');
-        $artist2->setImageArtist('beta_event.jpg');
-        $artist2->setThumbnail('thumb_beta_event.jpg');
+        $artist2->setImageArtist('beta_event.webp');
+        $artist2->setThumbnail('thumb_beta_event.webp');
         $artist2->setTypeMusic('Pop Test');
         $manager->persist($artist2);
         $this->addReference(self::ARTIST_BETA_EVENTS_REF, $artist2);
