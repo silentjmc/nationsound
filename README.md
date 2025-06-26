@@ -28,30 +28,37 @@ nationsound/
 ### Structure du projet
 
 ```
+dist/                         # dossiers contenant les fichiers finaux pour la production
 src/
-├── app/                    # Composants principaux de l'application
-│   ├── alert-news/         # Composant d'alerte actualités
-│   ├── artist/             # Composant fiche des artistes
-│   ├── carousel/           # Composant carrousel
-│   ├── faq/                # Composant Foire aux questions
-│   ├── footer/             # Composant Pied de page
-│   ├── header/             # Composant En-tête
-│   ├── home/               # Composant Page d'accueil
-│   ├── information/        # Composant Actualités/Informations
-│   ├── map/                # Composant Carte interactive
-│   ├── models/             # Modèles de données
-│   ├── news-detail/        # Composant Détail des actualités
-│   ├── news-summary/       # Composant Résumé des actualités
-│   ├── partner/            # Composant Partenaires
-│   ├── pipe/               # Pipes personnalisés
-│   ├── programmation/      # Composant Programmation du festival
-│   └── services/           # Services partagés
-├── assets/                 # Ressources statiques
-├── environments/           # Configurations d'environnement
-├── index.html              # Point d'entrée HTML
-├── proxy.conf.json         # Proxy pour le developpement en local en lien avec le backend
-├── styles.css              # Styles globaux
-└── tailwind.config.js      # Configuration Tailwind CSS
+├── app/                      # Composants principaux de l'application
+│   ├── alert-news/           # Composant d'alerte actualités
+│   ├── artist/               # Composant fiche des artistes
+│   ├── confidentialite/      # Composant Modal Politique de confidentialité
+│   ├── carousel/             # Composant carrousel
+│   ├── faq/                  # Composant Foire aux questions
+│   ├── footer/               # Composant Pied de page
+│   ├── header/               # Composant En-tête
+│   ├── home/                 # Composant Page d'accueil
+│   ├── information/          # Composant Actualités/Informations
+│   ├── map/                  # Composant Carte interactive
+│   ├── mentions/             # Composant Modal Mentions légales
+│   ├── models/               # Modèles de données
+│   ├── nav-bar-informations/ # Composant NavBar de la page informations
+│   ├── news-detail/          # Composant Détail des actualités
+│   ├── news-summary/         # Composant Résumé des actualités
+│   ├── partner/              # Composant Partenaires
+│   ├── pipe/                 # Pipes personnalisés
+│   ├── programmation/        # Composant Programmation du festival
+│   ├── services/             # Services partagés
+│   └── app.component.html    # Services partagés
+├── assets/                   # Ressources statiques
+├── environments/             # Configurations d'environnement
+├── index.html                # Point d'entrée HTML
+angular.json                  # Configuration globale du projet
+package.json                  # Dépendance du projet
+proxy.conf.json               # Proxy pour le developpement en local en lien avec le backend
+styles.css                    # Styles globaux
+tailwind.config.js            # Configuration Tailwind CSS
 ```
 ### Routing
 L'application utilise le Angular Router pour la navigation entre les différentes sections du site. 
@@ -193,6 +200,8 @@ Selon votre hébergement web, vous pourrez choisir de mettre en place le SSR ou 
 ├── public/             # Point d'entrée public 
 ├── src/  
 │  ├── Controller/      # Contrôleurs 
+│  │  ├── Admin/        # Contrôleurs de l'interface d'administration EasyAdmin
+│  │  ├── Api/          # Contrôleurs exposant les points d'API REST pour le frontend
 │  ├── DataFixtures/    # Fixtures de données 
 │  ├── Entity/          # Entités Doctrine 
 │  ├── Form/            # Formulaires Symfony 
