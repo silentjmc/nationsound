@@ -270,7 +270,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * This is used to determine the user's permissions and access levels.
      * @return Role|null The role of the user, or null if not set.
      */
-    public function getRoleUSer(): ?Role
+    public function getRoleUser(): ?Role
     {
         return $this->roleUser;
     }

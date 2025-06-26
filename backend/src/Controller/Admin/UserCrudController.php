@@ -139,7 +139,7 @@ class UserCrudController extends AbstractCrudController
                         'placeholder' => 'Saisissez le prénom de l\'utilisateur'
                     ],
                 ]),
-            AssociationField::new('role','Rôle')
+            AssociationField::new('roleUser','Rôle')
                 ->setFormTypeOption('placeholder', 'Choisissez le rôle de l\'utilisateur')
                 ->setFormTypeOption('choice_label', 'role'),
             BooleanField::new('isVerified','Utilisateur vérifié'),
@@ -162,7 +162,7 @@ class UserCrudController extends AbstractCrudController
         
         // Retrieve the original state of the user before any modifications from the current form submission.
         $originalUser = $entityManager->getUnitOfWork()->getOriginalEntityData($user);
-        $originalRole = $originalUser['role'];
+        $originalRole = $originalUser['roleUser'];
         $originalIsVerified = $originalUser['isVerified'];
 
         // Check if the user is the last administrator.
@@ -206,11 +206,11 @@ class UserCrudController extends AbstractCrudController
     public function delete(AdminContext $context)
     {
         $principal = $context->getEntity()->getInstance();
-        $userRole = $principal->getRole();
+        $userRole = $principal->getRoleUser();
 
         // Check if the user has related items (other users with the same role).
         $hasRelatedItems = $this->entityManager->getRepository(User::class)
-        ->count(['role' => $principal]) > 0;
+        ->count(['roleUser' => $principal]) > 0;
 
         // If the user is the last administrator, prevent deletion and set a flash message.
         if ($hasRelatedItems && $userRole->getRole() === 'Administrateur' ) {
