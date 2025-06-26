@@ -15,20 +15,45 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
+/**
+ * PartnerTypeCrudController is responsible for managing PartnerType entities in the admin panel.
+ * It extends AbstractCrudController to provide CRUD operations for PartnerType entities.
+ * It includes custom configurations for fields, actions, and entity updates.
+ */
 class PartnerTypeCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
 
+    /**
+     * PartnerTypeCrudController constructor.
+     *
+     * Initializes the controller with the EntityManagerInterface.
+     *
+     * @param EntityManagerInterface $entityManager The Doctrine entity manager.
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * Returns the fully qualified class name of the entity managed by this controller.
+     *
+     * @return string The fully qualified class name of the PartnerType entity.
+     */
     public static function getEntityFqcn(): string
     {
         return PartnerType::class;
     }
 
+    /**
+     * Configures the actions available for the PartnerType entity.
+     *
+     * This method sets custom labels and icons for actions such as New, Save, Edit, and Delete.
+     *
+     * @param Actions $actions The actions configuration object.
+     * @return Actions The configured actions object.
+     */
     public function configureActions(Actions $actions): Actions
     {
     return $actions
@@ -63,6 +88,14 @@ class PartnerTypeCrudController extends AbstractCrudController
         });    
     }
 
+    /**
+     * Configures the CRUD settings for the PartnerType entity.
+     *
+     * This method sets the form theme, entity labels, page titles, and inlined actions.
+     *
+     * @param Crud $crud The CRUD configuration object.
+     * @return Crud The configured CRUD object.
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -73,6 +106,14 @@ class PartnerTypeCrudController extends AbstractCrudController
         ->showEntityActionsInlined();
     }
     
+    /**
+     * Configures the fields displayed in the CRUD interface for the PartnerType entity.
+     *
+     * This method defines the fields to be displayed in the index, detail, edit, and new pages.
+     *
+     * @param string $pageName The name of the page being configured (index, detail, edit, new).
+     * @return iterable An iterable collection of field configurations.
+     */
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -86,15 +127,24 @@ class PartnerTypeCrudController extends AbstractCrudController
         ];
     }
 
+    /**
+     * Deletes a PartnerType entity.
+     *
+     * This method checks if there are any related Partner entities before allowing deletion.
+     * If there are related Partner entities, it prevents deletion and displays an error message.
+     *
+     * @param AdminContext $context The admin context containing the entity to delete.
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function delete(AdminContext $context)
     {
-        /** @var PartnerType $partnerType */
         $partnerType = $context->getEntity()->getInstance();
 
-        // Verify if there are related items
+        // Check if there are any related Partner entities before allowing deletion
         $hasRelatedItems = $this->entityManager->getRepository(Partner::class)
             ->count(['typePartner' => $partnerType]) > 0;
 
+        // If there are related Partner entities, prevent deletion and display an error message
         if ($hasRelatedItems) {
             $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Partenaires. il faut d\'abord supprimer ou reaffecter les éléméents Partenaires concernés'); 
             $url = $this->container->get(AdminUrlGenerator::class)

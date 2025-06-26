@@ -20,11 +20,25 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 
+/*
+ * InformationSectionCrudController is responsible for managing InformationSection entities in the admin panel.
+ * It extends AbstractCrudController to provide CRUD operations for InformationSection entities.
+ * It includes custom configurations for fields, actions, and entity updates.
+ */
 class InformationSectionCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
     private PositionService $positionService;
 
+    /**
+     * InformationSectionCrudController constructor.
+     *
+     * Initializes the controller with the EntityManagerInterface.
+     *
+     * @param EntityManagerInterface $entityManager The Doctrine entity manager.
+     * @param PositionService $positionService The service for managing positions of sections.
+     * @param InformationSectionRepository $informationSectionRepository The repository for InformationSection entities.
+     */
     public function __construct(EntityManagerInterface $entityManager, PositionService $positionService,private readonly InformationSectionRepository $informationSectionRepository)
     {
         $this->entityManager = $entityManager;
@@ -32,15 +46,30 @@ class InformationSectionCrudController extends AbstractCrudController
         
     }
 
+    /**
+     * Returns the fully qualified class name of the entity managed by this controller.
+     *
+     * @return string The fully qualified class name of the InformationSection entity.
+     */
     public static function getEntityFqcn(): string
     {
         return InformationSection::class;
     }
 
+    /**
+     * Configures the actions available in the CRUD interface.
+     *
+     * This method sets custom labels and icons for actions such as New, Save, Edit, and Delete
+     * and adds custom actions for moving sections up, down, to the top, and to the bottom.
+     *
+     * @param Actions $actions The actions configuration object.
+     * @return Actions The modified actions configuration object.
+     */
     public function configureActions(Actions $actions): Actions
     {
         $entityCount = $this->informationSectionRepository->count([]);
-        // New actions
+
+        // Define custom actions for moving sections
         $moveTop = Action::new('moveTop', false, 'fa fa-arrow-up')
             ->setHtmlAttributes(['title' => 'Mettre en haut de page'])
             ->linkToCrudAction('moveTop')
@@ -60,6 +89,8 @@ class InformationSectionCrudController extends AbstractCrudController
             ->setHtmlAttributes(['title' => 'Mettre en bas de page'])
             ->linkToCrudAction('moveBottom')
             ->displayIf(fn ($entity) => $entity->getPositionInformationSection() < $entityCount - 1);
+
+        // Add the custom actions to the actions configuration and customize existing actions.
         return $actions
             ->add(Crud::PAGE_INDEX, $moveBottom)
             ->add(Crud::PAGE_INDEX, $moveDown)
@@ -96,6 +127,14 @@ class InformationSectionCrudController extends AbstractCrudController
             });    
         }
 
+    /**
+     * Configures the CRUD interface for the InformationSection entity.
+     * 
+     * This method sets the form theme, entity labels, page titles, and inlined actions.
+     * 
+     * @param Crud $crud The CRUD configuration object.
+     * @return Crud The modified CRUD configuration object.
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -108,7 +147,14 @@ class InformationSectionCrudController extends AbstractCrudController
         ->showEntityActionsInlined();
     }
 
-    
+    /** 
+     * Configures the fields displayed in the CRUD interface for the InformationSection entity.
+     *
+     * This method defines the fields to be displayed in the index, detail, edit, and new pages.
+     *
+     * @param string $pageName The name of the page being configured (e.g., 'index', 'new', 'edit').
+     * @return iterable An iterable collection of field configurations.
+     */
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -130,6 +176,15 @@ class InformationSectionCrudController extends AbstractCrudController
         ];
     }
 
+    /**
+     * Custom action to move a section to the top of the list.
+     *
+     * This method uses the PositionService to handle the movement logic
+     * and redirects back to the index page with a success message.
+     *  
+     * @param AdminContext $context The admin context containing the entity to move.
+     * @return Response A redirect response to the index page with a success flash message.
+     */
     public function moveTop(AdminContext $context): Response
     {
         $result = $this->positionService->move($context, Direction::Top);
@@ -137,6 +192,15 @@ class InformationSectionCrudController extends AbstractCrudController
         return $this->redirect($result['redirect_url']);
     }
     
+    /**
+     * Custom action to move a section up in the list.
+     *
+     * This method uses the PositionService to handle the movement logic
+     * and redirects back to the index page with a success message.
+     *
+     * @param AdminContext $context The admin context containing the entity to move.
+     * @return Response A redirect response to the index page with a success flash message.
+     */
     public function moveUp(AdminContext $context): Response
     {
         $result = $this->positionService->move($context, Direction::Up);
@@ -144,6 +208,15 @@ class InformationSectionCrudController extends AbstractCrudController
         return $this->redirect($result['redirect_url']);
     }
     
+    /**
+     * Custom action to move a section down in the list.
+     *
+     * This method uses the PositionService to handle the movement logic
+     * and redirects back to the index page with a success message.
+     *
+     * @param AdminContext $context The admin context containing the entity to move.
+     * @return Response A redirect response to the index page with a success flash message.
+     */
     public function moveDown(AdminContext $context): Response
     {
         $result = $this->positionService->move($context, Direction::Down);
@@ -151,6 +224,15 @@ class InformationSectionCrudController extends AbstractCrudController
         return $this->redirect($result['redirect_url']);
     }
     
+    /**
+     * Custom action to move a section to the bottom of the list.
+     *
+     * This method uses the PositionService to handle the movement logic
+     * and redirects back to the index page with a success message.
+     *
+     * @param AdminContext $context The admin context containing the entity to move.
+     * @return Response A redirect response to the index page with a success flash message.
+     */
     public function moveBottom(AdminContext $context): Response
     {
         $result = $this->positionService->move($context, Direction::Bottom);
@@ -158,6 +240,15 @@ class InformationSectionCrudController extends AbstractCrudController
         return $this->redirect($result['redirect_url']);
     }
 
+    /**
+     * Deletes the entity instance from the database.
+     *
+     * This method checks if the section is linked to any Information entities before allowing deletion.
+     * If they are, it prevents deletion and sets an appropriate flash message.
+     *
+     * @param AdminContext $context The admin context containing the entity to delete.
+     * @return mixed The result of the delete operation or a redirect response.
+     */
     public function delete(AdminContext $context)
     {
         /** @var InformationSection $section */
@@ -167,6 +258,7 @@ class InformationSectionCrudController extends AbstractCrudController
         $hasRelatedItems = $this->entityManager->getRepository(Information::class)
             ->count(['sectionInformation' => $section]) > 0;
 
+        // If there are related Information entities, prevent deletion and display an error message
         if ($hasRelatedItems) {
             $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Informations. il faut d\'abord supprimer ou reaffecter les éléménts Informations concernés');
             $url = $this->container->get(AdminUrlGenerator::class)

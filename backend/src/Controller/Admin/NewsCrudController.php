@@ -20,20 +20,54 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
+/*
+ * NewsCrudController is responsible for managing the CRUD  operations of News entities.
+ * It extends AbstractCrudController to leverage EasyAdmin's functionality.
+ * 
+ * this controller customizes the default CRUD operations for News, including:
+ * - Configuration of fields displayed in forms and index pages.
+ * 
+ * 
+ */
 class NewsCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
     private PublishService $publishService;
+
+    /**
+     * NewsCrudController constructor.
+     *
+     * Initializes the controller with the necessary services.
+     *
+     * @param EntityManagerInterface $entityManager The Doctrine entity manager.
+     * @param PublishService $publishService The service responsible for publishing news.
+     */
     public function __construct(EntityManagerInterface $entityManager, PublishService $publishService)
     {
         $this->entityManager = $entityManager;
         $this->publishService = $publishService;
     }
+
+    /**
+     * Returns the fully qualified class name of the entity managed by this controller.
+     * 
+     * This method is used by EasyAdmin to determine which entity this controller is responsible for.
+     *
+     * @return string The fully qualified class name of the News entity.
+     */
     public static function getEntityFqcn(): string
     {
         return News::class;
     }
     
+    /**
+     * Configures the fields displayed in the CRUD interface for the News entity.
+     *
+     * This method defines the fields to be displayed in the index, detail, edit, and new pages.
+     *
+     * @param string $pageName The name of the page being configured (e.g., 'index', 'edit', 'new').
+     * @return iterable An iterable collection of field configurations.
+     */
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -66,9 +100,20 @@ class NewsCrudController extends AbstractCrudController
         ];
     }
 
+    /**
+     * Configures the actions available in the CRUD interface.
+     *
+     * This method sets custom labels and icons for actions such as New, Save, Edit, and Delete
+     * and adds custom actions for sending and unsending notifications,
+     * publishing and unpublishing news.
+     * It also configures publish and unpublish actions with specific conditions for display.
+     *
+     * @param Actions $actions The actions configuration object.
+     * @return Actions The configured actions object.
+     */
     public function configureActions(Actions $actions): Actions
     {
-        // New actions
+        // Define custom actions for sending and unsending notifications
         $sendNotification = Action::new('sendNotification', 'Envoyer la notification', 'fa fa-bell')
             ->linkToCrudAction('sendNotification')
             ->addCssClass('btn btn-sm btn-light')
@@ -87,6 +132,7 @@ class NewsCrudController extends AbstractCrudController
             'title' => "Annuler la notification",
         ]);
 
+        // Define custom actions for publishing and unpublishing news
         $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
         ->addCssClass('btn btn-sm btn-light text-success')
         ->setLabel(false)
@@ -104,6 +150,7 @@ class NewsCrudController extends AbstractCrudController
             'title' => "Dépublier l'élément",       
         ]);
 
+        // Add the custom actions to the actions configuration and customize existing actions.
         return $actions
             ->update(Crud::PAGE_INDEX, Action::EDIT, function (Action $action) {
                 return $action
@@ -140,6 +187,14 @@ class NewsCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, $unsendNotification);   
     }
 
+    /**
+     * Configures the CRUD interface for the News entity.
+     *
+     * This method sets the form theme, entity labels, page titles, and inlined actions.
+     *
+     * @param Crud $crud The CRUD configuration object.
+     * @return Crud The configured CRUD object.
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -149,6 +204,16 @@ class NewsCrudController extends AbstractCrudController
         ->showEntityActionsInlined();
     }
 
+    /**
+     * Custom action to send a notification for the selected news entity.
+     * 
+     * This method sets the push flag to true, indicating that the notification should be sent,
+     * and then flushes the changes to the database.
+     * It also adds a success flash message and redirects to the index page.
+     *
+     * @param AdminContext $context The context of the admin action.
+     * @return Response A redirect response to the index page.
+     */
     public function sendNotification(AdminContext $context)
     {
         $news = $context->getEntity()->getInstance();
@@ -159,6 +224,16 @@ class NewsCrudController extends AbstractCrudController
         return $this->redirect($url);
     }
 
+    /**
+     * Custom action to unsend a notification for the selected news entity.
+     * 
+     * This method sets the push flag to false, indicating that the notification should be cancelled,
+     * and then flushes the changes to the database.
+     * It also adds a success flash message and redirects to the index page.
+     *
+     * @param AdminContext $context The context of the admin action.
+     * @return Response A redirect response to the index page.
+     */
     public function unsendNotification(AdminContext $context)
     {
         $news = $context->getEntity()->getInstance();
@@ -169,6 +244,15 @@ class NewsCrudController extends AbstractCrudController
         return $this->redirect($url);
     }
 
+    /**
+     * Custom action to publish the News.
+     * 
+     * This method uses the PublishService to handle the publishing logic
+     * and redirects back to the index page with a success flash message.
+     *
+     * @param AdminContext $context The context of the admin action.
+     * @return Response A redirect response to the index page with a success flash message.
+     */
     public function publish(AdminContext $context): Response
     {
         $result = $this->publishService->publish($context);
@@ -177,6 +261,15 @@ class NewsCrudController extends AbstractCrudController
         return $this->redirect($url);
     }
 
+    /**
+     * Custom action to unpublish the News.
+     * 
+     * This method uses the PublishService to handle the unpublishing logic
+     * and redirects back to the index page with a success flash message.
+     *
+     * @param AdminContext $context The admin context containing the entity to unpublish.
+     * @return Response A redirect response to the index page with a success flash message.
+     */
     public function unpublish(AdminContext $context): Response
     {
         $wasPushEnabledBeforeServiceCall = $context->getEntity()->getInstance()->isPush();

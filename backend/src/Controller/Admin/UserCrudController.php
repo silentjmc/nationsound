@@ -15,22 +15,45 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
+/*
+ * UserCrudController is responsible for managing user entities in the admin panel.
+ * It extends AbstractCrudController to provide CRUD operations for User entities.
+ * It includes custom configurations for fields, actions, and entity updates.
+ */
 class UserCrudController extends AbstractCrudController
 {
-
     private EntityManagerInterface $entityManager;
-
+    
+    /**
+     * UserCrudController constructor.
+     *
+     * Initializes the controller with the EntityManagerInterface.
+     *
+     * @param EntityManagerInterface $entityManager The Doctrine entity manager.
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
-
+    
+    /**
+     * Returns the fully qualified class name of the entity managed by this controller.
+     *
+     * @return string The fully qualified class name of the User entity.
+     */
     public static function getEntityFqcn(): string
     {
         return User::class;
     }
     
-
+    /**
+     * Configures the CRUD settings for the User entity.
+     *
+     * This method sets the form theme, entity labels, page titles, and inlined actions.
+     *
+     * @param Crud $crud The CRUD configuration object.
+     * @return Crud The configured CRUD object.
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -41,6 +64,15 @@ class UserCrudController extends AbstractCrudController
         ->showEntityActionsInlined();
     }
 
+    /**
+     * Configures the actions available in the CRUD interface.
+     *
+     * This method customizes the edit and delete actions for the index page,
+     * removing the new action to prevent creating new users from the index.
+     *
+     * @param Actions $actions The actions configuration object.
+     * @return Actions The configured actions object.
+     */
     public function configureActions(Actions $actions): Actions
     {
         return $actions
@@ -67,6 +99,15 @@ class UserCrudController extends AbstractCrudController
         ->remove(Crud::PAGE_INDEX, Action::NEW);   
     }
 
+    /**
+     * Configures the fields displayed in the CRUD interface.
+     *
+     * This method defines the fields for both index and detail pages,
+     * including email, name, role, and verification status.
+     *
+     * @param string $pageName The name of the page being configured (index or detail).
+     * @return iterable An iterable collection of field configurations.
+     */
     public function configureFields(string $pageName): iterable
     {
         $fields = [];
@@ -106,16 +147,25 @@ class UserCrudController extends AbstractCrudController
         return $fields;
     }
 
+    /**
+     * Updates the entity instance before persisting it to the database.
+     *
+     * This method checks if the user is the last administrator and prevents changes
+     * to their role or verification status if they are. It also sets appropriate flash messages.
+     *
+     * @param EntityManagerInterface $entityManager The Doctrine entity manager.
+     * @param mixed $entityInstance The entity instance being updated.
+     */
     public function updateEntity(EntityManagerInterface $entityManager, $entityInstance): void
     {
-        /** @var User $user */
         $user = $entityInstance;
         
-        // Retrieve the old role before modification
+        // Retrieve the original state of the user before any modifications from the current form submission.
         $originalUser = $entityManager->getUnitOfWork()->getOriginalEntityData($user);
         $originalRole = $originalUser['role'];
         $originalIsVerified = $originalUser['isVerified'];
 
+        // Check if the user is the last administrator.
         if ($originalRole->getRole() === 'Administrateur') {
             $adminCount = $entityManager->getRepository(User::class)->count(['role' => $originalRole]);
 
@@ -144,15 +194,25 @@ class UserCrudController extends AbstractCrudController
         parent::updateEntity($entityManager, $entityInstance);
     }
 
+    /**
+     * Deletes the entity instance from the database.
+     *
+     * This method checks if the user is the last administrator before allowing deletion.
+     * If they are, it prevents deletion and sets an appropriate flash message.
+     *
+     * @param AdminContext $context The admin context containing the entity to delete.
+     * @return mixed The result of the delete operation or a redirect response.
+     */
     public function delete(AdminContext $context)
     {
-        /** @var User $user */
         $principal = $context->getEntity()->getInstance();
         $userRole = $principal->getRole();
 
+        // Check if the user has related items (other users with the same role).
         $hasRelatedItems = $this->entityManager->getRepository(User::class)
         ->count(['role' => $principal]) > 0;
 
+        // If the user is the last administrator, prevent deletion and set a flash message.
         if ($hasRelatedItems && $userRole->getRole() === 'Administrateur' ) {
             $this->addFlash('danger', 'Impossible de supprimer cet utilisateur car c\'est le dernier administrateur du système. Veuillez d\'abord créer un autre administrateur.');
             

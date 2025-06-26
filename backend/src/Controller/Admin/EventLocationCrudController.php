@@ -23,6 +23,14 @@ use EasyCorp\Bundle\EasyAdminBundle\Provider\AdminContextProvider;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * EventLocationCrudController is responsible for managing the CRUD operations for EventLocation.
+ * It extends AbstractCrudController to leverage EasyAdmin's functionality.
+ * 
+ * This controller customizes the default CRUD operations for eventLocation, including:
+ * - Configuration of fields displayed in forms and index pages.
+ * - Custom labels, titles, and templates. 
+ */
 class EventLocationCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
@@ -38,14 +46,30 @@ class EventLocationCrudController extends AbstractCrudController
         $this->publishService = $publishService;
     }
 
+    /**
+     * Returns the fully qualified class name of the entity managed by this controller.
+     * 
+     * This method is used by EasyAdmin to determine which entity this controller is responsible for.
+     *
+     * @return string The fully qualified class name of the EventLocation entity.
+     */
     public static function getEntityFqcn(): string
     {
         return EventLocation::class;
     }
 
+    /**
+     * Configures the actions available in the CRUD interface.
+     *
+     * This method sets custom labels and icons for actions such as New, Save, Edit, and Delete.
+     * It also adds custom actions for publishing and unpublishing event locations.
+     *
+     * @param Actions $actions The actions configuration object.
+     * @return Actions The configured actions object.
+     */
     public function configureActions(Actions $actions): Actions
     {   
-        // New actions     
+        // Define custom actions for publishing and unpublishing event locations     
         $publishAction = Action::new('publish', 'Publier', 'fa fa-eye')
             ->addCssClass('btn btn-sm btn-light text-success')
             ->setLabel(false)
@@ -108,6 +132,14 @@ class EventLocationCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX,$unpublishWithRelatedEventAction);
         }
 
+        /**
+         * Configures the CRUD settings for the EventLocation entity.
+         *
+         * This method sets the form theme, entity labels, page titles, and inlined actions.
+         *
+         * @param Crud $crud The CRUD configuration object.
+         * @return Crud The modified CRUD configuration object.
+         */
         public function configureCrud(Crud $crud): Crud
         {
             return $crud
@@ -119,6 +151,14 @@ class EventLocationCrudController extends AbstractCrudController
             ->showEntityActionsInlined();
         }
       
+        /**
+         * Configures the fields displayed in the CRUD interface for the EventLocation entity.
+         *
+         * This method defines the fields to be displayed in the index, detail, edit, and new pages.
+         *
+         * @param string $pageName The name of the page being configured (e.g., 'index', 'new', 'edit').
+         * @return iterable An iterable collection of field configurations.
+         */
         public function configureFields(string $pageName): iterable
         {
             if ($pageName === Crud::PAGE_INDEX) {
@@ -173,15 +213,24 @@ class EventLocationCrudController extends AbstractCrudController
                 return $fields;
         }
         
+        /**
+         * Deletes the entity instance from the database.
+         *
+         * This method checks if there are any related Event entities before allowing deletion.
+         * If they are, it prevents deletion and redirects with an error message.
+         *
+         * @param AdminContext $context The admin context containing the entity to delete.
+         * @return mixed The result of the delete operation or a redirect response.
+         */
         public function delete(AdminContext $context)
         {
-        /** @var EventLocation $eventLocation */
             $eventLocation = $context->getEntity()->getInstance();
 
             // Verify if there are related items
             $hasRelatedItems = $this->entityManager->getRepository(Event::class)
                 ->count(['eventLocation' => $eventLocation]) > 0;
 
+            // If there are related items, prevent deletion and display an error message
             if ($hasRelatedItems) {
                 $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléments Évènements concernés');
                 
@@ -196,6 +245,15 @@ class EventLocationCrudController extends AbstractCrudController
             return parent::delete($context);
         }
 
+        /**
+         * Custom action to publish the EventLocation
+         * 
+         * This method uses the PublishService to handle the publishing logic
+         * and redirects back to the index page with a success flash message.
+         * 
+         * @param AdminContext $context The admin context containing the entity to publish.
+         * @return Response A redirect response to the index page with a success flash message.
+         */
         public function publish(AdminContext $context): Response
         {
             $result = $this->publishService->publish($context);
@@ -204,6 +262,15 @@ class EventLocationCrudController extends AbstractCrudController
             return $this->redirect($url);
         }
 
+        /**
+         * Custom action to unpublish the EventLocation
+         * 
+         * This method uses the PublishService to handle the unpublishing logic
+         * and redirects back to the index page with a success flash message.
+         * 
+         * @param AdminContext $context The admin context containing the entity to unpublish.
+         * @return Response A redirect response to the index page with a success flash message. 
+         */
         public function unpublish(AdminContext $context): Response
         {
             $result = $this->publishService->unpublish($context);
@@ -217,15 +284,28 @@ class EventLocationCrudController extends AbstractCrudController
             return $this->redirect($url);
         }
 
-        private function shouldDisplayUnpublishAction(EventLocation $eventLocation): bool
-        {
-            if (!$eventLocation->isPublishEventLocation()) {
-                return false;
-            }
-
-            $hasRelatedPublishedEvents = $this->entityManager->getRepository(Event::class)
-                ->count(['eventLocation' => $eventLocation, 'publishEvent' => true]) > 0;
-
-            return $hasRelatedPublishedEvents;
+    /**
+     * Determines if the "unpublish with related events" action should be displayed.
+     *
+     * This private helper method checks two conditions:
+     * 1. If the given EventLocation is currently published.
+     * 2. If this EventLocation has any associated Event entities that are also published.
+     *
+     * It's used in `configureActions` to conditionally display different unpublish buttons.
+     *
+     * @param EventLocation $eventLocation The EventLocation entity to check.
+     * @return bool True if the specific unpublish action (with modal for related events) should be displayed,
+     *              false otherwise.
+     */
+    private function shouldDisplayUnpublishAction(EventLocation $eventLocation): bool
+    {
+        if (!$eventLocation->isPublishEventLocation()) {
+            return false;
         }
+
+        $hasRelatedPublishedEvents = $this->entityManager->getRepository(Event::class)
+            ->count(['eventLocation' => $eventLocation, 'publishEvent' => true]) > 0;
+
+        return $hasRelatedPublishedEvents;
+    }
 }

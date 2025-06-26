@@ -15,21 +15,53 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
+/**
+ * EventTypeCrudController is responsible for managing the CRUD operations for EventType entity.
+ * It extends AbstractCrudController to leverage EasyAdmin's functionality.
+ * 
+ * This controller customizes the default CRUD operations for eventType, including:
+ * - Configuration of fields displayed in forms and index pages.
+ * - Custom labels, titles, and templates. 
+ */
 class EventTypeCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
 
+    /**
+     * EventTypeCrudController constructor.
+     *
+     * Initializes the controller with the necessary services.
+     *
+     * @param EntityManagerInterface $entityManager The Doctrine entity manager.
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
     
+    /**
+     * Returns the fully qualified class name of the entity managed by this controller.
+     * 
+     * This method is used by EasyAdmin to determine which entity this controller is responsible for.
+     *
+     * @return string The fully qualified class name of the EventType entity.
+     */
     public static function getEntityFqcn(): string
     {
         return EventType::class;
     }
+
+    /**
+     * Configures the actions available in the CRUD interface.
+     *
+     * This method sets custom labels and icons for actions such as New, Save, Edit, and Delete.
+     *
+     * @param Actions $actions The actions configuration object.
+     * @return Actions The configured actions object.
+     */
     public function configureActions(Actions $actions): Actions
     {
+    // Update the actions with custom labels and icons
     return $actions
         ->update(Crud::PAGE_INDEX, Action::NEW, function (Action $action) {
             return $action->setLabel('Ajouter un type d\'évènement');
@@ -62,6 +94,14 @@ class EventTypeCrudController extends AbstractCrudController
         });  
     }
 
+    /**
+     * Configures the CRUD settings for the EventType entity.
+     *
+     * This method sets the form theme, entity labels, page titles, and inlined actions.
+     *
+     * @param Crud $crud The CRUD configuration object.
+     * @return Crud The configured CRUD object.
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -72,7 +112,14 @@ class EventTypeCrudController extends AbstractCrudController
         ->showEntityActionsInlined();
     }
 
-    
+    /**
+     * Configures the fields displayed in the CRUD interface for the EventType entity.
+     *
+     * This method defines the fields to be displayed in the index, detail, edit, and new pages.
+     *
+     * @param string $pageName The name of the page being configured (e.g., index, new, edit).
+     * @return iterable An iterable collection of field configurations.
+     */
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -86,14 +133,23 @@ class EventTypeCrudController extends AbstractCrudController
         ];
     }
 
+    /**
+     * Deletes the entity instance from the database.
+     *
+     * This method checks if there are any related Event entities before allowing deletion.
+     * If they are, it prevents deletion and redirects with a flash message.
+     *
+     * @param AdminContext $context The admin context containing the entity to be deleted.
+     * @return mixed The result of the delete operation or a redirect response.
+     */
     public function delete(AdminContext $context)
     {
-        /** @var EventType $eventType */
         $eventType = $context->getEntity()->getInstance();
         // Verify if there are related items
         $hasRelatedItems = $this->entityManager->getRepository(Event::class)
             ->count(['type' => $eventType]) > 0;
 
+        // If there are related items, prevent deletion and set a flash message
         if ($hasRelatedItems) {
             $this->addFlash('danger', 'Impossible de supprimer cet élément car il est lié à un ou plusieurs éléments Évènements. il faut d\'abord supprimer ou reaffecter les éléméents Évènements concernés');
             

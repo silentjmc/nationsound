@@ -11,10 +11,22 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 
+/**
+ * RoleCrudController is responsible for managing Role entities in the admin panel.
+ * It extends AbstractCrudController to provide CRUD operations for Role entities.
+ * It includes custom configurations for fields, actions, and entity updates.
+ */
 class RoleCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
 
+    /**
+     * RoleCrudController constructor.
+     *
+     * Initializes the controller with the EntityManagerInterface.
+     *
+     * @param EntityManagerInterface $entityManager The Doctrine entity manager.
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
@@ -24,6 +36,14 @@ class RoleCrudController extends AbstractCrudController
         return Role::class;
     }
 
+    /**
+     * Configures the CRUD settings for the Role entity.
+     *
+     * This method sets the form theme, entity labels, page titles, and inlined actions.
+     *
+     * @param Crud $crud The CRUD configuration object.
+     * @return Crud The configured CRUD object.
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -35,6 +55,15 @@ class RoleCrudController extends AbstractCrudController
         ->showEntityActionsInlined(false);
     }
 
+    /**
+     * Configures the actions available for the Role entity.
+     *
+     * This method removes certain actions from the detail and index pages,
+     * and disables delete, edit, and new actions globally.
+     *
+     * @param Actions $actions The actions configuration object.
+     * @return Actions The configured actions object.
+     */
     public function configureActions(Actions $actions): Actions
     {
         return $actions
@@ -44,6 +73,14 @@ class RoleCrudController extends AbstractCrudController
             ->disable(Action::DELETE, Action::EDIT, Action::NEW);
     }
 
+    /**
+     * Configures the fields displayed in the CRUD interface for the Role entity.
+     *
+     * This method defines the fields to be displayed in the index, detail, edit, and new pages.
+     *
+     * @param string $pageName The name of the page being configured (index, detail, edit, new).
+     * @return iterable An iterable collection of field configurations.
+     */
     public function configureFields(string $pageName): iterable
     {
         return [   

@@ -16,22 +16,53 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IntegerField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
+/**
+ * EventDateCrudController is responsible for managing the CRUD operations for the EventDate entity.
+ * It extends AbstractCrudController to leverage EasyAdmin's functionality.
+ * 
+ * This controller customizes the default CRUD operations for EventDate, including:
+ * - Configuration of fields displayed in forms and index pages.
+ * - Custom labels, titles, and templates.
+ */
 class EventDateCrudController extends AbstractCrudController
 {
     private EntityManagerInterface $entityManager;
     private AdminUrlGenerator $adminUrlGenerator;
 
+    /**
+     * EventDateCrudController constructor.
+     *
+     * Initializes the controller with the necessary services. 
+     * 
+     * @param EntityManagerInterface $entityManager The Doctrine entity manager.
+     * @param AdminUrlGenerator $adminUrlGenerator The EasyAdmin URL generator service.
+     */
     public function __construct(EntityManagerInterface $entityManager, AdminUrlGenerator $adminUrlGenerator)
     {
         $this->entityManager = $entityManager;
         $this->adminUrlGenerator = $adminUrlGenerator;
     }
 
+   /**
+     * Returns the fully qualified class name of the entity managed by this controller.
+     *
+     * This method is used by EasyAdmin to determine which entity this controller is responsible for.
+     *
+     * @return string The fully qualified class name of the EventDate entity.
+     */
     public static function getEntityFqcn(): string
     {
         return EventDate::class;
     }
 
+    /**
+     * Configures the actions available in the CRUD interface.
+     *
+     * This method sets custom labels and icons for actions such as New, Save, Edit, and Delete
+     *
+     * @param Actions $actions The actions configuration object.
+     * @return Actions The modified actions configuration object.
+     */
     public function configureActions(Actions $actions): Actions
     {        
         return parent::configureActions($actions)
@@ -66,6 +97,14 @@ class EventDateCrudController extends AbstractCrudController
             });  
     }
 
+    /**
+     * Configures the CRUD interface for the EventDate entity.
+     *
+     * This method sets the form theme, entity labels, page titles, and inlined actions.
+     *
+     * @param Crud $crud The CRUD configuration object.
+     * @return Crud The modified CRUD configuration object.
+     */
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
@@ -76,7 +115,14 @@ class EventDateCrudController extends AbstractCrudController
         ->showEntityActionsInlined();
     }
 
-    
+    /**
+     * Configures the fields displayed in the CRUD interface for the EventDate entity.
+     *
+     * This method defines the fields to be displayed in the index, detail, edit, and new pages.
+     *
+     * @param string $pageName The name of the page being configured (e.g., 'index', 'new', 'edit').
+     * @return iterable An iterable collection of field configurations.
+     */
     public function configureFields(string $pageName): iterable
     {
         return [
@@ -87,6 +133,15 @@ class EventDateCrudController extends AbstractCrudController
         ];
     }
 
+    /**
+     * Deletes the entity instance from the database.
+     *
+     * This method prevents the deletion of an EventDate if it is currently associated with one or more Event entities.
+     * If they are, it prevents deletion and sets an appropriate flash message.
+     *
+     * @param AdminContext $context The admin context containing the entity to delete.
+     * @return mixed The result of the delete operation or a redirect response.
+     */
     public function delete(AdminContext $context)
     {
         /** @var EventDate $eventDate */

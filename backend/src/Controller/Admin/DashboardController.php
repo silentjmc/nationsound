@@ -24,28 +24,32 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 
+/**
+ * Main dashboard controller for the EasyAdmin interface.
+ * 
+ * This controller defines the main entry point ('/') for the admin panel.
+ * It handles the initial redirection logic based on user authentication and roles,
+ * redirecting users to appropriate CRUD controllers or a login page.
+ * It also configures the overall appearance of the dashboard (e.g., title, logo)
+ * and dynamically builds the sidebar menu items based on the current user's roles.
+ */
 class DashboardController extends AbstractDashboardController
 {
+    /**
+     * Defines the main action for the dashboard.
+     * This method implements logic to redirect users:
+     * - To the login page if not authenticated.
+     * - To specific CRUD controllers based on their roles (Admin, Marketing, Commercial, Redacteur).
+     * - As a fallback, it redirects to the login page if no specific role-based redirect is matched.
+     */
     #[Route('/', name: 'admin')]
     public function index(): Response
     {
-        // return parent::index();
-
-        // Option 1. You can make your dashboard redirect to some common page of your backend
-        //
         if (!$this->getUser()) {
             return $this->redirectToRoute('app_login');
         }
-        //$this->denyAccessUnlessGranted('ROLE_ADMIN');
 
         $adminUrlGenerator = $this->container->get(AdminUrlGenerator::class);
-        //return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
-
-        // Option 2. You can make your dashboard redirect to different pages depending on the user
-        //
-        // if ('jane' === $this->getUser()->getUsername()) {
-        //     return $this->redirect('...');
-        // }
 
         if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirect($adminUrlGenerator->setController(UserCrudController::class)->generateUrl());
@@ -57,13 +61,17 @@ class DashboardController extends AbstractDashboardController
             return $this->redirect($adminUrlGenerator->setController(InformationCrudController::class)->generateUrl());
         }
         
-        // Option 3. You can render some custom template to display a proper dashboard with widgets, etc.
-        // (tip: it's easier if your template extends from @EasyAdmin/page/content.html.twig)
-        //
-        // return $this->render('some/path/my-dashboard.html.twig');
         return $this->redirectToRoute('app_login');
     }
 
+    /**
+     * Configures the global appearance of the EasyAdmin dashboard.
+     *
+     * Sets the dashboard title (which can include HTML, like an image logo here)
+     * and configures the content area to be maximized.
+     *
+     * @return Dashboard The Dashboard configuration object.
+     */
     public function configureDashboard(): Dashboard
     {
         return Dashboard::new()
@@ -72,6 +80,15 @@ class DashboardController extends AbstractDashboardController
             ;
     }
 
+    /**
+     * Configures the items displayed in the main sidebar navigation menu.
+     *
+     * Menu items are generated dynamically based on the current user's roles.
+     * Different sections and links to CRUD controllers are yielded if the user
+     * has the corresponding permissions (ROLE_ADMIN, ROLE_MARKETING, etc.).
+     *
+     * @return iterable An iterable of MenuItem objects.
+     */
     public function configureMenuItems(): iterable
     {
         if ($this->isGranted('ROLE_ADMIN')) {
