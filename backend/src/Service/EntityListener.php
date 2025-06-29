@@ -156,12 +156,16 @@ class EntityListener
         // Check if the method for setting user modification exists
         if (method_exists($entity, $userModificationMethods['set'])) {
             $user = $this->security->getUser();
+            $currentUserName = 'unknown';
             if ($user instanceof User) {
                 // If the user is authenticated, set their full name
-                $currentUserName =  $entity->{$userModificationMethods['set']}($user->getFullName());
+                $currentUserName = $user->getFullName();
+                $entity->{$userModificationMethods['set']}($currentUserName);
+                //$currentUserName =  $entity->{$userModificationMethods['set']}($user->getFullName());
             } else {
                 // If no user is authenticated, set a default name
-                $currentUserName = 'unknown';
+                //$currentUserName = 'unknown';
+                $entity->{$userModificationMethods['set']}($currentUserName);
             }
             $connection = $this->entityManager->getConnection();
             $connection->executeQuery("SET @current_user_name = :name", ['name' => $currentUserName]);
